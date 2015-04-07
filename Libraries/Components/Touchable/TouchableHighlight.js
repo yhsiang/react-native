@@ -12,6 +12,7 @@
 
 // Note (avik): add @flow when Flow supports spread properties in propTypes
 
+var EdgeInsetsPropType = require('EdgeInsetsPropType');
 var NativeMethodsMixin = require('NativeMethodsMixin');
 var React = require('React');
 var ReactNativeViewAttributes = require('ReactNativeViewAttributes');
@@ -32,6 +33,7 @@ type Event = Object;
 var DEFAULT_PROPS = {
   activeOpacity: 0.8,
   underlayColor: 'black',
+  pressRetentionOffset: {top: 20, left: 20, right: 20, bottom: 30},
 };
 
 /**
@@ -169,7 +171,7 @@ var TouchableHighlight = React.createClass({
   },
 
   touchableGetPressRectOffset: function() {
-    return PRESS_RECT_OFFSET;   // Always make sure to predeclare a constant!
+    return this.props.pressRetentionOffset;
   },
 
   touchableGetHighlightDelayMS: function() {
@@ -234,7 +236,6 @@ var TouchableHighlight = React.createClass({
   }
 });
 
-var PRESS_RECT_OFFSET = {top: 20, left: 20, right: 20, bottom: 30};
 var CHILD_REF = keyOf({childRef: null});
 var UNDERLAY_REF = keyOf({underlayRef: null});
 var INACTIVE_CHILD_PROPS = {
