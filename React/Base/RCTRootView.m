@@ -35,7 +35,7 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
 
 @end
 
-@interface RCTRootContentView : RCTView <RCTInvalidating>
+@interface RCTRootContentView : RCTView <RCTInvalidating, UIGestureRecognizerDelegate>
 
 @property (nonatomic, readonly) BOOL contentHasAppeared;
 
@@ -348,6 +348,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
    */
   self.reactTag = [_bridge.uiManager allocateRootTag];
   _touchHandler = [[RCTTouchHandler alloc] initWithBridge:_bridge];
+  _touchHandler.delegate = self;
   [self addGestureRecognizer:_touchHandler];
   [_bridge.uiManager registerRootView:self];
 }
@@ -361,5 +362,21 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
                       args:@[self.reactTag]];
   }
 }
+
+#pragma mark - UIGestureRecognizerDelegate
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+  if (![gestureRecognizer isKindOfClass:[RCTTouchHandler class]]) {
+    return YES;
+  }
+
+  UIView *currentView = touch.view;
+  while (currentView && ![currentView isReactRootView]) {
+    currentView = currentView.superview;
+  }
+  return currentView == self;
+}
+
 
 @end
