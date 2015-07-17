@@ -310,6 +310,7 @@ function runServer(
 ) {
   var app = connect()
     .use(loadRawBody)
+    .use(connect.compress())
     .use(openStackFrameInEditor)
     .use(getDevToolsLauncher(options))
     .use(statusPageMiddleware)
@@ -324,7 +325,6 @@ function runServer(
   });
 
   app.use(connect.logger())
-    .use(connect.compress())
     .use(connect.errorHandler());
 
   return http.createServer(app).listen(options.port, '::', readyCallback);
