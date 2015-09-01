@@ -46,6 +46,7 @@
     "react-native-start": "packager/packager.sh"
   },
   "dependencies": {
+    "@exponent/sane": "^1.2.1",
     "absolute-path": "0.0.0",
     "babel": "^5.8.12",
     "babel-core": "^5.8.14",
@@ -63,7 +64,6 @@
     "react-timer-mixin": "^0.13.1",
     "react-tools": "git://github.com/facebook/react#b4e74e38e43ac53af8acd62c78c9213be0194245",
     "rebound": "^0.0.12",
-    "sane": "^1.1.2",
     "semver": "^4.3.6",
     "source-map": "0.1.31",
     "stacktrace-parser": "frantic/stacktrace-parser#493c5e5638",
