@@ -11,13 +11,13 @@
 'use strict';
 
 var Dimensions = require('Dimensions');
-var NavigatorNavigationBarStyles = require('NavigatorNavigationBarStyles');
+var NavigatorNavigationBarStylesAndroid = require('NavigatorNavigationBarStylesAndroid');
 
 var buildStyleInterpolator = require('buildStyleInterpolator');
 var merge = require('merge');
 
 var SCREEN_WIDTH = Dimensions.get('window').width;
-var NAV_BAR_HEIGHT = NavigatorNavigationBarStyles.General.NavBarHeight;
+var NAV_BAR_HEIGHT = NavigatorNavigationBarStylesAndroid.General.NavBarHeight;
 
 var SPACING = 8;
 var ICON_WIDTH = 40;

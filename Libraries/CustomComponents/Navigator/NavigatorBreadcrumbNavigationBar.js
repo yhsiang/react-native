@@ -27,7 +27,9 @@
 'use strict';
 
 var NavigatorBreadcrumbNavigationBarStyles = require('NavigatorBreadcrumbNavigationBarStyles');
-var NavigatorNavigationBarStyles = require('NavigatorNavigationBarStyles');
+var NavigatorNavigationBarStylesAndroid = require('NavigatorNavigationBarStylesAndroid');
+var NavigatorNavigationBarStylesIOS = require('NavigatorNavigationBarStylesIOS');
+var Platform = require('Platform');
 var React = require('React');
 var StaticContainer = require('StaticContainer.react');
 var StyleSheet = require('StyleSheet');
@@ -38,6 +40,8 @@ var { Map } = require('immutable');
 var invariant = require('invariant');
 
 var Interpolators = NavigatorBreadcrumbNavigationBarStyles.Interpolators;
+var NavigatorNavigationBarStyles = Platform.OS === 'android' ?
+  NavigatorNavigationBarStylesAndroid : NavigatorNavigationBarStylesIOS;
 var PropTypes = React.PropTypes;
 
 /**
