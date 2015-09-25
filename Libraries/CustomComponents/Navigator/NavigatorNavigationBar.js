@@ -29,7 +29,6 @@
 var React = require('React');
 var NavigatorNavigationBarStylesAndroid = require('NavigatorNavigationBarStylesAndroid');
 var NavigatorNavigationBarStylesIOS = require('NavigatorNavigationBarStylesIOS');
-var Platform = require('Platform');
 var StaticContainer = require('StaticContainer.react');
 var StyleSheet = require('StyleSheet');
 var View = require('View');
@@ -38,8 +37,7 @@ var { Map } = require('immutable');
 
 var COMPONENT_NAMES = ['Title', 'LeftButton', 'RightButton'];
 
-var NavigatorNavigationBarStyles = Platform.OS === 'android' ?
-  NavigatorNavigationBarStylesAndroid : NavigatorNavigationBarStylesIOS;
+var NavigatorNavigationBarStyles = NavigatorNavigationBarStylesIOS;
 
 var navStatePresentedIndex = function(navState) {
   if (navState.presentedIndex !== undefined) {
