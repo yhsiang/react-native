@@ -46,6 +46,7 @@
     "react-native-start": "packager/packager.sh"
   },
   "dependencies": {
+    "@exponent/sane": "^1.2.1",
     "absolute-path": "^0.0.0",
     "babel-core": "^5.8.23",
     "bser": "^1.0.2",
@@ -67,7 +68,6 @@
     "react-tools": "git://github.com/facebook/react#b4e74e38e43ac53af8acd62c78c9213be0194245",
     "rebound": "^0.0.13",
     "regenerator": "^0.8.36",
-    "sane": "^1.2.0",
     "semver": "^5.0.1",
     "source-map": "^0.4.4",
     "stacktrace-parser": "^0.1.3",

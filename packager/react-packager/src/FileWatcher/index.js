@@ -9,7 +9,7 @@
 'use strict';
 
 const EventEmitter  = require('events').EventEmitter;
-const sane = require('sane');
+const sane = require('@exponent/sane');
 const Promise = require('promise');
 const exec = require('child_process').exec;
 const _ = require('underscore');
@@ -18,6 +18,7 @@ const MAX_WAIT_TIME = 25000;
 
 // TODO(amasad): can we use watchman version command instead?r
 const detectingWatcherClass = new Promise(function(resolve) {
+  return resolve(sane.ChokidarWatcher);
   exec('which watchman', function(err, out) {
     if (err || out.length === 0) {
       resolve(sane.NodeWatcher);

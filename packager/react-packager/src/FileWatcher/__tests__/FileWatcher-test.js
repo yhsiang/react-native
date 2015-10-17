@@ -20,7 +20,7 @@ jest
   });
 
 var FileWatcher = require('../');
-var sane = require('sane');
+var sane = require('@exponent/sane');
 
 describe('FileWatcher', function() {
   var Watcher;
