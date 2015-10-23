@@ -83,7 +83,7 @@ import com.facebook.react.uimanager.events.NativeGestureUtil;
 
     @Override
     public void onPageSelected(int position) {
-      if (!mIsCurrentItemFromJs) {
+      if (mCurrentItemFromJs == -1) {
         mEventDispatcher.dispatchEvent(
             new PageSelectedEvent(getId(), SystemClock.uptimeMillis(), position));
       }
@@ -96,12 +96,13 @@ import com.facebook.react.uimanager.events.NativeGestureUtil;
   }
 
   private final EventDispatcher mEventDispatcher;
-  private boolean mIsCurrentItemFromJs;
+  private int mCurrentItemFromJs;
+  private boolean mIsCurrentTransitionAnimated;
 
   public ReactViewPager(ReactContext reactContext) {
     super(reactContext);
     mEventDispatcher = reactContext.getNativeModule(UIManagerModule.class).getEventDispatcher();
-    mIsCurrentItemFromJs = false;
+    mCurrentItemFromJs = -1;
     setOnPageChangeListener(new PageChangeListener());
     setAdapter(new Adapter());
   }
@@ -124,9 +125,18 @@ import com.facebook.react.uimanager.events.NativeGestureUtil;
     getAdapter().addView(child, index);
   }
 
+  void setAnimatePageTransition(boolean animatePageTransition) {
+    mIsCurrentTransitionAnimated = animatePageTransition;
+  }
+
   /* package */ void setCurrentItemFromJs(int item) {
-    mIsCurrentItemFromJs = true;
-    setCurrentItem(item);
-    mIsCurrentItemFromJs = false;
+    mCurrentItemFromJs = item;
+  }
+
+  void maybeSetPage() {
+    if (mCurrentItemFromJs >= 0) {
+      setCurrentItem(mCurrentItemFromJs, mIsCurrentTransitionAnimated);
+      mCurrentItemFromJs = -1;
+    }
   }
 }

@@ -41,6 +41,11 @@ public class ReactViewPagerManager extends ViewGroupManager<ReactViewPager> {
     view.setCurrentItemFromJs(page);
   }
 
+  @ReactProp(name = "animatePageTransition")
+  public void setAnimatePageTransition(ReactViewPager view, boolean animatedPageTransition) {
+    view.setAnimatePageTransition(animatedPageTransition);
+  }
+
   @Override
   public boolean needsCustomLayoutForChildren() {
     return true;
@@ -57,5 +62,11 @@ public class ReactViewPagerManager extends ViewGroupManager<ReactViewPager> {
   @Override
   public void addView(ReactViewPager parent, View child, int index) {
     parent.addViewToAdapter(child, index);
+  }
+
+  @Override
+  protected void onAfterUpdateTransaction(ReactViewPager view) {
+    super.onAfterUpdateTransaction(view);
+    view.maybeSetPage();
   }
 }
