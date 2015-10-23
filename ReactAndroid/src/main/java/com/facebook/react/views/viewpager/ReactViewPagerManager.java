@@ -38,7 +38,12 @@ public class ReactViewPagerManager extends ViewGroupManager<ReactViewPager> {
   @ReactProp(name = "selectedPage")
   public void setSelectedPage(ReactViewPager view, int page) {
     // TODO(8496821): Handle selectedPage property cleanup correctly, now defaults to 0
-    view.setCurrentItemFromJs(page);
+    view.setCurrentItemFromJs(page, true);
+  }
+
+  @ReactProp(name = "selectedPageWithoutAnimation")
+  public void setSelectedPageWithoutAnimation(ReactViewPager view, int page) {
+    view.setCurrentItemFromJs(page, false);
   }
 
   @Override

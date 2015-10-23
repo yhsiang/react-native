@@ -18,6 +18,7 @@ var VIEWPAGER_REF = 'viewPager';
 
 var ViewPagerValidAttributes = {
   selectedPage: true,
+  selectedPageWithoutAnimation: true,
 };
 
 /**
@@ -156,12 +157,18 @@ var ViewPagerAndroid = React.createClass({
       selectedPage,
     });
   },
+  setPageWithoutAnimation: function(selectedPageWithoutAnimation) {
+    this.setState({
+      selectedPageWithoutAnimation,
+    });
+  },
   render: function() {
     return (
       <NativeAndroidViewPager
         ref={VIEWPAGER_REF}
         style={this.props.style}
         selectedPage={this.state.selectedPage}
+        selectedPageWithoutAnimation={this.state.selectedPageWithoutAnimation}
         onPageScroll={this._onPageScroll}
         onPageSelected={this._onPageSelected}
         children={this._childrenWithOverridenStyle()}

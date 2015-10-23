@@ -149,9 +149,9 @@ import com.facebook.react.uimanager.events.NativeGestureUtil;
     return getAdapter().getViewAt(index);
   }
 
-  /*package*/ void setCurrentItemFromJs(int item) {
+  /* package */ void setCurrentItemFromJs(int item, boolean animated) {
     mIsCurrentItemFromJs = true;
-    setCurrentItem(item);
+    setCurrentItem(item, animated);
     mIsCurrentItemFromJs = false;
   }
 }
