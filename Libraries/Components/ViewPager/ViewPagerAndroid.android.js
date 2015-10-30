@@ -18,7 +18,7 @@ var VIEWPAGER_REF = 'viewPager';
 
 var ViewPagerValidAttributes = {
   selectedPage: true,
-  animatePageTransition: true,
+  selectedPageWithoutAnimation: true,
 };
 
 /**
@@ -152,13 +152,11 @@ var ViewPagerAndroid = React.createClass({
   setPage: function(selectedPage) {
     this.setState({
       selectedPage,
-      animatePageTransition: true,
     });
   },
-  setPageWithoutAnimation: function(selectedPage) {
+  setPageWithoutAnimation: function(selectedPageWithoutAnimation) {
     this.setState({
-      selectedPage,
-      animatePageTransition: false,
+      selectedPageWithoutAnimation,
     });
   },
   render: function() {
@@ -167,7 +165,7 @@ var ViewPagerAndroid = React.createClass({
         ref={VIEWPAGER_REF}
         style={this.props.style}
         selectedPage={this.state.selectedPage}
-        animatePageTransition={this.state.animatePageTransition}
+        selectedPageWithoutAnimation={this.state.selectedPageWithoutAnimation}
         onPageScroll={this._onPageScroll}
         onPageSelected={this._onPageSelected}
         children={this._childrenWithOverridenStyle()}
