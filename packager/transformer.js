@@ -30,6 +30,7 @@ function transform(src, filename, options) {
   const extraConfig = {
     filename,
     sourceFileName: filename,
+    babelrc: false,
   };
 
   const config = Object.assign({}, babelRC, extraConfig);
