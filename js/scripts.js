@@ -36,4 +36,7 @@
     modal.classList.remove('modal-open');
   }
 
+  if (window.location.href.match('/react-native/index.html').length > 0) {
+    window.location = 'http://exponentjs.github.io/react-native/docs/tutorial.html';
+  }
 }());
