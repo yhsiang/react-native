@@ -109,6 +109,7 @@ class Bundle {
     }
 
     this._source = _.pluck(this._modules, 'code').join('\n');
+
     return this._source;
   }
 
@@ -172,7 +173,7 @@ class Bundle {
     let source = this._getSource(dev);
     let map = this.getSourceMap();
 
-    if (!dev) {
+    if (!dev && false) {
       const wpoActivity = Activity.startEvent('Whole Program Optimisations');
       const wpoResult = require('babel-core').transform(source, {
         retainLines: true,
