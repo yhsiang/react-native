@@ -148,7 +148,7 @@ class Bundle extends BundleBase {
     let source = this.getSource();
     let map = this.getSourceMap();
 
-    if (!dev) {
+    if (!dev && false) {
       const wpoActivity = Activity.startEvent('Whole Program Optimisations');
       const wpoResult = require('babel-core').transform(source, {
         retainLines: true,
