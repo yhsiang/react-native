@@ -11,8 +11,10 @@ package com.facebook.react.modules.core;
 
 import javax.annotation.Nullable;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.PriorityQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import android.util.SparseArray;
@@ -49,7 +51,17 @@ public final class Timing extends ReactContextBaseJavaModule implements Lifecycl
     }
   }
 
-  private class FrameCallback implements Choreographer.FrameCallback {
+  private static class IdleCallback {
+
+    private final int mCallbackID;
+
+    private IdleCallback(int callbackID) {
+      mCallbackID = callbackID;
+      // Will have timeout
+    }
+  }
+
+  private class TimerFrameCallback implements Choreographer.FrameCallback {
 
     /**
      * Calls all timers that have expired since the last time this frame callback was called.
@@ -87,14 +99,71 @@ public final class Timing extends ReactContextBaseJavaModule implements Lifecycl
     }
   }
 
+  private class IdleFrameCallback implements Choreographer.FrameCallback {
+
+    /**
+     * Calls all idle frame callbacks if greater than some threshold of time
+     * remaining
+     */
+    @Override
+    public void doFrame(long frameTimeNanos) {
+      if (isPaused.get()) {
+        return;
+      }
+
+      if (mIdleCallbacks.size() > 0) {
+        long frameTimeMillis = frameTimeNanos / 1000000;
+        long timeSinceBoot = android.os.SystemClock.uptimeMillis();
+        long frameTimeElapsed = timeSinceBoot - frameTimeMillis;
+        long time = System.currentTimeMillis();
+        long absoluteFrameStartTime = time - frameTimeElapsed;
+
+        long frameTimeRemaining = Math.max(0, 17 - frameTimeElapsed);
+
+        // Arbitrary threshold: 12ms remaining in frame
+        if (frameTimeRemaining >= 12) {
+          WritableArray idleCallbacksToFire = null;
+          ArrayList<IdleCallback> idleCallbacksToRemove = null;
+          synchronized (mIdleCallbackGuard) {
+            for (IdleCallback idleCallback : mIdleCallbacks) {
+              if (idleCallbacksToFire == null && idleCallbacksToRemove == null) {
+                idleCallbacksToFire = Arguments.createArray();
+                idleCallbacksToRemove = new ArrayList<IdleCallback>();
+              }
+
+              if (idleCallbacksToFire.size() < 5) {
+                idleCallbacksToFire.pushInt(idleCallback.mCallbackID);
+                idleCallbacksToRemove.add(idleCallback);
+              }
+            }
+            mIdleCallbacks.removeAll(idleCallbacksToRemove);
+          }
+
+          if (idleCallbacksToFire != null) {
+            Assertions.assertNotNull(mJSTimersModule).
+                callIdleCallbacks(idleCallbacksToFire, absoluteFrameStartTime);
+          }
+        }
+      }
+
+      Assertions.assertNotNull(mChoreographer).postFrameCallback(this);
+    }
+  }
+
   private final Object mTimerGuard = new Object();
+  private final Object mIdleCallbackGuard = new Object();
   private final PriorityQueue<Timer> mTimers;
   private final SparseArray<Timer> mTimerIdsToTimers;
+  private final ArrayList<IdleCallback> mIdleCallbacks;
+  private final SparseArray<IdleCallback> mIdleCallbackIdsToIdleCallbacks;
   private final AtomicBoolean isPaused = new AtomicBoolean(true);
-  private final FrameCallback mFrameCallback = new FrameCallback();
+  private final TimerFrameCallback mTimerFrameCallback = new TimerFrameCallback();
+  private final IdleFrameCallback mIdleFrameCallback = new IdleFrameCallback();
   private @Nullable ReactChoreographer mReactChoreographer;
+  private @Nullable Choreographer mChoreographer;
   private @Nullable JSTimersExecution mJSTimersModule;
   private boolean mFrameCallbackPosted = false;
+
 
   public Timing(ReactApplicationContext reactContext) {
     super(reactContext);
@@ -115,12 +184,15 @@ public final class Timing extends ReactContextBaseJavaModule implements Lifecycl
           }
         });
     mTimerIdsToTimers = new SparseArray<Timer>();
+    mIdleCallbacks = new ArrayList<IdleCallback>();
+    mIdleCallbackIdsToIdleCallbacks = new SparseArray<IdleCallback>();
   }
 
   @Override
   public void initialize() {
     // Safe to acquire choreographer here, as initialize() is invoked from UI thread.
     mReactChoreographer = ReactChoreographer.getInstance();
+    mChoreographer = Choreographer.getInstance();
     mJSTimersModule = getReactApplicationContext().getCatalystInstance()
         .getJSModule(JSTimersExecution.class);
     getReactApplicationContext().addLifecycleEventListener(this);
@@ -155,7 +227,9 @@ public final class Timing extends ReactContextBaseJavaModule implements Lifecycl
     if (!mFrameCallbackPosted) {
       Assertions.assertNotNull(mReactChoreographer).postFrameCallback(
           ReactChoreographer.CallbackType.TIMERS_EVENTS,
-          mFrameCallback);
+          mTimerFrameCallback);
+      Assertions.assertNotNull(mChoreographer).postFrameCallback(
+          mIdleFrameCallback);
       mFrameCallbackPosted = true;
     }
   }
@@ -164,14 +238,16 @@ public final class Timing extends ReactContextBaseJavaModule implements Lifecycl
     if (mFrameCallbackPosted) {
       Assertions.assertNotNull(mReactChoreographer).removeFrameCallback(
           ReactChoreographer.CallbackType.TIMERS_EVENTS,
-          mFrameCallback);
+          mTimerFrameCallback);
+      Assertions.assertNotNull(mChoreographer).removeFrameCallback(
+          mIdleFrameCallback);
       mFrameCallbackPosted = false;
     }
   }
 
   @Override
   public String getName() {
-    return "RKTiming";
+    return "RCTTiming";
   }
 
   @ReactMethod
@@ -201,6 +277,16 @@ public final class Timing extends ReactContextBaseJavaModule implements Lifecycl
         mTimerIdsToTimers.remove(timerId);
         mTimers.remove(timer);
       }
+    }
+  }
+
+  @ReactMethod
+  public void createIdleCallback(
+      final int callbackID) {
+    IdleCallback idleCallback = new IdleCallback(callbackID);
+    synchronized (mIdleCallbackGuard) {
+      mIdleCallbacks.add(idleCallback);
+      mIdleCallbackIdsToIdleCallbacks.put(callbackID, idleCallback);
     }
   }
 }
