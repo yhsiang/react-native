@@ -15,4 +15,5 @@ import com.facebook.react.bridge.WritableArray;
 public interface JSTimersExecution extends JavaScriptModule {
 
   public void callTimers(WritableArray timerIDs);
+  public void callIdleCallbacks(WritableArray callbackIDs, double frameTime);
 }

@@ -116,6 +116,8 @@ function setUpTimers() {
     /*requestAnimationFrame() { [native code] };*/  // Trick scroller library
     return JSTimers.requestAnimationFrame(cb);      // into thinking it's native
   };
+  GLOBAL.requestIdleCallback = JSTimers.requestIdleCallback;
+  GLOBAL.cancelIdleCallback = JSTimers.cancelIdleCallback;
 }
 
 function setUpAlert() {
