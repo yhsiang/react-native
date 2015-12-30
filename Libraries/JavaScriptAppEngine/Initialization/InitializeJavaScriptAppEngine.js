@@ -160,6 +160,8 @@ function setUpTimers() {
   defineLazyTimer('clearImmediate');
   defineLazyTimer('requestAnimationFrame');
   defineLazyTimer('cancelAnimationFrame');
+  defineLazyTimer('requestIdleCallback');
+  defineLazyTimer('cancelIdleCallback');
 }
 
 function setUpAlert() {
