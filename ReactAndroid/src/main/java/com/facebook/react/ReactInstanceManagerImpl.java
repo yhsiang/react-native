@@ -74,8 +74,8 @@ import com.facebook.systrace.Systrace;
 import static com.facebook.react.bridge.ReactMarkerConstants.*;
 
 /**
- * This class is managing instances of {@link CatalystInstance}. It expose a way to configure
- * catalyst instance using {@link ReactPackage} and keeps track of the lifecycle of that
+ * This class manages instances of {@link CatalystInstance}. It exposes a way to configure
+ * catalyst instances using {@link ReactPackage} and keeps track of the lifecycle of that
  * instance. It also sets up connection between the instance and developers support functionality
  * of the framework.
  *
