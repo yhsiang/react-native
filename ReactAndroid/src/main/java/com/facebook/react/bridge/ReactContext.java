@@ -25,7 +25,7 @@ import com.facebook.react.bridge.queue.ReactQueueConfiguration;
 import com.facebook.react.bridge.queue.MessageQueueThread;
 
 /**
- * Abstract ContextWrapper for Android applicaiton or activity {@link Context} and
+ * Abstract ContextWrapper for Android application or activity {@link Context} and
  * {@link CatalystInstance}
  */
 public class ReactContext extends ContextWrapper {
