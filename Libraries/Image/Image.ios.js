@@ -27,6 +27,7 @@ var invariant = require('invariant');
 var requireNativeComponent = require('requireNativeComponent');
 var resolveAssetSource = require('resolveAssetSource');
 var warning = require('warning');
+var Networking = NativeModules.Networking;
 
 var {
   ImageViewManager,
@@ -176,7 +177,11 @@ var Image = React.createClass({
       ImageViewManager.getSize(uri, success, failure || function() {
         console.warn('Failed to get size for image: ' + uri);
       });
-    }
+    },
+    /**
+     * Prefetch image for later use. Download remote image to the disk cache.
+     */
+    prefetch: (url) => { Networking .prefetchImage(url); },
   },
 
   mixins: [NativeMethodsMixin],
@@ -213,7 +218,7 @@ var Image = React.createClass({
     if (this.context.isInAParentText) {
       RawImage = RCTVirtualImage;
       if (!width || !height) {
-        console.warn('You must specify a width and height for the image %s', uri); 
+        console.warn('You must specify a width and height for the image %s', uri);
       }
     }
 
