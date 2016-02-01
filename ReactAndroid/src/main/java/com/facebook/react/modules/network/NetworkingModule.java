@@ -11,12 +11,19 @@ package com.facebook.react.modules.network;
 
 import javax.annotation.Nullable;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 
 import java.util.concurrent.TimeUnit;
 
+import android.net.Uri;
+import com.facebook.common.logging.FLog;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.core.ImagePipeline;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.GuardedAsyncTask;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -26,6 +33,7 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.common.ReactConstants;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.stetho.okhttp.StethoInterceptor;
 
@@ -38,6 +46,8 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
+import okio.BufferedSink;
+import okio.Okio;
 
 import static java.lang.Math.min;
 
@@ -427,5 +437,26 @@ public final class NetworkingModule extends ReactContextBaseJavaModule {
   private DeviceEventManagerModule.RCTDeviceEventEmitter getEventEmitter() {
     return getReactApplicationContext()
         .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
+  }
+
+  /**
+   * Prefetch image to the fresco image disk cache
+   */
+  @ReactMethod
+  public void prefetchImage(String url) {
+    Uri uri = null;
+    try {
+      if (url != null && !url.isEmpty()) {
+        uri = Uri.parse(url);
+      }
+    } catch (Exception e){
+      //ignore malformed url
+    }
+    if (uri == null) {
+      FLog.w(ReactConstants.TAG,"Invalid prefetch image url.");
+      return;
+    }
+    ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri).build();
+    Fresco.getImagePipeline().prefetchToDiskCache(request, this);
   }
 }
