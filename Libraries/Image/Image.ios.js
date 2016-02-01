@@ -15,6 +15,7 @@ var EdgeInsetsPropType = require('EdgeInsetsPropType');
 var ImageResizeMode = require('ImageResizeMode');
 var ImageStylePropTypes = require('ImageStylePropTypes');
 var NativeMethodsMixin = require('NativeMethodsMixin');
+var NativeModules = require('NativeModules');
 var PropTypes = require('ReactPropTypes');
 var React = require('React');
 var ReactNativeViewAttributes = require('ReactNativeViewAttributes');
@@ -27,6 +28,7 @@ var invariant = require('fbjs/lib/invariant');
 var requireNativeComponent = require('requireNativeComponent');
 var resolveAssetSource = require('resolveAssetSource');
 var warning = require('fbjs/lib/warning');
+var Networking = NativeModules.Networking;
 
 var {
   ImageViewManager,
@@ -181,7 +183,11 @@ var Image = React.createClass({
       ImageViewManager.getSize(uri, success, failure || function() {
         console.warn('Failed to get size for image: ' + uri);
       });
-    }
+    },
+    /**
+     * Prefetch image for later use. Download remote image to the disk cache.
+     */
+    prefetch: (url) => { Networking.prefetchImage(url); },
   },
 
   mixins: [NativeMethodsMixin],
