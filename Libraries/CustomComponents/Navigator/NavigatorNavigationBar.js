@@ -211,7 +211,9 @@ var NavigatorNavigationBar = React.createClass({
         ref={(ref) => {
           this._components[componentName] = this._components[componentName].set(route, ref);
         }}
-        pointerEvents="box-none"
+        pointerEvents={
+          route === this.props.navigator.navigationContext.currentRoute ? 'box-none' : 'none'
+        }
         style={initialStage[componentName]}>
         {content}
       </View>
@@ -219,6 +221,19 @@ var NavigatorNavigationBar = React.createClass({
 
     this._descriptors[componentName] = this._descriptors[componentName].set(route, rendered);
     return rendered;
+  },
+
+  updatePointerEvents: function(fromIndex, toIndex) {
+    var routeFrom = this.props.navState.routeStack[fromIndex];
+    var routeTo = this.props.navState.routeStack[toIndex];
+
+    COMPONENT_NAMES.forEach(function (componentName) {
+      var map = this._components[componentName];
+      var componentFrom = map.get(routeFrom);
+      var componentTo = map.get(routeTo);
+      componentFrom && componentFrom.setNativeProps({ pointerEvents:'none' });
+      componentTo && componentTo.setNativeProps({ pointerEvents:'box-none' });
+    }, this);
   },
 
 });
