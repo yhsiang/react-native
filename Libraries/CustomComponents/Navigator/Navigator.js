@@ -463,6 +463,8 @@ var Navigator = React.createClass({
     if (AnimationsDebugModule) {
       AnimationsDebugModule.stopRecordingFps(Date.now());
     }
+    this._navBar && this._navBar.updatePointerEvents &&
+      this._navBar.updatePointerEvents(this.state.transitionFromIndex, this.state.presentedIndex);
     this.state.transitionFromIndex = null;
     this.spring.setCurrentValue(0).setAtRest();
     this._hideScenes();
