@@ -14,6 +14,7 @@
 var Easing = require('Easing');
 var InteractionManager = require('InteractionManager');
 var Interpolation = require('Interpolation');
+var Platform = require('Platform');
 var React = require('React');
 var Set = require('Set');
 var SpringConfig = require('SpringConfig');
@@ -691,7 +692,7 @@ class AnimatedValue extends AnimatedWithChildren {
 
   constructor(value: number, isNative = false) {
     super();
-    this.__isNative = isNative;
+    this.__isNative = Platform.OS === 'android' && isNative;
     this._startingValue = this._value = value;
     this._offset = 0;
     this._animation = null;
