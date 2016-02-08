@@ -64,7 +64,7 @@ var ImageViewAttributes = merge(ReactNativeViewAttributes.UIView, {
 var Image = React.createClass({
   propTypes: {
     ...View.propTypes,
-    style: StyleSheetPropType(ImageStylePropTypes), 
+    style: StyleSheetPropType(ImageStylePropTypes),
    /**
      * `uri` is a string representing the resource identifier for the image, which
      * could be an http address, a local file path, or a static image
@@ -114,7 +114,7 @@ var Image = React.createClass({
     /**
      * Prefetch image for later use. Download remote image to the disk cache.
      */
-    prefetch: (url) => { Networking .prefetchImage(url); },
+    prefetchAsync: (url) => Networking.prefetchImageAsync(url),
   },
 
   mixins: [NativeMethodsMixin],
