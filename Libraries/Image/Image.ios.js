@@ -182,7 +182,7 @@ var Image = React.createClass({
     /**
      * Prefetch image for later use. Download remote image to the disk cache.
      */
-    prefetch: (url) => { Networking.prefetchImage(url); },
+    prefetchAsync: (url) => Networking.prefetchImageAsync(url),
   },
 
   mixins: [NativeMethodsMixin],
