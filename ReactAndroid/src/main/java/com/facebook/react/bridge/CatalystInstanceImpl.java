@@ -10,6 +10,7 @@
 package com.facebook.react.bridge;
 
 import javax.annotation.Nullable;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -442,6 +443,15 @@ public class CatalystInstanceImpl implements CatalystInstance {
       }
 
       decrementPendingJSCalls();
+    }
+
+    @Override
+    public void onBatchStarted() {
+      mReactQueueConfiguration.getNativeModulesQueueThread().assertIsOnThread();
+
+      if (!mDestroyed) {
+        mJavaRegistry.onBatchStarted();
+      }
     }
 
     @Override
