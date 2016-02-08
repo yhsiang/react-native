@@ -450,9 +450,20 @@ RCT_EXPORT_METHOD(cancelRequest:(nonnull NSNumber *)requestID)
   [_tasksByRequestID removeObjectForKey:requestID];
 }
 
-RCT_EXPORT_METHOD(prefetchImage:(NSString *)url)
+NSString *const RCTErrorUnableToPrefetchImage = @"E_UNABLE_TO_PREFETCH_IMAGE";
+
+RCT_EXPORT_METHOD(prefetchImageAsync:(NSString *)url
+                             resolve:(RCTPromiseResolveBlock)resolve
+                              reject:(RCTPromiseRejectBlock)reject)
 {
-  [_bridge.imageLoader loadImageWithTag:url callback:^(NSError *error, UIImage *image) {}];
+  [_bridge.imageLoader loadImageWithTag:url callback:^(NSError *error, UIImage *image) {
+    if (error) {
+      reject(RCTErrorUnableToPrefetchImage, nil, error);
+      return;
+    }
+
+    resolve(@YES);
+  }];
 }
 
 @end

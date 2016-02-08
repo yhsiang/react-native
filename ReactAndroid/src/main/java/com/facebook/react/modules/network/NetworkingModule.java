@@ -20,7 +20,12 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import android.net.Uri;
+
+import com.facebook.common.executors.CallerThreadExecutor;
 import com.facebook.common.logging.FLog;
+import com.facebook.datasource.BaseDataSubscriber;
+import com.facebook.datasource.DataSource;
+import com.facebook.datasource.DataSubscriber;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.request.ImageRequest;
@@ -28,6 +33,7 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ExecutorToken;
 import com.facebook.react.bridge.GuardedAsyncTask;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -507,7 +513,10 @@ public final class NetworkingModule extends ReactContextBaseJavaModule {
    * Prefetch image to the fresco image disk cache
    */
   @ReactMethod
-  public void prefetchImage(String url) {
+  public void prefetchImageAsync(
+    ExecutorToken ExecutorToken,
+    String url,
+    final Promise promise) {
     Uri uri = null;
     try {
       if (url != null && !url.isEmpty()) {
@@ -521,6 +530,25 @@ public final class NetworkingModule extends ReactContextBaseJavaModule {
       return;
     }
     ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri).build();
-    Fresco.getImagePipeline().prefetchToDiskCache(request, this);
+
+    final DataSource<Void> prefetchDS = Fresco.getImagePipeline().prefetchToDiskCache(request, this);
+    // Subscribe to the prefetch completion
+    DataSubscriber<Void> prefetchSubscriber = new BaseDataSubscriber<Void>() {
+      @Override
+      protected void onNewResultImpl(DataSource<Void> dataSource) {
+        if (!dataSource.isFinished()) {
+          return;
+        }
+        promise.resolve(true);
+        prefetchDS.close();
+      }
+
+      @Override
+      protected void onFailureImpl(DataSource<Void> dataSource) {
+        promise.reject(dataSource.getFailureCause());
+        prefetchDS.close();
+      }
+    };
+    prefetchDS.subscribe(prefetchSubscriber, CallerThreadExecutor.getInstance());
   }
 }
