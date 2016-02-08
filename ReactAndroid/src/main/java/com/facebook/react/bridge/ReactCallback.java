@@ -21,5 +21,8 @@ public interface ReactCallback {
   void onBatchComplete();
 
   @DoNotStrip
+  void onBatchStarted();
+
+  @DoNotStrip
   void onExecutorUnregistered(ExecutorToken executorToken);
 }
