@@ -625,6 +625,8 @@ public class UIImplementation {
   }
 
   public void onHostDestroy() {
+    mAnimatedNodesManager.pauseFrameCallback();
+    mOperationsQueue.pauseFrameCallback();
   }
 
   public void setViewHierarchyUpdateDebugListener(
