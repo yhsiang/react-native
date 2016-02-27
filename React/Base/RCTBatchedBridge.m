@@ -257,6 +257,7 @@ RCT_EXTERN NSArray<Class> *RCTGetModuleClasses(void);
 
   // Register passed-in module instances
   NSMutableDictionary *preregisteredModules = [NSMutableDictionary new];
+  NSMutableArray<Class> *preregisteredModuleClasses = [NSMutableArray new];
 
   NSArray<id<RCTBridgeModule>> *extraModules = nil;
   if (self.delegate) {
@@ -269,6 +270,7 @@ RCT_EXTERN NSArray<Class> *RCTGetModuleClasses(void);
 
   for (id<RCTBridgeModule> module in extraModules) {
     preregisteredModules[RCTBridgeModuleNameForClass([module class])] = module;
+    [preregisteredModuleClasses addObject:[module class]];
   }
 
   SEL setBridgeSelector = NSSelectorFromString(@"setBridge:");
@@ -277,7 +279,8 @@ RCT_EXTERN NSArray<Class> *RCTGetModuleClasses(void);
   // Set up moduleData and pre-initialize module instances
   NSMutableArray<RCTModuleData *> *moduleDataByID = [NSMutableArray new];
   NSMutableDictionary<NSString *, RCTModuleData *> *moduleDataByName = [NSMutableDictionary new];
-  for (Class moduleClass in RCTGetModuleClasses()) {
+  NSArray<Class> *moduleClasses = [RCTGetModuleClasses() arrayByAddingObjectsFromArray:preregisteredModuleClasses];
+  for (Class moduleClass in moduleClasses) {
     NSString *moduleName = RCTBridgeModuleNameForClass(moduleClass);
     id module = preregisteredModules[moduleName];
     if (!module) {
