@@ -20,7 +20,7 @@ var invariant = require('invariant');
 
 class StyleSheetValidation {
   static validateStyleProp(prop, style, caller) {
-    if (!__DEV__) {
+    if (!__DEV__ || !__STRICT__) {
       return;
     }
     if (allStylePropTypes[prop] === undefined) {

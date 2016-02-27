@@ -30,7 +30,7 @@
  * only be used in DEV.
  */
 function deepFreezeAndThrowOnMutationInDev(object: Object) {
-  if (__DEV__) {
+  if (__DEV__ && __STRICT__) {
     if (typeof object !== 'object' ||
         object === null ||
         Object.isFrozen(object) ||

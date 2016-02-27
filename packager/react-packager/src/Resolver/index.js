@@ -56,6 +56,10 @@ const getDependenciesValidateOpts = declareOpts({
     type: 'boolean',
     default: true,
   },
+  strict: {
+    type: 'boolean',
+    default: true,
+  },
   platform: {
     type: 'string',
     required: false,
@@ -139,9 +143,14 @@ class Resolver {
   getModuleSystemDependencies(options) {
     const opts = getDependenciesValidateOpts(options);
 
-    const prelude = opts.dev
-        ? path.join(__dirname, 'polyfills/prelude_dev.js')
-        : path.join(__dirname, 'polyfills/prelude.js');
+    let prelude;
+    if (opts.dev && opts.strict) {
+      prelude = path.join(__dirname, 'polyfills/prelude_dev_strict.js')
+    } else if (opts.dev && !opts.strict) {
+      prelude = path.join(__dirname, 'polyfills/prelude_dev.js')
+    } else {
+      prelude = path.join(__dirname, 'polyfills/prelude.js')
+    }
 
     const moduleSystem = opts.isUnbundle
         ? path.join(__dirname, 'polyfills/require-unbundle.js')

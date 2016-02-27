@@ -100,6 +100,10 @@ const bundleOpts = declareOpts({
     type: 'boolean',
     default: true,
   },
+  strict: {
+    type: 'boolean',
+    default: true,
+  },
   minify: {
     type: 'boolean',
     default: false,
@@ -143,6 +147,10 @@ const dependencyOpts = declareOpts({
     required: true,
   },
   dev: {
+    type: 'boolean',
+    default: true,
+  },
+  strict: {
     type: 'boolean',
     default: true,
   },
@@ -270,6 +278,7 @@ class Server {
       return this._bundler.getDependencies(
         opts.entryFile,
         opts.dev,
+        options.strict,
         opts.platform,
         opts.recursive,
       );
@@ -540,6 +549,7 @@ class Server {
       sourceMapUrl: url.format(sourceMapUrlObj),
       entryFile: entryFile,
       dev: this._getBoolOptionFromQuery(urlObj.query, 'dev', true),
+      strict: this._getBoolOptionFromQuery(urlObj.query, 'strict', true),
       minify: this._getBoolOptionFromQuery(urlObj.query, 'minify'),
       hot: this._getBoolOptionFromQuery(urlObj.query, 'hot', false),
       runModule: this._getBoolOptionFromQuery(urlObj.query, 'runModule', true),

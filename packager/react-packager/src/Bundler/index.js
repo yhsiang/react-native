@@ -169,9 +169,9 @@ class Bundler {
   }
 
   bundle(options) {
-    const {dev, isUnbundle, platform} = options;
+    const {dev, strict, isUnbundle, platform} = options;
     const moduleSystemDeps =
-      this._resolver.getModuleSystemDependencies({dev, isUnbundle, platform});
+      this._resolver.getModuleSystemDependencies({dev, strict, isUnbundle, platform});
     return this._bundle({
       bundle: new Bundle(options.sourceMapUrl),
       moduleSystemDeps,
@@ -243,6 +243,7 @@ class Bundler {
     runModule: runMainModule,
     runBeforeMainModule,
     dev: isDev,
+    strict: isStrict,
     platform,
     moduleSystemDeps = [],
     hot,
@@ -277,6 +278,7 @@ class Bundler {
     return this._buildBundle({
       entryFile,
       isDev,
+      isStrict,
       platform,
       bundle,
       hot,
@@ -292,6 +294,7 @@ class Bundler {
     runBeforeMainModule,
     sourceMapUrl,
     dev: isDev,
+    strict: isStrict,
     platform,
   }) {
     const onModuleTransformed = ({module, transformed, response, bundle}) => {
@@ -316,6 +319,7 @@ class Bundler {
     return this._buildBundle({
       entryFile,
       isDev,
+      isStrict,
       platform,
       onModuleTransformed,
       finalizeBundle,
@@ -326,6 +330,7 @@ class Bundler {
   _buildBundle({
     entryFile,
     isDev,
+    isStrict,
     platform,
     bundle,
     hot,
@@ -336,7 +341,7 @@ class Bundler {
   }) {
     const findEventId = Activity.startEvent('find dependencies');
     if (!resolutionResponse) {
-      resolutionResponse = this.getDependencies(entryFile, isDev, platform);
+      resolutionResponse = this.getDependencies(entryFile, isDev, isStrict, platform);
     }
 
     return Promise.resolve(resolutionResponse).then(response => {
@@ -360,6 +365,7 @@ class Bundler {
             module,
             platform,
             dev: isDev,
+            strict: isStrict,
             hot
           }).then(transformed => {
             bar.tick();
@@ -397,11 +403,12 @@ class Bundler {
     return this._resolver.getModuleForPath(entryFile);
   }
 
-  getDependencies(main, isDev, platform, recursive = true) {
+  getDependencies(main, isDev, isStrict, platform, recursive = true) {
     return this._resolver.getDependencies(
       main,
       {
         dev: isDev,
+        strict: isStrict,
         platform,
         recursive,
       },
@@ -446,6 +453,7 @@ class Bundler {
     mainModuleName,
     platform = null,
     dev = true,
+    strict = true,
     hot = false,
   }) {
     if (module.isAsset_DEPRECATED()) {
@@ -460,6 +468,7 @@ class Bundler {
           bundleEntry: mainModuleName,
           platform: platform,
           dev: dev,
+          strict: strict,
           modulePath: module.path,
         },
         {hot},
@@ -564,6 +573,7 @@ class Bundler {
             bundler: this,
             platform: options.platform,
             dev: options.dev,
+            strict: options.strict,
           },
           config,
         ))
