@@ -160,9 +160,9 @@ class Bundler {
   }
 
   bundle(options) {
-    const {dev, minify, unbundle} = options;
+    const {dev, strict, minify, unbundle} = options;
     const moduleSystemDeps =
-      this._resolver.getModuleSystemDependencies({dev, unbundle});
+      this._resolver.getModuleSystemDependencies({dev, strict, unbundle});
     return this._bundle({
       bundle: new Bundle({minify, sourceMapUrl: options.sourceMapUrl}),
       moduleSystemDeps,
@@ -234,6 +234,7 @@ class Bundler {
     runModule: runMainModule,
     runBeforeMainModule,
     dev,
+    strict,
     minify,
     platform,
     moduleSystemDeps = [],
@@ -290,6 +291,7 @@ class Bundler {
     return this._buildBundle({
       entryFile,
       dev,
+      strict,
       minify,
       platform,
       bundle,
@@ -307,6 +309,7 @@ class Bundler {
     runBeforeMainModule,
     sourceMapUrl,
     dev,
+    strict,
     platform,
   }) {
     const onModuleTransformed = ({module, transformed, response, bundle}) => {
@@ -331,6 +334,7 @@ class Bundler {
     return this._buildBundle({
       entryFile,
       dev,
+      strict,
       platform,
       onModuleTransformed,
       finalizeBundle,
@@ -342,6 +346,7 @@ class Bundler {
   _buildBundle({
     entryFile,
     dev,
+    strict,
     minify,
     platform,
     bundle,
@@ -371,6 +376,7 @@ class Bundler {
       resolutionResponse = this.getDependencies({
         entryFile,
         dev,
+        strict,
         platform,
         hot,
         onProgress,
@@ -387,7 +393,7 @@ class Bundler {
       let entryFilePath;
       if (response.dependencies.length > 0) {
         const numModuleSystemDependencies =
-          this._resolver.getModuleSystemDependencies({dev, unbundle}).length;
+          this._resolver.getModuleSystemDependencies({dev, strict, unbundle}).length;
 
         entryFilePath = response.dependencies[
           (response.numPrependedDependencies || 0) +
@@ -441,6 +447,7 @@ class Bundler {
     entryFile,
     platform,
     dev = true,
+    strict = true,
     minify = !dev,
     hot = false,
     recursive = true,
@@ -451,6 +458,7 @@ class Bundler {
       entryFile,
       {
         dev,
+        strict,
         platform,
         hot,
         generateSourceMaps,
@@ -460,21 +468,22 @@ class Bundler {
       const transformOptions = {
         minify,
         dev,
+        strict,
         platform,
         transform: transformSpecificOptions,
       };
 
       return this._resolver.getDependencies(
         entryFile,
-        {dev, platform, recursive},
+        {dev, strict, platform, recursive},
         transformOptions,
         onProgress,
       );
     });
   }
 
-  getOrderedDependencyPaths({ entryFile, dev, platform }) {
-    return this.getDependencies({entryFile, dev, platform}).then(
+  getOrderedDependencyPaths({ entryFile, dev, strict, platform }) {
+    return this.getDependencies({entryFile, dev, strict, platform}).then(
       ({ dependencies }) => {
         const ret = [];
         const promises = [];

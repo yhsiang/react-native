@@ -209,11 +209,13 @@ describe('Bundler', function() {
     return bundler.getDependencies({entryFile, recursive: true}).then(() =>
       expect(getDependencies).toBeCalledWith(
         '/root/foo.js',
-        { dev: true, recursive: true },
+        { dev: true, strict: true, recursive: true },
         { minify: false,
+          strict: true,
           dev: true,
           transform: {
             dev: true,
+            strict: true,
             hot: false,
             generateSourceMaps: false,
             projectRoots,

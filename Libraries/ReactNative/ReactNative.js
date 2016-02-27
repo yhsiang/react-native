@@ -37,7 +37,7 @@ var createElement = ReactElement.createElement;
 var createFactory = ReactElement.createFactory;
 var cloneElement = ReactElement.cloneElement;
 
-if (__DEV__) {
+if (__DEV__ && __STRICT__) {
   createElement = ReactElementValidator.createElement;
   createFactory = ReactElementValidator.createFactory;
   cloneElement = ReactElementValidator.cloneElement;
@@ -56,7 +56,7 @@ var resolveDefaultProps = function(element) {
 
 // Experimental optimized element creation
 var augmentElement = function(element: ReactElement): ReactElement {
-  if (__DEV__) {
+  if (__DEV__ && __STRICT__) {
     invariant(
       false,
       'This optimized path should never be used in DEV mode because ' +
