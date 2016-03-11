@@ -69,7 +69,7 @@ var TouchableOpacity = React.createClass({
   getInitialState: function() {
     return {
       ...this.touchableGetInitialState(),
-      anim: new Animated.Value(1),
+      anim: new Animated.Value(1, true),
     };
   },
 

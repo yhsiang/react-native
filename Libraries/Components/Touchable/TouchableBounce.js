@@ -67,7 +67,7 @@ var TouchableBounce = React.createClass({
   getInitialState: function(): State {
     return {
       ...this.touchableGetInitialState(),
-      scale: new Animated.Value(1),
+      scale: new Animated.Value(1, true),
     };
   },
 
