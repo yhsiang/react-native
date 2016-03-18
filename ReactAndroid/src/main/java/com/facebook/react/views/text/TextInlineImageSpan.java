@@ -146,6 +146,9 @@ public class TextInlineImageSpan extends ReplacementSpan {
 
     int transY = bottom - mDrawable.getBounds().bottom;
 
+    // Align to baseline by default
+    transY -= paint.getFontMetricsInt().descent;
+
     canvas.translate(x, transY);
     mDrawable.draw(canvas);
     canvas.restore();
