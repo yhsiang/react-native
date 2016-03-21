@@ -448,6 +448,26 @@ exports.examples = [
             placeholder="color is supported too"
             placeholderTextColor="red"
           />
+          <TextInput
+            secureTextEntry={true}
+            style={[styles.singleLine, {fontFamily: 'sans-serif'}]}
+            placeholder="Also support custom fonts like Sans-Serif"
+          />
+          <TextInput
+            secureTextEntry={true}
+            style={[styles.singleLine, {fontFamily: 'sans-serif', fontWeight: 'bold'}]}
+            placeholder="Sans-Serif bold"
+          />
+          <TextInput
+            secureTextEntry={true}
+            style={[styles.singleLine, {fontFamily: 'sans-serif', fontStyle: 'italic'}]}
+            placeholder="Sans-Serif italic"
+          />
+          <TextInput
+            secureTextEntry={true}
+            style={[styles.singleLine, {fontFamily: 'serif'}]}
+            placeholder="Serif"
+          />
         </View>
       );
     }
