@@ -116,6 +116,8 @@ import java.util.Queue;
     final AnimationDriver animation;
     if ("frames".equals(type)) {
       animation = new FrameBasedAnimationDriver(animationConfig);
+    } else if ("spring".equals(type)) {
+      animation = new SpringAnimation(animationConfig);
     } else {
       throw new JSApplicationIllegalArgumentException("Unsupported animation type: " + type);
     }

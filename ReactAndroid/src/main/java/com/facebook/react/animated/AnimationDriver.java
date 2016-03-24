@@ -17,9 +17,9 @@ import com.facebook.react.bridge.Callback;
  */
 /*package*/ abstract class AnimationDriver {
 
-  boolean mHasFinished = false;
-  ValueAnimatedNode mAnimatedValue;
-  Callback mEndCallback;
+  /*package*/ boolean mHasFinished = false;
+  /*package*/ ValueAnimatedNode mAnimatedValue;
+  /*package*/ Callback mEndCallback;
 
   /**
    * This method gets called in the main animation loop with a frame time passed down from the
