@@ -97,6 +97,18 @@ function validateStyles(styles: Object): void {
   }
 }
 
+function validateInterpolation(config: Object): void {
+  var SUPPORTED_INTERPOLATION_PARAMS = {
+    inputRange: true,
+    outputRange: true,
+  };
+  for (var key in config) {
+    if (!SUPPORTED_INTERPOLATION_PARAMS.hasOwnProperty(key)) {
+      throw new Error(`Interpolation property '${key}' is not supported by native animated module`);
+    }
+  }
+}
+
 function generateNewNodeTag(): number {
   return __nativeAnimatedNodeTagCount++;
 }
@@ -113,6 +125,7 @@ module.exports = {
   API,
   validateProps,
   validateStyles,
+  validateInterpolation,
   generateNewNodeTag,
   generateNewAnimationTag,
   assertNativeAnimatedModule,
