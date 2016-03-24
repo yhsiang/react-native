@@ -44,6 +44,7 @@ void Bridge::loadApplicationUnbundle(
     std::unique_ptr<JSModulesUnbundle> unbundle,
     const std::string& startupCode,
     const std::string& sourceURL) {
+  m_hasNotifyBatchStart = false;
   runOnExecutorQueue(
       *m_mainExecutorToken,
       [holder=std::make_shared<std::unique_ptr<JSModulesUnbundle>>(std::move(unbundle)), startupCode, sourceURL]
@@ -65,6 +66,8 @@ void Bridge::callFunction(
       tracingName.c_str(),
       systraceCookie);
   #endif
+
+  m_hasNotifyBatchStart = false;
 
   #ifdef WITH_FBSYSTRACE
   runOnExecutorQueue(executorToken, [moduleId, methodId, arguments, tracingName, systraceCookie] (JSExecutor* executor) {
@@ -91,6 +94,8 @@ void Bridge::invokeCallback(ExecutorToken executorToken, const double callbackId
       "<callback>",
       systraceCookie);
   #endif
+
+  m_hasNotifyBatchStart = false;
 
   #ifdef WITH_FBSYSTRACE
   runOnExecutorQueue(executorToken, [callbackId, arguments, systraceCookie] (JSExecutor* executor) {
@@ -147,7 +152,9 @@ void Bridge::handleMemoryPressureCritical() {
 }
 
 void Bridge::callNativeModules(JSExecutor& executor, const std::string& callJSON, bool isEndOfBatch) {
-  m_callback->onCallNativeModules(getTokenForExecutor(executor), callJSON, isEndOfBatch);
+  bool isStartOfBatch = !m_hasNotifyBatchStart;
+  m_hasNotifyBatchStart = true;
+  m_callback->onCallNativeModules(getTokenForExecutor(executor), callJSON, isStartOfBatch, isEndOfBatch);
 }
 
 ExecutorToken Bridge::getMainExecutorToken() const {

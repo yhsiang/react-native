@@ -31,6 +31,7 @@ public:
   virtual void onCallNativeModules(
       ExecutorToken executorToken,
       const std::string& callJSON,
+      bool isStartOfBatch,
       bool isEndOfBatch) = 0;
 
   virtual void onExecutorUnregistered(ExecutorToken executorToken) = 0;
@@ -157,6 +158,8 @@ private:
   MessageQueueThread* getMessageQueueThread(const ExecutorToken& executorToken);
   JSExecutor* getExecutor(const ExecutorToken& executorToken);
   inline ExecutorToken getTokenForExecutor(JSExecutor& executor);
+
+  bool m_hasNotifyBatchStart;
 };
 
 } }
