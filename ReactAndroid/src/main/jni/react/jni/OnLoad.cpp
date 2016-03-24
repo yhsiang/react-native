@@ -569,6 +569,7 @@ namespace bridge {
 
 static jmethodID gCallbackMethod;
 static jmethodID gOnBatchCompleteMethod;
+static jmethodID gOnBatchStartedMethod;
 static jmethodID gOnExecutorUnregisteredMethod;
 static jmethodID gLogMarkerMethod;
 
@@ -608,6 +609,10 @@ static void makeJavaCall(JNIEnv* env, ExecutorToken executorToken, jobject callb
 
 static void signalBatchComplete(JNIEnv* env, jobject callback) {
   env->CallVoidMethod(callback, gOnBatchCompleteMethod);
+}
+
+static void signalBatchStarted(JNIEnv* env, jobject callback) {
+  env->CallVoidMethod(callback, gOnBatchStartedMethod);
 }
 
 class PlatformBridgeCallback : public BridgeCallback {
@@ -650,9 +655,13 @@ public:
   virtual void onCallNativeModules(
       ExecutorToken executorToken,
       const std::string& callJSON,
+      bool isStartOfBatch,
       bool isEndOfBatch) override {
-    executeCallbackOnCallbackQueueThread([executorToken, callJSON, isEndOfBatch] (ResolvedWeakReference& callback) {
+    executeCallbackOnCallbackQueueThread([executorToken, callJSON, isStartOfBatch, isEndOfBatch] (ResolvedWeakReference& callback) {
       JNIEnv* env = Environment::current();
+      if (isStartOfBatch) {
+        signalBatchStarted(env, callback);
+      }
       for (auto& call : react::parseMethodCalls(callJSON)) {
         makeJavaCall(env, executorToken, callback, call);
         if (env->ExceptionCheck()) {
@@ -999,6 +1008,7 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM* vm, void* reserved) {
     jclass callbackClass = env->FindClass("com/facebook/react/bridge/ReactCallback");
     bridge::gCallbackMethod = env->GetMethodID(callbackClass, "call", "(Lcom/facebook/react/bridge/ExecutorToken;IILcom/facebook/react/bridge/ReadableNativeArray;)V");
     bridge::gOnBatchCompleteMethod = env->GetMethodID(callbackClass, "onBatchComplete", "()V");
+    bridge::gOnBatchStartedMethod = env->GetMethodID(callbackClass, "onBatchStarted", "()V");
     bridge::gOnExecutorUnregisteredMethod = env->GetMethodID(callbackClass, "onExecutorUnregistered", "(Lcom/facebook/react/bridge/ExecutorToken;)V");
 
     jclass markerClass = env->FindClass("com/facebook/react/bridge/ReactMarker");
