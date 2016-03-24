@@ -19,6 +19,10 @@ class ValueAnimatedNode extends AnimatedNode {
 
   /*package*/ double mValue = Double.NaN;
 
+  ValueAnimatedNode() {
+    // empty constructor that can be used by subclasses
+  }
+
   ValueAnimatedNode(ReadableMap config) {
     mValue = config.getDouble("value");
   }

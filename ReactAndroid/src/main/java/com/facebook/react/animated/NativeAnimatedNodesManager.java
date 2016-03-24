@@ -9,6 +9,7 @@
 
 package com.facebook.react.animated;
 
+import android.support.annotation.Nullable;
 import android.util.SparseArray;
 
 import com.facebook.react.bridge.Arguments;
@@ -49,7 +50,7 @@ import java.util.Queue;
     mUIImplementation = uiImplementation;
   }
 
-  /*package*/ AnimatedNode getNodeById(int id) {
+  /*package*/ @Nullable AnimatedNode getNodeById(int id) {
     return mAnimatedNodes.get(id);
   }
 
@@ -71,6 +72,8 @@ import java.util.Queue;
       mUpdatedNodes.add(node);
     } else if ("props".equals(type)) {
       node = new PropsAnimatedNode(config, this);
+    } else if ("addition".equals(type)) {
+      node = new AdditionAnimatedNode(config, this);
     } else {
       throw new JSApplicationIllegalArgumentException("Unsupported node type: " + type);
     }
