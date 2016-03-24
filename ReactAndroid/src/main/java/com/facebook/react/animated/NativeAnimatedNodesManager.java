@@ -72,6 +72,8 @@ import java.util.Queue;
       mUpdatedNodes.add(node);
     } else if ("props".equals(type)) {
       node = new PropsAnimatedNode(config, this);
+    } else if ("transform".equals(type)) {
+      node = new TransformAnimatedNode(config, this);
     } else if ("interpolation".equals(type)) {
       node = new InterpolationAnimatedNode(config);
     } else if ("addition".equals(type)) {
