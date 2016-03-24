@@ -202,7 +202,7 @@ public abstract class BaseJavaModule implements NativeModule {
         } else if (argumentClass == Promise.class) {
           argumentExtractors[i] = ARGUMENT_EXTRACTOR_PROMISE;
           Assertions.assertCondition(
-              i == paramTypes.length - 1, "Promise must be used as last parameter only");
+              i == paramTypes.length - executorTokenOffset - 1, "Promise must be used as last parameter only");
           mType = METHOD_TYPE_REMOTE_ASYNC;
         } else if (argumentClass == ReadableMap.class) {
           argumentExtractors[i] = ARGUMENT_EXTRACTOR_MAP;
