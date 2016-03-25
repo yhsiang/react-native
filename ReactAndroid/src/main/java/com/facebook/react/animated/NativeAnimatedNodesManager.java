@@ -55,7 +55,7 @@ import java.util.Queue;
   }
 
   public boolean hasActiveAnimations() {
-    return !mActiveAnimations.isEmpty();
+    return !mActiveAnimations.isEmpty() || !mUpdatedNodes.isEmpty();
   }
 
   public void createAnimatedNode(int tag, ReadableMap config) {
