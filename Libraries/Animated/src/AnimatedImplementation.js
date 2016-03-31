@@ -792,12 +792,18 @@ class AnimatedValue extends AnimatedWithChildren {
     var previousAnimation = this._animation;
     this._animation && this._animation.stop();
     this._animation = animation;
+    this._updateValue(this._value);
     animation.start(
       this._value,
       (value) => {
         this._updateValue(value);
       },
       (result) => {
+        if (result.finished) {
+          this._updateValue(animation._toValue);
+        } else {
+          this._updateValue(this._value);
+        }
         this._animation = null;
         if (handle !== null) {
           InteractionManager.clearInteractionHandle(handle);
