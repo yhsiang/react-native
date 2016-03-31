@@ -1486,7 +1486,9 @@ class AnimatedProps extends Animated {
 
   __detach(): void {
     if (this.__isNative) {
-      NativeAPI.disconnectAnimatedNodeFromView(this.__getNativeTag(), this._nativeViewTag);
+      if (this._nativeViewTag) {
+        NativeAPI.disconnectAnimatedNodeFromView(this.__getNativeTag(), this._nativeViewTag);
+      }
     }
     for (var key in this._props) {
       var value = this._props[key];
