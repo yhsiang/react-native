@@ -87,12 +87,12 @@ class NavigationAnimatedView
     this._layout = {
       initWidth: 0,
       initHeight: 0,
-      width: new Animated.Value(0),
-      height: new Animated.Value(0),
+      width: new Animated.Value(0, true),
+      height: new Animated.Value(0, true),
     };
 
     this.state = {
-      position: new Animated.Value(this.props.navigationState.index),
+      position: new Animated.Value(this.props.navigationState.index, true),
       scenes: NavigationScenesReducer([], this.props.navigationState),
     };
   }
