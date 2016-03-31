@@ -201,6 +201,7 @@ class NavigationCardStackPanResponder extends NavigationAbstractPanResponder {
       {
         toValue: props.navigationState.index,
         duration: ANIMATION_DURATION,
+        useNativeDriver: true,
       }
     ).start();
   }

@@ -107,9 +107,9 @@ function forHorizontal(props: NavigationSceneRendererProps): Object {
   return {
     opacity,
     transform: [
-      { scale },
       { translateX },
       { translateY },
+      { scale },
     ],
   };
 }
@@ -148,9 +148,9 @@ function forVertical(props: NavigationSceneRendererProps): Object {
   return {
     opacity,
     transform: [
-      { scale },
       { translateX },
       { translateY },
+      { scale },
     ],
   };
 }
