@@ -54,6 +54,7 @@ function applyDefaultAnimation(
     {
       bounciness: 0,
       toValue: navigationState.index,
+      useNativeDriver: true,
     }
   ).start();
 }
