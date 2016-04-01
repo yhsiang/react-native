@@ -514,10 +514,6 @@ public class UIViewOperationQueue {
     mReactApplicationContext = reactContext;
   }
 
-  /*package*/ NativeViewHierarchyManager getNativeViewHierarchyManager() {
-    return mNativeViewHierarchyManager;
-  }
-
   public void setViewHierarchyUpdateDebugListener(
       @Nullable NotThreadSafeViewHierarchyUpdateDebugListener listener) {
     mViewHierarchyUpdateDebugListener = listener;

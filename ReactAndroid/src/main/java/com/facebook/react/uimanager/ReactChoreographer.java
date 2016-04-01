@@ -38,14 +38,9 @@ public class ReactChoreographer {
     DISPATCH_UI(1),
 
     /**
-     * For use by {@link com.facebook.react.uimanager.animation.NativeAnimatedModule}
-     */
-    NATIVE_ANIMATED_MODULE(2),
-
-    /**
      * Events that make JS do things.
      */
-    TIMERS_EVENTS(3),
+    TIMERS_EVENTS(2),
     ;
 
     private final int mOrder;
