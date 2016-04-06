@@ -21,6 +21,7 @@ var dependencies = require('./dependencies/dependencies');
 var generate = require('./generate/generate');
 var library = require('./library/library');
 var link = require('./library/link');
+var parseCommandLine = require('./util/parseCommandLine');
 var path = require('path');
 var Promise = require('promise');
 var runAndroid = require('./runAndroid/runAndroid');
@@ -83,7 +84,23 @@ function run() {
     return;
   }
 
-  command[0](args, Config.get(__dirname, defaultConfig)).done();
+  const cliArgs = parseCommandLine([{
+    command: 'config',
+    default: '',
+    type: 'string',
+    description: 'Path to CLI configuration file',
+  }]);
+
+  let config;
+  if (cliArgs.config !== '') {
+    // Get config file from passed in argument
+    config = Config.getForPath(process.cwd(), cliArgs.config, defaultConfig);
+  } else {
+    // Get config file relative to CLI
+    config = Config.getForDir(__dirname, defaultConfig);
+  }
+
+  command[0](args, config).done();
 }
 
 function generateWrapper(args, config) {
