@@ -25,7 +25,24 @@ let cachedConfig = null;
  * error will be thrown.
  */
 const Config = {
-  get(cwd, defaultConfig) {
+  getForPath(cwd, pathToConfig, defaultConfig) {
+    if (cachedConfig) {
+      return cachedConfig;
+    }
+
+    let config;
+    if (path.isAbsolute(pathToConfig)) {
+      config = require(pathToConfig);
+    } else {
+      config = require(path.join(cwd, pathToConfig));
+    }
+
+    cachedConfig = Object.assign({}, defaultConfig, config);
+    cachedConfig.cwd = cwd;
+    return cachedConfig;
+  },
+
+  getForDir(cwd, defaultConfig) {
     if (cachedConfig) {
       return cachedConfig;
     }

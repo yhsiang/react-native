@@ -15,6 +15,7 @@ const defaultConfig = require('./default.config');
 const dependencies = require('./dependencies/dependencies');
 const generate = require('./generate/generate');
 const library = require('./library/library');
+const parseCommandLine = require('./util/parseCommandLine');
 const path = require('path');
 const Promise = require('promise');
 const runAndroid = require('./runAndroid/runAndroid');
@@ -78,7 +79,23 @@ function run() {
     return;
   }
 
-  command[0](args, Config.get(__dirname, defaultConfig)).done();
+  const cliArgs = parseCommandLine([{
+    command: 'config',
+    default: '',
+    type: 'string',
+    description: 'Path to CLI configuration file',
+  }]);
+
+  let config;
+  if (cliArgs.config !== '') {
+    // Get config file from passed in argument
+    config = Config.getForPath(process.cwd(), cliArgs.config, defaultConfig);
+  } else {
+    // Get config file relative to CLI
+    config = Config.getForDir(__dirname, defaultConfig);
+  }
+
+  command[0](args, config).done();
 }
 
 function generateWrapper(args, config) {
