@@ -25,26 +25,35 @@ let cachedConfig = null;
  * error will be thrown.
  */
 const Config = {
-  get(cwd, defaultConfig) {
-    if (cachedConfig) {
-      return cachedConfig;
+  get(cwd, pathToConfig, defaultConfig) {
+    let config;
+    if (!pathToConfig) {
+      if (!defaultConfig) {
+        throw new Error(
+          `Config cannot be null if there is no default config.`
+        );
+      }
+      config = defaultConfig;
+    } else {
+      if (path.isAbsolute(pathToConfig)) {
+        config = require(pathToConfig);
+      } else {
+        config = require(path.join(cwd, pathToConfig));
+      }
+      config = Object.assign({}, defaultConfig, config);
     }
+    config.cwd = cwd;
+    return config;
+  },
 
+  findConfigPath(cwd) {
     const parentDir = findParentDirectory(cwd, RN_CLI_CONFIG);
-    if (!parentDir && !defaultConfig) {
-      throw new Error(
-        `Can't find "rn-cli.config.js" file in any parent folder of "${cwd}"`
-      );
+    if (parentDir) {
+      return path.join(parentDir, RN_CLI_CONFIG);
+    } else {
+      return null;
     }
-
-    const config = parentDir
-      ? require(path.join(parentDir, RN_CLI_CONFIG))
-      : {};
-
-    cachedConfig = Object.assign({}, defaultConfig, config);
-    cachedConfig.cwd = cwd;
-    return cachedConfig;
-  }
+  },
 };
 
 // Finds the most near ancestor starting at `currentFullPath` that has
