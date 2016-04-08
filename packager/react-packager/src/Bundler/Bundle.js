@@ -13,6 +13,7 @@ const base64VLQ = require('./base64-vlq');
 const BundleBase = require('./BundleBase');
 const ModuleTransport = require('../lib/ModuleTransport');
 const crypto = require('crypto');
+const flattenIndexedSourceMap = require('flatten-source-map');
 
 const SOURCEMAPPING_URL = '\n\/\/# sourceMappingURL=';
 
@@ -77,9 +78,9 @@ class Bundle extends BundleBase {
     this._numRequireCalls += 1;
   }
 
-  _getInlineSourceMap(dev) {
+  _getInlineSourceMap(options) {
     if (this._inlineSourceMap == null) {
-      const sourceMap = this.getSourceMap({excludeSource: true, dev});
+      const sourceMap = this.getSourceMap({ ...options, excludeSource: true });
       /*eslint-env node*/
       const encoded = new Buffer(JSON.stringify(sourceMap)).toString('base64');
       this._inlineSourceMap = 'data:application/json;base64,' + encoded;
@@ -95,7 +96,10 @@ class Bundle extends BundleBase {
     let source = super.getSource();
 
     if (options.inlineSourceMap) {
-      source += SOURCEMAPPING_URL + this._getInlineSourceMap(options.dev);
+      source += SOURCEMAPPING_URL + this._getInlineSourceMap({
+        dev: options.dev,
+        flattenSourceMap: options.flattenSourceMap,
+      });
     } else if (this._sourceMapUrl) {
       source += SOURCEMAPPING_URL + this._sourceMapUrl;
     }
@@ -146,6 +150,8 @@ class Bundle extends BundleBase {
         if (map.sourcesContent && map.sourcesContent.length) {
           map = Object.assign({}, map, {sourcesContent: []});
         }
+      } else {
+        map.sourcesContent = [module.sourceCode];
       }
 
       result.sections.push({
@@ -162,7 +168,10 @@ class Bundle extends BundleBase {
     super.assertFinalized();
 
     if (this._shouldCombineSourceMaps) {
-      return this._getCombinedSourceMaps(options);
+      const combinedMap = this._getCombinedSourceMaps(options);
+      return options.flattenSourceMap ?
+             flattenIndexedSourceMap(combinedMap) :
+             combinedMap;
     }
 
     const mappings = this._getMappings();
