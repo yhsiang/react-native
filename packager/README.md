@@ -69,6 +69,8 @@ Here are the current options the packager accepts:
   a `require('moduleName')` the end of your bundle.
 * `inlineSourceMap` boolean, defaults to false: whether to inline
   source maps.
+* `flattenSourceMap` boolean, defaults to false: whether to flatten index
+  source maps into a basic source map.
 
 ### /debug
 
