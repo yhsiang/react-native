@@ -108,6 +108,10 @@ const bundleOpts = declareOpts({
     type: 'boolean',
     default: false,
   },
+  flattenSourceMap: {
+    type: 'boolean',
+    default: false,
+  },
   platform: {
     type: 'string',
     required: true,
@@ -443,6 +447,7 @@ class Server {
       p => {
         if (requestType === 'bundle') {
           const bundleSource = p.getSource({
+            flattenSourceMap: options.flattenSourceMap,
             inlineSourceMap: options.inlineSourceMap,
             minify: options.minify,
             dev: options.dev,
@@ -458,6 +463,7 @@ class Server {
           Activity.endEvent(startReqEventId);
         } else if (requestType === 'map') {
           let sourceMap = p.getSourceMap({
+            flattenSourceMap: options.flattenSourceMap,
             minify: options.minify,
             dev: options.dev,
           });
@@ -543,6 +549,11 @@ class Server {
       inlineSourceMap: this._getBoolOptionFromQuery(
         urlObj.query,
         'inlineSourceMap',
+        false
+      ),
+      flattenSourceMap: this._getBoolOptionFromQuery(
+        urlObj.query,
+        'flattenSourceMap',
         false
       ),
       platform: platform,
