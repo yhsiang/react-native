@@ -350,6 +350,8 @@ import java.util.Queue;
         + activeNodesCount + " but toposort visited only " + updatedNodesCount);
     }
 
+    mUpdatedNodes.clear();
+
 
     // Cleanup finished animations. Iterate over the array of animations and override ones that has
     // finished, then resize `mActiveAnimations`.
