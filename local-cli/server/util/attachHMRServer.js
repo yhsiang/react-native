@@ -106,7 +106,7 @@ function attachHMRServer({httpServer, path, packagerServer}) {
     });
   }
 
-  const WebSocketServer = require('ws').Server;
+  const WebSocketServer = require('uws').Server;
   const wss = new WebSocketServer({
     server: httpServer,
     path: path,

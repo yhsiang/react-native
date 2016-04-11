@@ -10,7 +10,7 @@
 
 
 function attachToServer(server, path) {
-  var WebSocketServer = require('ws').Server;
+  var WebSocketServer = require('uws').Server;
   var wss = new WebSocketServer({
     server: server,
     path: path

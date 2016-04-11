@@ -24,7 +24,7 @@
 
 /* eslint-env node */
 
-const WebSocket = require('ws');
+const WebSocket = require('uws');
 
 console.log(`\
 Test server for WebSocketExample
