@@ -14,9 +14,12 @@ import android.util.SparseArray;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.JSApplicationIllegalArgumentException;
+import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.UiThreadUtil;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.facebook.react.uimanager.NativeViewHierarchyManager;
 import com.facebook.react.uimanager.UIImplementation;
 
 import java.util.ArrayDeque;
@@ -44,10 +47,12 @@ import javax.annotation.Nullable;
   private final ArrayList<AnimationDriver> mActiveAnimations = new ArrayList<>();
   private final ArrayList<AnimatedNode> mUpdatedNodes = new ArrayList<>();
   private final UIImplementation mUIImplementation;
+  private final ReactApplicationContext mReactContext;
   private int mAnimatedGraphBFSColor = 0;
 
-  public NativeAnimatedNodesManager(UIImplementation uiImplementation) {
+  public NativeAnimatedNodesManager(UIImplementation uiImplementation, ReactApplicationContext reactContext) {
     mUIImplementation = uiImplementation;
+    mReactContext = reactContext;
   }
 
   /*package*/ @Nullable AnimatedNode getNodeById(int id) {
@@ -89,6 +94,32 @@ import javax.annotation.Nullable;
 
   public void dropAnimatedNode(int tag) {
     mAnimatedNodes.remove(tag);
+  }
+
+  public void startListeningToAnimatedNodeValue(final int tag) {
+    AnimatedNode node = mAnimatedNodes.get(tag);
+    if (node == null || !(node instanceof ValueAnimatedNode)) {
+      throw new JSApplicationIllegalArgumentException("Animated node with tag " + tag +
+              " does not exists or is not a 'value' node");
+    }
+    ((ValueAnimatedNode) node).valueUpdateListener = new ValueAnimatedNode.OnValueUpdateListener() {
+      @Override
+      public void onValueUpdate(double value) {
+        WritableMap onAnimatedValueData = Arguments.createMap();
+        onAnimatedValueData.putInt("tag", tag);
+        onAnimatedValueData.putDouble("value", value);
+        mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("onAnimatedValueUpdate", onAnimatedValueData);
+      }
+    };
+  }
+
+  public void stopListeningToAnimatedNodeValue(int tag) {
+    AnimatedNode node = mAnimatedNodes.get(tag);
+    if (node == null || !(node instanceof ValueAnimatedNode)) {
+      throw new JSApplicationIllegalArgumentException("Animated node with tag " + tag +
+              " does not exists or is not a 'value' node");
+    }
+    ((ValueAnimatedNode) node).valueUpdateListener = null;
   }
 
   public void setAnimatedNodeValue(int tag, double value) {
@@ -327,6 +358,10 @@ import javax.annotation.Nullable;
       if (nextNode instanceof PropsAnimatedNode) {
         // Send property updates to native view manager
         ((PropsAnimatedNode) nextNode).updateView(mUIImplementation);
+      }
+      if (nextNode instanceof ValueAnimatedNode) {
+        // Potentially send events to JS when the node's value is updated
+        ((ValueAnimatedNode) nextNode).onValueUpdate();
       }
       if (nextNode.mChildren != null) {
         for (int i = 0; i < nextNode.mChildren.size(); i++) {
