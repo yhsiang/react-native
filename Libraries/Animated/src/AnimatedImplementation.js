@@ -1228,7 +1228,7 @@ class AnimatedStyle extends AnimatedWithChildren {
     for (var key in this._style) {
       var value = this._style[key];
       if (value instanceof Animated) {
-        if (!value.__isNative) {
+        if (!value.__isNative || true) {
           // We cannot use value of natively driven nodes this way as the value we have access from JS
           // may not be up to date
           style[key] = value.__getValue();
