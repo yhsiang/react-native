@@ -17,15 +17,19 @@ const { DevLoadingView } = require('NativeModules');
 
 class HMRLoadingView {
   static showMessage(message: string) {
-    DevLoadingView.showMessage(
-      message,
-      processColor('#000000'),
-      processColor('#aaaaaa'),
-    );
+    if (DevLoadingView.showMessage) {
+      DevLoadingView.showMessage(
+        message,
+        processColor('#000000'),
+        processColor('#aaaaaa'),
+      );
+    }
   }
 
   static hide() {
-    DevLoadingView.hide();
+    if (DevLoadingView.hide) {
+      DevLoadingView.hide();
+    }
   }
 }
 
