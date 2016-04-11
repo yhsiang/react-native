@@ -95,7 +95,7 @@ public class NativeAnimatedModule extends ReactContextBaseJavaModule implements
       reactCtx.getNativeModule(UIManagerModule.class).getUIImplementation();
 
     final NativeAnimatedNodesManager nodesManager =
-      new NativeAnimatedNodesManager(uiImplementation);
+      new NativeAnimatedNodesManager(uiImplementation, reactCtx);
     mAnimatedFrameCallback = new GuardedChoreographerFrameCallback(reactCtx) {
       @Override
       protected void doFrameGuarded(final long frameTimeNanos) {
@@ -187,6 +187,26 @@ public class NativeAnimatedModule extends ReactContextBaseJavaModule implements
       @Override
       public void execute(NativeAnimatedNodesManager animatedNodesManager) {
         animatedNodesManager.createAnimatedNode(tag, config);
+      }
+    });
+  }
+
+  @ReactMethod
+  public void startListeningToAnimatedNodeValue(final int tag) {
+    mOperations.add(new UIThreadOperation() {
+      @Override
+      public void execute(NativeAnimatedNodesManager animatedNodesManager) {
+        animatedNodesManager.startListeningToAnimatedNodeValue(tag);
+      }
+    });
+  }
+
+  @ReactMethod
+  public void stopListeningToAnimatedNodeValue(final int tag) {
+    mOperations.add(new UIThreadOperation() {
+      @Override
+      public void execute(NativeAnimatedNodesManager animatedNodesManager) {
+        animatedNodesManager.stopListeningToAnimatedNodeValue(tag);
       }
     });
   }

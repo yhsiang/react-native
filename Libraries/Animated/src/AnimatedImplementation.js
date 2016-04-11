@@ -11,6 +11,7 @@
  */
 'use strict';
 
+var DeviceEventEmitter = require('RCTDeviceEventEmitter');
 var Easing = require('Easing');
 var InteractionManager = require('InteractionManager');
 var Interpolation = require('Interpolation');
@@ -644,6 +645,7 @@ class AnimatedValue extends AnimatedWithChildren {
   _animation: ?Animation;
   _tracking: ?Animated;
   _listeners: {[key: string]: ValueListenerCallback};
+  __nativeAnimatedValueListener: ?any;
 
   constructor(value: number) {
     super();
@@ -660,6 +662,14 @@ class AnimatedValue extends AnimatedWithChildren {
 
   __getValue(): number {
     return this._value + this._offset;
+  }
+
+  __makeNative() {
+    var shouldSetCallbacks = !this.__isNative && Object.keys(this._listeners).length;
+    super.__makeNative();
+    if (shouldSetCallbacks) {
+      this._startListeningToNativeValueUpdates();
+    }
   }
 
   /**
@@ -703,15 +713,41 @@ class AnimatedValue extends AnimatedWithChildren {
   addListener(callback: ValueListenerCallback): string {
     var id = String(_uniqueId++);
     this._listeners[id] = callback;
+    if (this.__isNative) {
+      this._startListeningToNativeValueUpdates();
+    }
     return id;
   }
 
   removeListener(id: string): void {
     delete this._listeners[id];
+    if (this.__isNative && Object.keys(this._listeners).length === 0) {
+      this._stopListeningForNativeValueUpdates();
+    }
   }
 
   removeAllListeners(): void {
     this._listeners = {};
+    if (this.__isNative) {
+      this._stopListeningForNativeValueUpdates();
+    }
+  }
+
+  _startListeningToNativeValueUpdates() {
+    NativeAnimatedAPI.startListeningToAnimatedNodeValue(this.__getNativeTag());
+    this.__nativeAnimatedValueListener = DeviceEventEmitter.addListener('onAnimatedValueUpdate', (data) => {
+      if (data.tag !== this.__getNativeTag()) {
+        return;
+      }
+      this._updateValue(data.value, false);
+    });
+  }
+
+  _stopListeningForNativeValueUpdates() {
+    if (this.__nativeAnimatedValueListener) {
+      this.__nativeAnimatedValueListener.remove();
+      NativeAnimatedAPI.stopListeningToAnimatedNodeValue(this.__getNativeTag());
+    }
   }
 
   /**
