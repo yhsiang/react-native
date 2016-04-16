@@ -14,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.text.Layout;
 import android.text.Spanned;
 import android.view.Gravity;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.facebook.react.uimanager.ReactCompoundView;
@@ -30,6 +31,13 @@ public class ReactTextView extends TextView implements ReactCompoundView {
     mDefaultGravityHorizontal =
       getGravity() & (Gravity.HORIZONTAL_GRAVITY_MASK | Gravity.RELATIVE_HORIZONTAL_GRAVITY_MASK);
     mDefaultGravityVertical = getGravity() & Gravity.VERTICAL_GRAVITY_MASK;
+
+    // Android's TextView crashes when it tries to relayout if LayoutParams are
+    // null; explicitly set the LayoutParams to prevent this crash. See:
+    // https://github.com/facebook/react-native/pulls/7011
+    setLayoutParams(new ViewGroup.LayoutParams(
+        ViewGroup.LayoutParams.WRAP_CONTENT,
+        ViewGroup.LayoutParams.WRAP_CONTENT));
   }
 
   public void setText(ReactTextUpdate update) {
