@@ -25,6 +25,8 @@ var flattenStyle = require('flattenStyle');
 var invariant = require('fbjs/lib/invariant');
 var requestAnimationFrame = require('fbjs/lib/requestAnimationFrame');
 
+var { NativeAnimatedModule } = require('NativeModules');
+
 import type { InterpolationConfigType } from 'Interpolation';
 
 type EndResult = {finished: bool};
@@ -250,7 +252,7 @@ class TimingAnimation extends Animation {
     this._duration = config.duration !== undefined ? config.duration : 500;
     this._delay = config.delay !== undefined ? config.delay : 0;
     this.__isInteraction = config.isInteraction !== undefined ? config.isInteraction : true;
-    this._useNativeDriver = config.useNativeDriver !== undefined ? config.useNativeDriver : false;
+    this._useNativeDriver = (NativeAnimatedModule && config.useNativeDriver !== undefined) ? config.useNativeDriver : false;
   }
 
   _getNativeAnimationConfig(): any {
@@ -462,7 +464,7 @@ class SpringAnimation extends Animation {
     this._initialVelocity = config.velocity;
     this._lastVelocity = withDefault(config.velocity, 0);
     this._toValue = config.toValue;
-    this._useNativeDriver = config.useNativeDriver;
+    this._useNativeDriver = NativeAnimatedModule && config.useNativeDriver;
     this.__isInteraction = config.isInteraction !== undefined ? config.isInteraction : true;
 
     var springConfig;
