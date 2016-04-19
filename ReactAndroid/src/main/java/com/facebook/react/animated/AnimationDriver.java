@@ -20,6 +20,7 @@ import com.facebook.react.bridge.Callback;
   /*package*/ boolean mHasFinished = false;
   /*package*/ ValueAnimatedNode mAnimatedValue;
   /*package*/ Callback mEndCallback;
+  /*package*/ int mId;
 
   /**
    * This method gets called in the main animation loop with a frame time passed down from the
