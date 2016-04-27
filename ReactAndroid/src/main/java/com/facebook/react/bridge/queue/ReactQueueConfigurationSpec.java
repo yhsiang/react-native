@@ -9,6 +9,8 @@
 
 package com.facebook.react.bridge.queue;
 
+import android.os.Build;
+
 import javax.annotation.Nullable;
 
 import com.facebook.infer.annotation.Assertions;
@@ -44,10 +46,12 @@ public class ReactQueueConfigurationSpec {
   }
 
   public static ReactQueueConfigurationSpec createDefault() {
+    MessageQueueThreadSpec spec = Build.VERSION.SDK_INT < 20 ?
+            MessageQueueThreadSpec.newBackgroundThreadSpec("native_modules", 2000000) :
+            MessageQueueThreadSpec.newBackgroundThreadSpec("native_modules");
     return builder()
         .setJSQueueThreadSpec(MessageQueueThreadSpec.newBackgroundThreadSpec("js"))
-        .setNativeModulesQueueThreadSpec(
-            MessageQueueThreadSpec.newBackgroundThreadSpec("native_modules"))
+        .setNativeModulesQueueThreadSpec(spec)
         .build();
   }
 
