@@ -11,6 +11,17 @@
 #import "RCTInvalidating.h"
 
 /**
+ * The storage configuration that backs RCTAsyncLocalStorage.
+ */
+@interface RCTLocalStorageConfiguration : NSObject
+
+@property (nonatomic, readonly) NSString *storageDirectory;
+@property (nonatomic, readonly) NSString *manifestFilePath;
+@property (nonatomic, readonly) NSCache *cache;
+
+@end
+
+/**
  * A simple, asynchronous, persistent, key-value storage system designed as a
  * backend to the AsyncStorage JS module, which is modeled after LocalStorage.
  *
@@ -27,7 +38,13 @@
 
 @property (nonatomic, readonly, getter=isValid) BOOL valid;
 
+- (instancetype)init;
+- (instancetype)initWithConfiguration:(RCTLocalStorageConfiguration *)configuration;
+
 // Clear the RCTAsyncLocalStorage data from native code
 - (void)clearAllData;
+
+// For clearing data when the bridge may not exist, e.g. when logging out.
++ (void)clearAllData;
 
 @end

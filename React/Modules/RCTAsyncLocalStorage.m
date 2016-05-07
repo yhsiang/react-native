@@ -86,10 +86,60 @@ static BOOL RCTMergeRecursive(NSMutableDictionary *destination, NSDictionary *so
   return modified;
 }
 
+#pragma mark - RCTLocalStorageConfiguration
+
+@implementation RCTLocalStorageConfiguration
+
+static NSString *const RCTStorageDirectory = @"RCTAsyncLocalStorage_V1";
+static NSString *const RCTManifestFileName = @"manifest.json";
+
+- (NSString *)_storageDirectory
+{
+  static NSString *storageDirectory = nil;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    storageDirectory = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
+    storageDirectory = [storageDirectory stringByAppendingPathComponent:RCTStorageDirectory];
+  });
+  return storageDirectory;
+}
+
+- (NSString *)_manifestFilePath
+{
+  static NSString *manifestFilePath = nil;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    manifestFilePath = [[self _storageDirectory] stringByAppendingPathComponent:RCTManifestFileName];
+  });
+  return manifestFilePath;
+}
+
+
+- (NSCache *)_cache
+{
+  // We want all instances to share the same cache since they will be reading/writing the same files.
+  static NSCache *cache;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    cache = [NSCache new];
+    cache.totalCostLimit = 2 * 1024 * 1024; // 2MB
+    
+    // Clear cache in the event of a memory warning
+    [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidReceiveMemoryWarningNotification object:nil queue:nil usingBlock:^(__unused NSNotification *note) {
+      [cache removeAllObjects];
+    }];
+  });
+  return cache;
+}
+
+
+@end
+
 #pragma mark - RCTAsyncLocalStorage
 
 @implementation RCTAsyncLocalStorage
 {
+  RCTLocalStorageConfiguration *_config;
   BOOL _haveSetup;
   // The manifest is a dictionary of all keys with small values inlined.  Null values indicate
   // values that are stored in separate files (as opposed to nil values which don't exist).  The
@@ -99,9 +149,20 @@ static BOOL RCTMergeRecursive(NSMutableDictionary *destination, NSDictionary *so
 
 RCT_EXPORT_MODULE()
 
-static NSString *const RCTStorageDirectory = @"RCTAsyncLocalStorage_V1";
-static NSString *const RCTManifestFileName = @"manifest.json";
 static const NSUInteger RCTInlineValueThreshold = 1024;
+
+- (instancetype)init
+{
+  return [self initWithConfiguration:[RCTLocalStorageConfiguration sharedConfiguration]];
+}
+
+- (instancetype)initWithConfiguration:(RCTLocalStorageConfiguration *)configuration
+{
+  if ((self = [super init])) {
+    _config = configuration;
+  }
+  return self;
+}
 
 - (NSString *)_storageDirectory
 {
