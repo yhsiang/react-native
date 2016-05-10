@@ -138,11 +138,6 @@ class NavigationCard extends React.Component<any, Props, any> {
       </Animated.View>
     );
   }
-
-  static CardStackPanResponder = NavigationCardStackPanResponder;
-  static CardStackStyleInterpolator = NavigationCardStackStyleInterpolator;
-  static PagerPanResponder = NavigationPagerPanResponder;
-  static PagerStyleInterpolator = NavigationPagerStyleInterpolator;
 }
 
 const styles = StyleSheet.create({
@@ -161,5 +156,10 @@ const styles = StyleSheet.create({
 });
 
 NavigationCard = NavigationPointerEventsContainer.create(NavigationCard);
+
+NavigationCard.CardStackPanResponder = NavigationCardStackPanResponder;
+NavigationCard.CardStackStyleInterpolator = NavigationCardStackStyleInterpolator;
+NavigationCard.PagerPanResponder = NavigationPagerPanResponder;
+NavigationCard.PagerStyleInterpolator = NavigationPagerStyleInterpolator;
 
 module.exports = NavigationCard;
