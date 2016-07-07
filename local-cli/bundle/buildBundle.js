@@ -40,6 +40,7 @@ function buildBundle(args, config, output = outputBundle, packagerInstance) {
     const options = {
       projectRoots: config.getProjectRoots(),
       assetRoots: config.getAssetRoots(),
+      assetExts: config.getAssetExts(),
       blacklistRE: config.getBlacklistRE(args.platform),
       getTransformOptionsModulePath: config.getTransformOptionsModulePath,
       transformModulePath: transformModulePath,

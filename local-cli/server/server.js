@@ -36,15 +36,19 @@ function _server(argv, config, resolve, reject) {
   }, {
     command: 'root',
     type: 'string',
-    description: 'add another root(s) to be used by the packager in this project',
+    description: 'Add another root(s) to be used by the packager in this project',
   }, {
     command: 'projectRoots',
     type: 'string',
-    description: 'override the root(s) to be used by the packager',
-  },{
+    description: 'Override the root(s) to be used by the packager',
+  }, {
     command: 'assetRoots',
     type: 'string',
-    description: 'specify the root directories of app assets'
+    description: 'Specify the root directories of app assets'
+  }, {
+    command: 'assetExts',
+    type: 'string',
+    description: 'Specify any additional asset extentions to be used by the packager',
   }, {
     command: 'skipflow',
     description: 'Disable flow checks'
@@ -86,6 +90,10 @@ function _server(argv, config, resolve, reject) {
       path.resolve(process.cwd(), dir)
     )
     : config.getAssetRoots();
+
+  args.assetExts = args.assetExts
+    ? argToArray(args.assetExts)
+    : config.getAssetExts();
 
   console.log(formatBanner(
     'Running packager on port ' + args.port + '.\n\n' +
