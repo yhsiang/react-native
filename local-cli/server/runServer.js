@@ -65,6 +65,13 @@ function runServer(args, config, readyCallback) {
   serverInstance.timeout = 0;
 }
 
+const defaultAssetExts = [
+  'bmp', 'gif', 'jpg', 'jpeg', 'png', 'psd', 'svg', 'webp', // Image formats
+  'm4v', 'mov', 'mp4', 'mpeg', 'mpg', 'webm', // Video formats
+  'aac', 'aiff', 'caf', 'm4a', 'mp3', 'wav', // Audio formats
+  'html', 'pdf', // Document formats
+];
+
 function getPackagerServer(args, config) {
   let transformerPath = args.transformer;
   if (!isAbsolutePath(transformerPath)) {
@@ -80,12 +87,7 @@ function getPackagerServer(args, config) {
     transformModulePath: transformerPath,
     extraNodeModules: config.extraNodeModules,
     assetRoots: args.assetRoots,
-    assetExts: [
-      'bmp', 'gif', 'jpg', 'jpeg', 'png', 'psd', 'svg', 'webp', // Image formats
-      'm4v', 'mov', 'mp4', 'mpeg', 'mpg', 'webm', // Video formats
-      'aac', 'aiff', 'caf', 'm4a', 'mp3', 'wav', // Audio formats
-      'html', 'pdf', // Document formats
-    ],
+    assetExts: defaultAssetExts.concat(args.assetExts),
     resetCache: args.resetCache || args['reset-cache'],
     verbose: args.verbose,
   });
