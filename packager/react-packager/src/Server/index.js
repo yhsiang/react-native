@@ -138,6 +138,10 @@ const bundleOpts = declareOpts({
   isolateModuleIDs: {
     type: 'boolean',
     default: false
+  },
+  includeAssetFileHashes: {
+    type: 'boolean',
+    default: false,
   }
 });
 
@@ -560,6 +564,11 @@ class Server {
       entryModuleOnly: this._getBoolOptionFromQuery(
         urlObj.query,
         'entryModuleOnly',
+        false,
+      ),
+      includeAssetFileHashes: this._getBoolOptionFromQuery(
+        urlObj.query,
+        'includeAssetFileHashes',
         false,
       ),
     };
