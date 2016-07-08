@@ -24,6 +24,7 @@ const ModuleTransport = require('../lib/ModuleTransport');
 const declareOpts = require('../lib/declareOpts');
 const imageSize = require('image-size');
 const version = require('../../../../package.json').version;
+const md5File = require('md5-file');
 
 const sizeOf = Promise.denodeify(imageSize);
 
@@ -257,6 +258,7 @@ class Bundler {
     entryModuleOnly,
     resolutionResponse,
     isolateModuleIDs,
+    includeAssetFileHashes,
   }) {
     const onResolutionResponse = response => {
       bundle.setMainModuleId(response.getModuleId(getMainModule(response)));
@@ -301,6 +303,7 @@ class Bundler {
       onResolutionResponse,
       finalizeBundle,
       isolateModuleIDs,
+      includeAssetFileHashes,
     });
   }
 
@@ -311,6 +314,7 @@ class Bundler {
     sourceMapUrl,
     dev,
     platform,
+    includeAssetFileHashes,
   }) {
     const onModuleTransformed = ({module, transformed, response, bundle}) => {
       const deps = Object.create(null);
@@ -339,6 +343,7 @@ class Bundler {
       finalizeBundle,
       minify: false,
       bundle: new PrepackBundle(sourceMapUrl),
+      includeAssetFileHashes,
     });
   }
 
@@ -352,6 +357,7 @@ class Bundler {
     unbundle,
     resolutionResponse,
     isolateModuleIDs,
+    includeAssetFileHashes,
     onResolutionResponse = noop,
     onModuleTransformed = noop,
     finalizeBundle = noop,
@@ -411,6 +417,7 @@ class Bundler {
           module,
           bundle,
           entryFilePath,
+          includeAssetFileHashes,
           transformOptions: response.transformOptions,
           getModuleId: response.getModuleId,
           dependencyPairs: response.getResolvedDependencyPairs(module),
@@ -552,6 +559,7 @@ class Bundler {
     transformOptions,
     getModuleId,
     dependencyPairs,
+    includeAssetFileHashes,
   }) {
     let moduleTransport;
     const moduleId = getModuleId(module);
@@ -561,7 +569,7 @@ class Bundler {
         this._generateAssetModule_DEPRECATED(bundle, module, moduleId);
     } else if (module.isAsset()) {
       moduleTransport = this._generateAssetModule(
-        bundle, module, moduleId, transformOptions.platform);
+        bundle, module, moduleId, includeAssetFileHashes, transformOptions.platform);
     }
 
     if (moduleTransport) {
@@ -624,7 +632,7 @@ class Bundler {
     });
   }
 
-  _generateAssetObjAndCode(module, platform = null) {
+  _generateAssetObjAndCode(module, includeAssetFileHashes = false, platform = null) {
     const relPath = getPathRelativeToRoot(this._projectRoots, module.path);
     var assetUrlPath = path.join('/assets', path.dirname(relPath));
 
@@ -658,7 +666,12 @@ class Bundler {
         type: assetData.type,
       };
 
+      if (includeAssetFileHashes) {
+        asset.fileHashes = asset.files.map(md5File.sync);
+      }
+
       const json =  JSON.stringify(filterObject(asset, assetPropertyBlacklist));
+
       const assetRegistryPath = 'react-native/Libraries/Image/AssetRegistry';
       const code =
         `module.exports = require(${JSON.stringify(assetRegistryPath)}).registerAsset(${json});`;
@@ -674,10 +687,10 @@ class Bundler {
   }
 
 
-  _generateAssetModule(bundle, module, moduleId, platform = null) {
+  _generateAssetModule(bundle, module, moduleId, includeAssetFileHashes = false, platform = null) {
     return Promise.all([
       module.getName(),
-      this._generateAssetObjAndCode(module, platform),
+      this._generateAssetObjAndCode(module, includeAssetFileHashes, platform),
     ]).then(([name, {asset, code, meta}]) => {
       bundle.addAsset(asset);
       return new ModuleTransport({

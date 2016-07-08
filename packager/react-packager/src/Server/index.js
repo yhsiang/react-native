@@ -150,6 +150,10 @@ const bundleOpts = declareOpts({
   resolutionResponse: {
     type: 'object',
   },
+  includeAssetFileHashes: {
+    type: 'boolean',
+    default: false,
+  },
 });
 
 const dependencyOpts = declareOpts({
@@ -825,6 +829,11 @@ class Server {
       entryModuleOnly: this._getBoolOptionFromQuery(
         urlObj.query,
         'entryModuleOnly',
+        false,
+      ),
+      includeAssetFileHashes: this._getBoolOptionFromQuery(
+        urlObj.query,
+        'includeAssetFileHashes',
         false,
       ),
     };
