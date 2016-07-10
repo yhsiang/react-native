@@ -24,3 +24,4 @@ declare var Response: any;
 declare module requestAnimationFrame {
   declare var exports: (callback: any) => any;
 }
+declare function requestIdleCallback(callback: any): any;

@@ -529,7 +529,7 @@ var TextInput = React.createClass({
     var onChangeContentSize;
     if (this.props.onChangeContentSize) {
       onChangeContentSize = (event: Event) => {
-        this.props.onChangeContentSize(event);
+        this.props.onChangeContentSize && this.props.onChangeContentSize(event);
       }
     }
 

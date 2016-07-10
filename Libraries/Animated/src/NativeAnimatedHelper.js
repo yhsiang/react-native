@@ -110,7 +110,7 @@ function validateStyles(styles: Object): void {
   }
 }
 
-function validateTransform(transforms: Array<Object>, isAnimated: (p: any) => bool): void {
+function validateTransform(transforms: Array<Object>, isAnimated: (p: any) => bool): ?{animated: any, statics: any} {
   var animated = {};
   var statics = {
     rotate: 0,
