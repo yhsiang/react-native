@@ -188,4 +188,10 @@ RCT_EXTERN NSString *RCTBridgeModuleNameForClass(Class bridgeModuleClass);
  */
 - (BOOL)isBatchActive;
 
+/**
+ * A reference to the root RCTBridge instance. Used to scope NSNotifications
+ * pertaining to this bridge.
+ */
+- (RCTBridge *)baseBridge;
+
 @end

@@ -164,18 +164,22 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(reload)
                                                name:RCTReloadNotification
-                                             object:nil];
+                                             object:self.baseBridge];
 
 #if TARGET_IPHONE_SIMULATOR
   RCTKeyCommands *commands = [RCTKeyCommands sharedInstance];
 
   // reload in current mode
+  __weak typeof(self) weakSelf = self;
   [commands registerKeyCommandWithInput:@"r"
                           modifierFlags:UIKeyModifierCommand
                                  action:^(__unused UIKeyCommand *command) {
-    [[NSNotificationCenter defaultCenter] postNotificationName:RCTReloadNotification
-                                                        object:nil
-                                                      userInfo:nil];
+    RCTBridge *baseBridge = weakSelf.baseBridge;
+    if (baseBridge) {
+      [[NSNotificationCenter defaultCenter] postNotificationName:RCTReloadNotification
+                                                          object:baseBridge
+                                                        userInfo:nil];
+    }
   }];
 #endif
 }
@@ -272,6 +276,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 - (BOOL)isBatchActive
 {
   return [_batchedBridge isBatchActive];
+}
+
+- (RCTBridge *)baseBridge
+{
+  return self;
 }
 
 - (void)invalidate
