@@ -380,7 +380,7 @@ void RCTProfileUnhookModules(RCTBridge *bridge)
 + (void)reload
 {
   [[NSNotificationCenter defaultCenter] postNotificationName:RCTReloadNotification
-                                                      object:NULL];
+                                                      object:RCTProfilingBridge().baseBridge];
 }
 
 + (void)toggle:(UIButton *)target
