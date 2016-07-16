@@ -118,6 +118,10 @@ const APIExamples = [
     module: require('./AlertExample').AlertExample,
   },
   {
+    key: 'AnimatedExample',
+    module: require('./AnimatedExample'),
+  },
+  {
     key: 'AppStateExample',
     module: require('./AppStateExample'),
   },
@@ -160,6 +164,10 @@ const APIExamples = [
   {
     key: 'LayoutExample',
     module: require('./LayoutExample'),
+  },
+  {
+    key: 'NativeAnimationsExample',
+    module: require('./NativeAnimationsExample'),
   },
   {
     key: 'NavigationExperimentalExample',

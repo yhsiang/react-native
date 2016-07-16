@@ -87,6 +87,8 @@ var TRANSFORM_WHITELIST = {
   translateX: true,
   translateY: true,
   scale: true,
+  scaleX: true,
+  scaleY: true,
   rotate: true,
 };
 
@@ -98,12 +100,14 @@ function validateProps(params: Object): void {
   }
 }
 
-function validateTransform(config: Object): void {
-  for (var key in config) {
-    if (!TRANSFORM_WHITELIST.hasOwnProperty(key)) {
-      throw new Error(`Property '${key}' is not supported by native animated module`);
+function validateTransform(transforms: Array<Object>): void {
+  transforms.forEach(transform => {
+    for (var key in transform) {
+      if (!TRANSFORM_WHITELIST.hasOwnProperty(key)) {
+        throw new Error(`Property '${key}' is not supported by native animated module`);
+      }
     }
-  }
+  });
 }
 
 function validateStyles(styles: Object): void {

@@ -31,7 +31,6 @@ var {
   StyleSheet,
   TouchableWithoutFeedback,
 } = ReactNative;
-var UIExplorerButton = require('./UIExplorerButton');
 
 var Tester = React.createClass({
   current: 0,
@@ -295,7 +294,7 @@ exports.examples = [
                         inputRange: [0, 1],
                         outputRange: [0, 100],
                       })
-                    }
+                    },
                   ],
                 }
               ]}

@@ -33,7 +33,7 @@
 {
   [super performUpdate];
 
-  NSDictionary<NSString *, NSNumber *> *transforms = self.config[@"transform"];
+  NSDictionary<NSString *, NSNumber *> *transforms = self.config[@"animated"];
   [transforms enumerateKeysAndObjectsUsingBlock:^(NSString *property, NSNumber *nodeTag, __unused BOOL *stop) {
     RCTAnimatedNode *node = self.parentNodes[nodeTag];
     if (node.hasUpdated && [node isKindOfClass:[RCTValueAnimatedNode class]]) {

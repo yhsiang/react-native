@@ -1160,21 +1160,28 @@ class AnimatedTransform extends AnimatedWithChildren {
   }
 
   __getNativeConfig(): any {
-    var transConfig = {};
+    var animatedProps = {};
+    var staticProps = {};
+
+    if (__DEV__) {
+      NativeAnimatedHelper.validateTransform(this._transforms);
+    }
 
     this._transforms.forEach(transform => {
       for (var key in transform) {
         var value = transform[key];
         if (value instanceof Animated) {
-          transConfig[key] = value.__getNativeTag();
+          animatedProps[key] = value.__getNativeTag();
+        } else {
+          staticProps[key] = value;
         }
       }
     });
 
-    NativeAnimatedHelper.validateTransform(transConfig);
     return {
       type: 'transform',
-      transform: transConfig,
+      animated: animatedProps,
+      statics: staticProps,
     };
   }
 }
