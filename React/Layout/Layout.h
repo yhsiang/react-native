@@ -178,7 +178,7 @@
  } css_print_options_t;
  void print_css_node(css_node_t *node, css_print_options_t options);
 
- bool isUndefined(float value);
+ bool ABI5_0_0isUndefined(float value);
 
  // Function that computes the layout!
  void layoutNode(css_node_t *node, float maxWidth, float maxHeight, css_direction_t parentDirection);

@@ -41,13 +41,13 @@
  #endif
  #endif
 
- bool isUndefined(float value) {
+ bool ABI5_0_0isUndefined(float value) {
    return isnan(value);
  }
 
  static bool eq(float a, float b) {
-   if (isUndefined(a)) {
-     return isUndefined(b);
+   if (ABI5_0_0isUndefined(a)) {
+     return ABI5_0_0isUndefined(b);
    }
    return fabs(a - b) < 0.0001;
  }
@@ -298,7 +298,7 @@
  }
 
  static float getLeadingMargin(css_node_t *node, css_flex_direction_t axis) {
-   if (isRowDirection(axis) && !isUndefined(node->style.margin[CSS_START])) {
+   if (isRowDirection(axis) && !ABI5_0_0isUndefined(node->style.margin[CSS_START])) {
      return node->style.margin[CSS_START];
    }
 
@@ -306,7 +306,7 @@
  }
 
  static float getTrailingMargin(css_node_t *node, css_flex_direction_t axis) {
-   if (isRowDirection(axis) && !isUndefined(node->style.margin[CSS_END])) {
+   if (isRowDirection(axis) && !ABI5_0_0isUndefined(node->style.margin[CSS_END])) {
      return node->style.margin[CSS_END];
    }
 
@@ -315,7 +315,7 @@
 
  static float getLeadingPadding(css_node_t *node, css_flex_direction_t axis) {
    if (isRowDirection(axis) &&
-       !isUndefined(node->style.padding[CSS_START]) &&
+       !ABI5_0_0isUndefined(node->style.padding[CSS_START]) &&
        node->style.padding[CSS_START] >= 0) {
      return node->style.padding[CSS_START];
    }
@@ -329,7 +329,7 @@
 
  static float getTrailingPadding(css_node_t *node, css_flex_direction_t axis) {
    if (isRowDirection(axis) &&
-       !isUndefined(node->style.padding[CSS_END]) &&
+       !ABI5_0_0isUndefined(node->style.padding[CSS_END]) &&
        node->style.padding[CSS_END] >= 0) {
      return node->style.padding[CSS_END];
    }
@@ -343,7 +343,7 @@
 
  static float getLeadingBorder(css_node_t *node, css_flex_direction_t axis) {
    if (isRowDirection(axis) &&
-       !isUndefined(node->style.border[CSS_START]) &&
+       !ABI5_0_0isUndefined(node->style.border[CSS_START]) &&
        node->style.border[CSS_START] >= 0) {
      return node->style.border[CSS_START];
    }
@@ -357,7 +357,7 @@
 
  static float getTrailingBorder(css_node_t *node, css_flex_direction_t axis) {
    if (isRowDirection(axis) &&
-       !isUndefined(node->style.border[CSS_END]) &&
+       !ABI5_0_0isUndefined(node->style.border[CSS_END]) &&
        node->style.border[CSS_END] >= 0) {
      return node->style.border[CSS_END];
    }
@@ -453,16 +453,16 @@
 
  static bool isStyleDimDefined(css_node_t *node, css_flex_direction_t axis) {
    float value = node->style.dimensions[dim[axis]];
-   return !isUndefined(value) && value >= 0.0;
+   return !ABI5_0_0isUndefined(value) && value >= 0.0;
  }
 
  static bool isLayoutDimDefined(css_node_t *node, css_flex_direction_t axis) {
    float value = node->layout.dimensions[dim[axis]];
-   return !isUndefined(value) && value >= 0.0;
+   return !ABI5_0_0isUndefined(value) && value >= 0.0;
  }
 
  static bool isPosDefined(css_node_t *node, css_position_t position) {
-   return !isUndefined(node->style.position[position]);
+   return !ABI5_0_0isUndefined(node->style.position[position]);
  }
 
  static bool isMeasureDefined(css_node_t *node) {
@@ -471,7 +471,7 @@
 
  static float getPosition(css_node_t *node, css_position_t position) {
    float result = node->style.position[position];
-   if (!isUndefined(result)) {
+   if (!ABI5_0_0isUndefined(result)) {
      return result;
    }
    return 0;
@@ -491,10 +491,10 @@
 
    float boundValue = value;
 
-   if (!isUndefined(max) && max >= 0.0 && boundValue > max) {
+   if (!ABI5_0_0isUndefined(max) && max >= 0.0 && boundValue > max) {
      boundValue = max;
    }
-   if (!isUndefined(min) && min >= 0.0 && boundValue < min) {
+   if (!ABI5_0_0isUndefined(min) && min >= 0.0 && boundValue < min) {
      boundValue = min;
    }
 
@@ -528,7 +528,7 @@
  // +left or -right depending on which is defined.
  static float getRelativePosition(css_node_t *node, css_flex_direction_t axis) {
    float lead = node->style.position[leading[axis]];
-   if (!isUndefined(lead)) {
+   if (!ABI5_0_0isUndefined(lead)) {
      return lead;
    }
    return -getPosition(node, trailing[axis]);
@@ -582,7 +582,7 @@
        widthMode = CSS_MEASURE_MODE_AT_MOST;
      }
      width -= paddingAndBorderAxisResolvedRow;
-     if (isUndefined(width)) {
+     if (ABI5_0_0isUndefined(width)) {
        widthMode = CSS_MEASURE_MODE_UNDEFINED;
      }
 
@@ -600,7 +600,7 @@
        heightMode = CSS_MEASURE_MODE_AT_MOST;
      }
      height -= getPaddingAndBorderAxis(node, CSS_FLEX_DIRECTION_COLUMN);
-     if (isUndefined(height)) {
+     if (ABI5_0_0isUndefined(height)) {
        heightMode = CSS_MEASURE_MODE_UNDEFINED;
      }
 
@@ -609,7 +609,7 @@
      // the element is flexible.
      bool isRowUndefined = !isStyleDimDefined(node, resolvedRowAxis) && !isResolvedRowDimDefined;
      bool isColumnUndefined = !isStyleDimDefined(node, CSS_FLEX_DIRECTION_COLUMN) &&
-       isUndefined(node->layout.dimensions[dim[CSS_FLEX_DIRECTION_COLUMN]]);
+       ABI5_0_0isUndefined(node->layout.dimensions[dim[CSS_FLEX_DIRECTION_COLUMN]]);
 
      // Let's not measure the text if we already know both dimensions
      if (isRowUndefined || isColumnUndefined) {

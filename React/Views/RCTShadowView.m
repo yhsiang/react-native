@@ -69,21 +69,21 @@ static bool RCTIsDirty(void *context)
 
 // Enforces precedence rules, e.g. marginLeft > marginHorizontal > margin.
 static void RCTProcessMetaProps(const float metaProps[META_PROP_COUNT], float style[CSS_POSITION_COUNT]) {
-  style[CSS_LEFT] = !isUndefined(metaProps[META_PROP_LEFT]) ? metaProps[META_PROP_LEFT]
-  : !isUndefined(metaProps[META_PROP_HORIZONTAL]) ? metaProps[META_PROP_HORIZONTAL]
-  : !isUndefined(metaProps[META_PROP_ALL]) ? metaProps[META_PROP_ALL]
+  style[CSS_LEFT] = !ABI5_0_0isUndefined(metaProps[META_PROP_LEFT]) ? metaProps[META_PROP_LEFT]
+  : !ABI5_0_0isUndefined(metaProps[META_PROP_HORIZONTAL]) ? metaProps[META_PROP_HORIZONTAL]
+  : !ABI5_0_0isUndefined(metaProps[META_PROP_ALL]) ? metaProps[META_PROP_ALL]
   : 0;
-  style[CSS_RIGHT] = !isUndefined(metaProps[META_PROP_RIGHT]) ? metaProps[META_PROP_RIGHT]
-  : !isUndefined(metaProps[META_PROP_HORIZONTAL]) ? metaProps[META_PROP_HORIZONTAL]
-  : !isUndefined(metaProps[META_PROP_ALL]) ? metaProps[META_PROP_ALL]
+  style[CSS_RIGHT] = !ABI5_0_0isUndefined(metaProps[META_PROP_RIGHT]) ? metaProps[META_PROP_RIGHT]
+  : !ABI5_0_0isUndefined(metaProps[META_PROP_HORIZONTAL]) ? metaProps[META_PROP_HORIZONTAL]
+  : !ABI5_0_0isUndefined(metaProps[META_PROP_ALL]) ? metaProps[META_PROP_ALL]
   : 0;
-  style[CSS_TOP] = !isUndefined(metaProps[META_PROP_TOP]) ? metaProps[META_PROP_TOP]
-  : !isUndefined(metaProps[META_PROP_VERTICAL]) ? metaProps[META_PROP_VERTICAL]
-  : !isUndefined(metaProps[META_PROP_ALL]) ? metaProps[META_PROP_ALL]
+  style[CSS_TOP] = !ABI5_0_0isUndefined(metaProps[META_PROP_TOP]) ? metaProps[META_PROP_TOP]
+  : !ABI5_0_0isUndefined(metaProps[META_PROP_VERTICAL]) ? metaProps[META_PROP_VERTICAL]
+  : !ABI5_0_0isUndefined(metaProps[META_PROP_ALL]) ? metaProps[META_PROP_ALL]
   : 0;
-  style[CSS_BOTTOM] = !isUndefined(metaProps[META_PROP_BOTTOM]) ? metaProps[META_PROP_BOTTOM]
-  : !isUndefined(metaProps[META_PROP_VERTICAL]) ? metaProps[META_PROP_VERTICAL]
-  : !isUndefined(metaProps[META_PROP_ALL]) ? metaProps[META_PROP_ALL]
+  style[CSS_BOTTOM] = !ABI5_0_0isUndefined(metaProps[META_PROP_BOTTOM]) ? metaProps[META_PROP_BOTTOM]
+  : !ABI5_0_0isUndefined(metaProps[META_PROP_VERTICAL]) ? metaProps[META_PROP_VERTICAL]
+  : !ABI5_0_0isUndefined(metaProps[META_PROP_ALL]) ? metaProps[META_PROP_ALL]
   : 0;
 }
 
