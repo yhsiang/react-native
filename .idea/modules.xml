@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Examples/Examples.iml" filepath="$PROJECT_DIR$/Examples/Examples.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Examples/Movies/Movies.iml" filepath="$PROJECT_DIR$/Examples/Movies/Movies.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Examples/Movies/android/Movies-android.iml" filepath="$PROJECT_DIR$/Examples/Movies/android/Movies-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Examples/Movies/android/app/Movies-android-app.iml" filepath="$PROJECT_DIR$/Examples/Movies/android/app/Movies-android-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ReactAndroid/ReactAndroid.iml" filepath="$PROJECT_DIR$/ReactAndroid/ReactAndroid.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Examples/UIExplorer/UIExplorer.iml" filepath="$PROJECT_DIR$/Examples/UIExplorer/UIExplorer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Examples/UIExplorer/android/UIExplorer-android.iml" filepath="$PROJECT_DIR$/Examples/UIExplorer/android/UIExplorer-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Examples/UIExplorer/android/app/UIExplorer-android-app.iml" filepath="$PROJECT_DIR$/Examples/UIExplorer/android/app/UIExplorer-android-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/react-native.iml" filepath="$PROJECT_DIR$/react-native.iml" />
+    </modules>
+  </component>
+</project>
