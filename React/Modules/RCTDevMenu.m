@@ -89,7 +89,7 @@ typedef void(^RCTDevMenuAlertActionHandler)(UIAlertAction *action);
 
 @synthesize bridge = _bridge;
 
-RCT_EXPORT_MODULE()
++ (NSString *)moduleName { return @"RCTDevMenu"; }
 
 + (void)initialize
 {
