@@ -140,7 +140,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 
 @synthesize bridge = _bridge;
 
-RCT_EXPORT_MODULE()
++ (NSString *)moduleName { return @"RCTDevMenu"; }
 
 + (void)initialize
 {
