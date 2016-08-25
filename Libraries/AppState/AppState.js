@@ -101,12 +101,16 @@ class AppState extends NativeEventEmitter {
     // TODO: see above - this request just populates the value of `currentState`
     // when the module is first initialized. Would be better to get rid of the prop
     // and expose `getCurrentAppState` method directly.
-    RCTAppState.getCurrentAppState(
-      (appStateData) => {
-        this.currentState = appStateData.app_state;
-      },
-      logError
-    );
+    //
+    // note(brentvatne): This is commented out for now because this causes an error
+    // on SDK9.
+    //
+    // RCTAppState.getCurrentAppState(
+    //   (appStateData) => {
+    //     this.currentState = appStateData.app_state;
+    //   },
+    //   logError
+    // );
   }
 
   /**
