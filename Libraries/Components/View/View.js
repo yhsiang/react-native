@@ -55,6 +55,9 @@ const AccessibilityComponentType = [
 const forceTouchAvailable = (UIManager.RCTView.Constants &&
   UIManager.RCTView.Constants.forceTouchAvailable) || false;
 
+const touchRadiusAvailable = (UIManager.RCTView.Constants &&
+  UIManager.RCTView.Constants.touchRadiusAvailable) || false;
+
 const statics = {
   AccessibilityTraits,
   AccessibilityComponentType,
@@ -63,6 +66,11 @@ const statics = {
    * @platform ios
    */
   forceTouchAvailable,
+  /**
+   * Is touch radius available (i.e. will touch events include `radius`)
+   * @platform ios
+   */
+  touchRadiusAvailable,
 };
 
 /**

@@ -157,6 +157,9 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
   if (RCTForceTouchAvailable()) {
     reactTouch[@"force"] = @(RCTZeroIfNaN(nativeTouch.force / nativeTouch.maximumPossibleForce));
   }
+  if (RCTTouchRadiusAvailable()) {
+    reactTouch[@"radius"] = @(nativeTouch.majorRadius);
+  }
 }
 
 /**

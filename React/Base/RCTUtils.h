@@ -92,6 +92,9 @@ RCT_EXTERN UIViewController *__nullable RCTPresentedViewController(void);
 // Does this device support force touch (aka 3D Touch)?
 RCT_EXTERN BOOL RCTForceTouchAvailable(void);
 
+// Does this device support touch radius?
+RCT_EXTERN BOOL RCTTouchRadiusAvailable(void);
+
 // Return a UIAlertView initialized with the given values
 // or nil if running in an app extension
 RCT_EXTERN UIAlertView *__nullable RCTAlertView(NSString *title,

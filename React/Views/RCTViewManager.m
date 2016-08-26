@@ -93,7 +93,10 @@ RCT_EXPORT_MODULE()
 
 - (NSDictionary<NSString *, id> *)constantsToExport
 {
-  return @{@"forceTouchAvailable": @(RCTForceTouchAvailable())};
+  return @{
+           @"forceTouchAvailable": @(RCTForceTouchAvailable()),
+           @"touchRadiusAvailable": @(RCTTouchRadiusAvailable()),
+           };
 }
 
 - (RCTViewManagerUIBlock)uiBlockToAmendWithShadowView:(__unused RCTShadowView *)shadowView

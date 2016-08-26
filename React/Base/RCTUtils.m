@@ -490,6 +490,16 @@ BOOL RCTForceTouchAvailable(void)
     (RCTKeyWindow() ?: [UIView new]).traitCollection.forceTouchCapability == UIForceTouchCapabilityAvailable;
 }
 
+BOOL RCTTouchRadiusAvailable(void)
+{
+  static BOOL touchRadiusSupported;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    touchRadiusSupported = ([UIDevice currentDevice].systemVersion.floatValue >= 8);
+  });
+  return touchRadiusSupported;
+}
+
 UIAlertView *__nullable RCTAlertView(NSString *title,
                                      NSString *__nullable message,
                                      id __nullable delegate,
