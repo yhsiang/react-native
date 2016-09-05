@@ -437,9 +437,9 @@ SEL RCTParseMethodSignature(NSString *methodSignature, NSArray<RCTMethodArgument
   return _profileArgs;
 }
 
-- (void)invokeWithBridge:(RCTBridge *)bridge
-                  module:(id)module
-               arguments:(NSArray *)arguments
+- (id)invokeWithBridge:(RCTBridge *)bridge
+                module:(id)module
+             arguments:(NSArray *)arguments
 {
   if (_argumentBlocks == nil) {
     [self processMethodSignature];
@@ -468,7 +468,7 @@ SEL RCTParseMethodSignature(NSString *methodSignature, NSArray<RCTMethodArgument
                   Updating both should make this error go away.",
                   RCTBridgeModuleNameForClass(_moduleClass), _JSMethodName,
                   actualCount, expectedCount);
-      return;
+      return nil;
     }
   }
 
@@ -480,7 +480,7 @@ SEL RCTParseMethodSignature(NSString *methodSignature, NSArray<RCTMethodArgument
       // Invalid argument, abort
       RCTLogArgumentError(self, index, json,
                           "could not be processed. Aborting method call.");
-      return;
+      return nil;
     }
     index++;
   }
@@ -506,6 +506,8 @@ SEL RCTParseMethodSignature(NSString *methodSignature, NSArray<RCTMethodArgument
       }
     }
   }
+
+  return nil;
 }
 
 - (NSString *)methodName
