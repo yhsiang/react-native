@@ -245,7 +245,7 @@ static void RCTProcessMetaProps(const float metaProps[META_PROP_COUNT], float st
 
     _reactSubviews = [NSMutableArray array];
 
-    _cssNode = new_css_node();
+    _cssNode = ABI5_0_0new_css_node();
     _cssNode->context = (__bridge void *)self;
     _cssNode->print = RCTPrint;
     _cssNode->get_child = RCTGetChild;
@@ -262,7 +262,7 @@ static void RCTProcessMetaProps(const float metaProps[META_PROP_COUNT], float st
 
 - (void)dealloc
 {
-  free_css_node(_cssNode);
+  ABI5_0_0free_css_node(_cssNode);
 }
 
 - (void)dirtyLayout
