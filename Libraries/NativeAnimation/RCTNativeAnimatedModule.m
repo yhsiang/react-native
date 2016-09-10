@@ -283,7 +283,7 @@ RCT_EXPORT_METHOD(removeAnimatedEventFromView:(nonnull NSNumber *)viewTag
   if (driver) {
     [driver updateWithEvent:event];
     [_updatedValueNodes addObject:driver.valueNode];
-    [self startAnimationLoopIfNeeded];
+    [self updateAnimations];
     return YES;
   }
 
