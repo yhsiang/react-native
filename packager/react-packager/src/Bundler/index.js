@@ -98,9 +98,7 @@ const validateOpts = declareOpts({
 
 const assetPropertyBlacklist = new Set([
   'files',
-  'fileHashes',
   'fileSystemLocation',
-  'hash',
   'path',
 ]);
 
