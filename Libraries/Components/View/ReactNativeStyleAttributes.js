@@ -12,6 +12,7 @@
 
 'use strict';
 
+var NativeModules = require('NativeModules');
 var ImageStylePropTypes = require('ImageStylePropTypes');
 var TextStylePropTypes = require('TextStylePropTypes');
 var ViewStylePropTypes = require('ViewStylePropTypes');
@@ -34,6 +35,17 @@ ReactNativeStyleAttributes.shadowOffset = { diff: sizesDiffer };
 
 // Do not rely on this attribute.
 ReactNativeStyleAttributes.decomposedMatrix = 'decomposedMatrix';
+
+function processFontFamily(name) {
+  let sessionId = NativeModules.ExponentConstants.sessionId;
+  if (name.indexOf(sessionId) > -1) {
+    return name;
+  } else {
+    return `ExponentFont-${sessionId}-${name}`;
+  }
+}
+
+ReactNativeStyleAttributes.fontFamily = { process: processFontFamily };
 
 var colorAttributes = { process: processColor };
 ReactNativeStyleAttributes.backgroundColor = colorAttributes;
