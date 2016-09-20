@@ -259,6 +259,7 @@ class Bundler {
     resolutionResponse,
     isolateModuleIDs,
     includeAssetFileHashes,
+    assetPlugins,
   }) {
     const onResolutionResponse = response => {
       bundle.setMainModuleId(response.getModuleId(getMainModule(response)));
@@ -304,6 +305,7 @@ class Bundler {
       finalizeBundle,
       isolateModuleIDs,
       includeAssetFileHashes,
+      assetPlugins,
     });
   }
 
@@ -315,6 +317,7 @@ class Bundler {
     dev,
     platform,
     includeAssetFileHashes,
+    assetPlugins,
   }) {
     const onModuleTransformed = ({module, transformed, response, bundle}) => {
       const deps = Object.create(null);
@@ -344,6 +347,7 @@ class Bundler {
       minify: false,
       bundle: new PrepackBundle(sourceMapUrl),
       includeAssetFileHashes,
+      assetPlugins,
     });
   }
 
@@ -358,6 +362,7 @@ class Bundler {
     resolutionResponse,
     isolateModuleIDs,
     includeAssetFileHashes,
+    assetPlugins,
     onResolutionResponse = noop,
     onModuleTransformed = noop,
     finalizeBundle = noop,
@@ -412,6 +417,7 @@ class Bundler {
           bundle,
           entryFilePath,
           includeAssetFileHashes,
+          assetPlugins,
           transformOptions: response.transformOptions,
           getModuleId: response.getModuleId,
           dependencyPairs: response.getResolvedDependencyPairs(module),
@@ -554,6 +560,7 @@ class Bundler {
     getModuleId,
     dependencyPairs,
     includeAssetFileHashes,
+    assetPlugins,
   }) {
     let moduleTransport;
     const moduleId = getModuleId(module);
@@ -563,7 +570,7 @@ class Bundler {
         this._generateAssetModule_DEPRECATED(bundle, module, moduleId);
     } else if (module.isAsset()) {
       moduleTransport = this._generateAssetModule(
-        bundle, module, moduleId, includeAssetFileHashes, transformOptions.platform);
+        bundle, module, moduleId, assetPlugins, includeAssetFileHashes, transformOptions.platform);
     }
 
     if (moduleTransport) {
@@ -626,7 +633,7 @@ class Bundler {
     });
   }
 
-  _generateAssetObjAndCode(module, includeAssetFileHashes = false, platform = null) {
+  _generateAssetObjAndCode(module, assetPlugins, includeAssetFileHashes = false, platform = null) {
     const relPath = getPathRelativeToRoot(this._projectRoots, module.path);
     var assetUrlPath = path.join('/assets', path.dirname(relPath));
 
@@ -644,7 +651,7 @@ class Bundler {
     return Promise.all([
       isImage ? sizeOf(module.path) : null,
       this._assetServer.getAssetData(relPath, platform),
-    ]).then(function(res) {
+    ]).then((res) => {
       const dimensions = res[0];
       const assetData = res[1];
       const asset = {
@@ -664,6 +671,8 @@ class Bundler {
         asset.fileHashes = asset.files.map(md5File.sync);
       }
 
+      return this._applyAssetPlugins(assetPlugins, asset);
+    }).then((asset) => {
       const json =  JSON.stringify(filterObject(asset, assetPropertyBlacklist));
 
       const assetRegistryPath = 'react-native/Libraries/Image/AssetRegistry';
@@ -680,11 +689,30 @@ class Bundler {
     });
   }
 
+  _applyAssetPlugins(assetPlugins, asset) {
+    if (!assetPlugins.length) {
+      return asset;
+    }
 
-  _generateAssetModule(bundle, module, moduleId, includeAssetFileHashes = false, platform = null) {
+    let [currentAssetPlugin, ...remainingAssetPlugins] = assetPlugins;
+    let assetPluginFunction = require(currentAssetPlugin);
+    let result = assetPluginFunction(asset);
+
+    // If the plugin was an async function, wait for it to fulfill before
+    // applying the remaining plugins
+    if (typeof result.then === 'function') {
+      return result.then(resultAsset =>
+        this._applyAssetPlugins(remainingAssetPlugins, resultAsset)
+      );
+    } else {
+      return this._applyAssetPlugins(remainingAssetPlugins, result);
+    }
+  }
+
+  _generateAssetModule(bundle, module, moduleId, assetPlugins = [], includeAssetFileHashes = false, platform = null) {
     return Promise.all([
       module.getName(),
-      this._generateAssetObjAndCode(module, includeAssetFileHashes, platform),
+      this._generateAssetObjAndCode(module, assetPlugins, includeAssetFileHashes, platform),
     ]).then(([name, {asset, code, meta}]) => {
       bundle.addAsset(asset);
       return new ModuleTransport({
