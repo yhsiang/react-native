@@ -667,7 +667,7 @@ class Bundler {
         type: assetData.type,
       };
 
-      if (includeAssetFileHashes) {
+      if (includeAssetFileHashes && !assetPlugins.length) {
         asset.fileHashes = asset.files.map(md5File.sync);
       }
 
