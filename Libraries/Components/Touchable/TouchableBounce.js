@@ -88,7 +88,7 @@ var TouchableBounce = React.createClass({
       toValue: value,
       velocity,
       bounciness,
-      useNativeDriver: true,
+      useNativeDriver: Platform.OS === 'android',
     }).start(callback);
   },
 
