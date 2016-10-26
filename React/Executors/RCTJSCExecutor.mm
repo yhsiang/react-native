@@ -939,6 +939,11 @@ RCT_EXPORT_METHOD(setContextName:(nonnull NSString *)name)
   }
 }
 
+- (JSContext *)jsContext
+{
+  return [self context].context;
+}
+
 @end
 
 @implementation RCTJSContextProvider
