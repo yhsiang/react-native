@@ -12,6 +12,7 @@
 #import <mutex>
 
 #import "RCTNetworking.h"
+#import "RCTAssert.h"
 
 @interface RCTHTTPRequestHandler () <NSURLSessionDataDelegate>
 
@@ -25,6 +26,7 @@
 }
 
 @synthesize bridge = _bridge;
+@synthesize methodQueue = _methodQueue;
 
 RCT_EXPORT_MODULE()
 
@@ -38,6 +40,14 @@ RCT_EXPORT_MODULE()
 {
   // if session == nil and delegates != nil, we've been invalidated
   return _session || !_delegates;
+}
+
+- (dispatch_queue_t)methodQueue
+{
+  if (!_methodQueue) {
+    _methodQueue = [_bridge.networking methodQueue];
+  }
+  return _methodQueue;
 }
 
 #pragma mark - NSURLRequestHandler
@@ -61,16 +71,14 @@ RCT_EXPORT_MODULE()
   if (!_session && [self isValid]) {
     NSOperationQueue *callbackQueue = [NSOperationQueue new];
     callbackQueue.maxConcurrentOperationCount = 1;
-    callbackQueue.underlyingQueue = [[_bridge networking] methodQueue];
+    callbackQueue.underlyingQueue = self.methodQueue;
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     _session = [NSURLSession sessionWithConfiguration:configuration
                                              delegate:self
                                         delegateQueue:callbackQueue];
 
     std::lock_guard<std::mutex> lock(_mutex);
-    _delegates = [[NSMapTable alloc] initWithKeyOptions:NSPointerFunctionsStrongMemory
-                                           valueOptions:NSPointerFunctionsStrongMemory
-                                               capacity:0];
+    _delegates = [NSMapTable strongToStrongObjectsMapTable];
   }
 
   NSURLSessionDataTask *task = [_session dataTaskWithRequest:request];
@@ -84,11 +92,9 @@ RCT_EXPORT_MODULE()
 
 - (void)cancelRequest:(NSURLSessionDataTask *)task
 {
-  {
-    std::lock_guard<std::mutex> lock(_mutex);
-    [_delegates removeObjectForKey:task];
-  }
-  [task cancel];
+  [_session.delegateQueue addOperationWithBlock:^{
+    [task cancel];
+  }];
 }
 
 #pragma mark - NSURLSession delegate
@@ -139,8 +145,16 @@ didReceiveResponse:(NSURLResponse *)response
   {
     std::lock_guard<std::mutex> lock(_mutex);
     delegate = [_delegates objectForKey:task];
-    [_delegates removeObjectForKey:task];
   }
+
+  // Oh NSURLSession. Prevent leaks and crashes by delaying the task removal
+  // until this method has returned.
+  [self->_session.delegateQueue addOperationWithBlock:^{
+    std::lock_guard<std::mutex> lock(self->_mutex);
+    [self->_delegates removeObjectForKey:task];
+  }];
+
+  RCTAssert(delegate, @"Delegate must not be nil");
   [delegate URLRequest:task didCompleteWithError:error];
 }
 
