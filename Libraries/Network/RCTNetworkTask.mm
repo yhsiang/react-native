@@ -9,6 +9,8 @@
 
 #import "RCTNetworkTask.h"
 
+#import <mutex>
+
 #import "RCTLog.h"
 #import "RCTUtils.h"
 
@@ -19,7 +21,10 @@
   dispatch_queue_t _callbackQueue;
 
   RCTNetworkTask *_selfReference;
+  std::mutex _mutex;
 }
+
+@synthesize status = _status;
 
 - (instancetype)initWithRequest:(NSURLRequest *)request
                         handler:(id<RCTURLRequestHandler>)handler
@@ -56,6 +61,12 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   _requestToken = nil;
 }
 
+- (RCTNetworkTaskStatus)status
+{
+  std::lock_guard<std::mutex> lock(_mutex);
+  return _status;
+}
+
 - (void)dispatchCallback:(dispatch_block_t)callback
 {
   if (dispatch_get_specific((__bridge void *)self) == (__bridge void *)self) {
@@ -65,55 +76,66 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   }
 }
 
-- (void)start
+- (BOOL)start
 {
+  std::lock_guard<std::mutex> lock(_mutex);
   if (_status != RCTNetworkTaskPending) {
-    RCTLogError(@"RCTNetworkTask was already started or completed");
-    return;
+    RCTLogError(@"Can't start task that's not pending");
+    return NO;
   }
 
-  if (_requestToken == nil) {
-    id token = [_handler sendRequest:_request withDelegate:self];
-    if ([self validateRequestToken:token]) {
-      _selfReference = self;
-      _status = RCTNetworkTaskInProgress;
-    }
+  RCTAssert(_requestToken == nil, @"requestToken should not be set before the task is started");
+  _selfReference = self;
+  _status = RCTNetworkTaskInProgress;
+
+  dispatch_block_t sendRequestBlock = ^{
+    self->_requestToken = [self->_handler sendRequest:self->_request withDelegate:self];
+  };
+
+  if ([_handler respondsToSelector:@selector(methodQueue)]) {
+    dispatch_async([_handler methodQueue], sendRequestBlock);
+  } else {
+    sendRequestBlock();
   }
+
+  return YES;
 }
 
 - (void)cancel
 {
+  std::lock_guard<std::mutex> lock(_mutex);
   if (_status == RCTNetworkTaskFinished) {
     return;
   }
 
-  _status = RCTNetworkTaskFinished;
   id token = _requestToken;
   if (token && [_handler respondsToSelector:@selector(cancelRequest:)]) {
     [_handler cancelRequest:token];
   }
-  [self invalidate];
+
+  // The task was in progress, we'll get a completion callback anyway
+  if (_status != RCTNetworkTaskInProgress) {
+    [self invalidate];
+  }
+
+  _status = RCTNetworkTaskFinished;
 }
 
 - (BOOL)validateRequestToken:(id)requestToken
 {
-  BOOL valid = YES;
   if (_requestToken == nil) {
-    if (requestToken == nil) {
-      if (RCT_DEBUG) {
-        RCTLogError(@"Missing request token for request: %@", _request);
-      }
-      valid = NO;
+    if (RCT_DEBUG) {
+      RCTLogError(@"Missing request token for request: %@", _request);
     }
-    _requestToken = requestToken;
-  } else if (![requestToken isEqual:_requestToken]) {
+    return NO;
+  }
+
+  if (![requestToken isEqual:_requestToken]) {
     if (RCT_DEBUG) {
       RCTLogError(@"Unrecognized request token: %@ expected: %@", requestToken, _requestToken);
     }
-    valid = NO;
-  }
 
-  if (!valid) {
+    std::lock_guard<std::mutex> lock(_mutex);
     _status = RCTNetworkTaskFinished;
     if (_completionBlock) {
       RCTURLRequestCompletionBlock completionBlock = _completionBlock;
@@ -121,9 +143,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
         completionBlock(self->_response, nil, RCTErrorWithMessage(@"Invalid request token."));
       }];
     }
+
     [self invalidate];
   }
-  return valid;
+
+  return YES;
 }
 
 - (void)URLRequest:(id)requestToken didSendDataWithProgress:(int64_t)bytesSent
@@ -190,6 +214,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
     return;
   }
 
+  std::lock_guard<std::mutex> lock(_mutex);
   _status = RCTNetworkTaskFinished;
   if (_completionBlock) {
     RCTURLRequestCompletionBlock completionBlock = _completionBlock;
@@ -197,6 +222,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
       completionBlock(self->_response, self->_data, error);
     }];
   }
+
   [self invalidate];
 }
 

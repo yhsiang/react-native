@@ -45,7 +45,6 @@
   dispatch_queue_t _URLRequestQueue;
   id<RCTImageCache> _imageCache;
   NSMutableArray *_pendingTasks;
-  NSInteger _activeTasks;
   NSMutableArray *_pendingDecodes;
   NSInteger _scheduledDecodes;
   NSUInteger _activeBytes;
@@ -236,27 +235,6 @@ static UIImage *RCTResizeImageIfNeeded(UIImage *image,
 - (void)dequeueTasks
 {
   dispatch_async(_URLRequestQueue, ^{
-    // Remove completed tasks
-    for (RCTNetworkTask *task in self->_pendingTasks.reverseObjectEnumerator) {
-      switch (task.status) {
-        case RCTNetworkTaskFinished:
-          [self->_pendingTasks removeObject:task];
-          self->_activeTasks--;
-          break;
-        case RCTNetworkTaskPending:
-          break;
-        case RCTNetworkTaskInProgress:
-          // Check task isn't "stuck"
-          if (task.requestToken == nil) {
-            RCTLogWarn(@"Task orphaned for request %@", task.request);
-            [self->_pendingTasks removeObject:task];
-            self->_activeTasks--;
-            [task cancel];
-          }
-          break;
-      }
-    }
-
     // Start queued decode
     NSInteger activeDecodes = self->_scheduledDecodes - self->_pendingDecodes.count;
     while (activeDecodes == 0 || (self->_activeBytes <= self->_maxConcurrentDecodingBytes &&
@@ -271,13 +249,36 @@ static UIImage *RCTResizeImageIfNeeded(UIImage *image,
     }
 
     // Start queued tasks
-    for (RCTNetworkTask *task in self->_pendingTasks) {
-      if (MAX(self->_activeTasks, self->_scheduledDecodes) >= self->_maxConcurrentLoadingTasks) {
-        break;
+    // TODO: we should schedule image loads smarter to actually prioritse what's waiting
+    // on screen.  We execute the tasks from front to back, so our iterator i is also
+    // the number of currently active tasks. Very convenient.
+    NSUInteger i = 0;
+    NSUInteger maxTasks = self->_maxConcurrentLoadingTasks - self->_scheduledDecodes;
+    while (i < [self->_pendingTasks count]) {
+      RCTNetworkTask *task = [self->_pendingTasks objectAtIndex:i];
+
+      // Remove any completed tasks from the front of the array
+      if (task.status == RCTNetworkTaskFinished) {
+        [self->_pendingTasks removeObjectAtIndex:i];
       }
-      if (task.status == RCTNetworkTaskPending) {
-        [task start];
-        self->_activeTasks++;
+
+      // Start pending tasks up to the limit
+      else if (task.status == RCTNetworkTaskPending) {
+        if (i < maxTasks) {
+          if (![task start]) {
+            RCTAssert(NO, @"Task %p failed to start", task);
+          } else {
+            i++;
+          }
+        } else {
+          // Can't schedule any more work
+          break;
+        }
+      }
+
+      // Tasks in progress
+      else {
+        i++;
       }
     }
   });
@@ -413,6 +414,7 @@ static UIImage *RCTResizeImageIfNeeded(UIImage *image,
   // Use networking module to load image
   RCTURLRequestCompletionBlock processResponse = ^(NSURLResponse *response, NSData *data, NSError *error) {
     // Check for system errors
+    // TODO: how is this different from the error handling in the completion block below?
     if (error) {
       completionHandler(error, nil, nil);
       return;
@@ -462,17 +464,15 @@ static UIImage *RCTResizeImageIfNeeded(UIImage *image,
         someError = RCTErrorWithMessage(@"Unknown image download error");
       }
       completionHandler(someError, nil, nil);
-      [strongSelf dequeueTasks];
-      return;
+    } else {
+      dispatch_async(strongSelf->_URLRequestQueue, ^{
+        // Process image data
+        processResponse(response, data, nil);
+      });
     }
 
-    dispatch_async(strongSelf->_URLRequestQueue, ^{
-      // Process image data
-      processResponse(response, data, nil);
-
-      // Prepare for next task
-      [strongSelf dequeueTasks];
-    });
+    // Prepare for next task
+    [strongSelf dequeueTasks];
   }];
 
   task.downloadProgressBlock = ^(int64_t progress, int64_t total) {
@@ -498,6 +498,7 @@ static UIImage *RCTResizeImageIfNeeded(UIImage *image,
       [task cancel];
       task = nil;
     });
+
     [strongSelf dequeueTasks];
   };
 }
@@ -516,6 +517,7 @@ static UIImage *RCTResizeImageIfNeeded(UIImage *image,
   dispatch_block_t cancellationBlock = ^{
     if (cancelLoad && !cancelled) {
       cancelLoad();
+      cancelLoad = nil;
     }
     OSAtomicOr32Barrier(1, &cancelled);
   };
@@ -763,13 +765,6 @@ static UIImage *RCTResizeImageIfNeeded(UIImage *image,
   }];
 
   return requestToken;
-}
-
-- (void)cancelRequest:(id)requestToken
-{
-  if (requestToken) {
-    ((RCTImageLoaderCancellationBlock)requestToken)();
-  }
 }
 
 @end

@@ -43,7 +43,7 @@ typedef NS_ENUM(NSInteger, RCTNetworkTaskStatus) {
                         handler:(id<RCTURLRequestHandler>)handler
                   callbackQueue:(dispatch_queue_t)callbackQueue NS_DESIGNATED_INITIALIZER;
 
-- (void)start;
+- (BOOL)start;
 - (void)cancel;
 
 @end

@@ -29,6 +29,8 @@
  * itself. This will be used later to refer to the request in callbacks. The
  * `sendRequest:withDelegate:` method *must* return before calling any of the
  * delegate methods, or the delegate won't recognize the token.
+ *
+ * This method will be called from the module's methodQueue if set.
  */
 - (id)sendRequest:(NSURLRequest *)request
      withDelegate:(id<RCTURLRequestDelegate>)delegate;
@@ -39,6 +41,11 @@
  * Not all request types can be cancelled, but this method can be implemented
  * for ones that can. It should be used to free up any resources on ongoing
  * processes associated with the request.
+ *
+ * You must call the delegate's URLRequest:didCompleteWithError: method with an
+ * appropriate error after cancellation completes.
+ *
+ * This method can be called from any thread.
  */
 - (void)cancelRequest:(id)requestToken;
 
