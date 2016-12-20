@@ -9,24 +9,15 @@
 
 #import "RCTDevMenu.h"
 
-#import <objc/runtime.h>
-
-#import "RCTAssert.h"
-#import "RCTBridge+Private.h"
-#import "RCTDefines.h"
-#import "RCTEventDispatcher.h"
+#import "RCTDevSettings.h"
 #import "RCTKeyCommands.h"
 #import "RCTLog.h"
-#import "RCTProfile.h"
-#import "RCTRootView.h"
-#import "RCTSourceCode.h"
 #import "RCTUtils.h"
-#import "RCTWebSocketProxy.h"
 
 #if RCT_DEV
 
 static NSString *const RCTShowDevMenuNotification = @"RCTShowDevMenuNotification";
-static NSString *const RCTDevMenuSettingsKey = @"RCTDevMenu";
+NSString * const kRCTDevSettingShakeToShowDevMenu = @"shakeToShow";
 
 @implementation UIWindow (RCTDevMenu)
 
@@ -120,24 +111,16 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 
 @end
 
-@interface RCTDevMenu () <RCTBridgeModule, RCTInvalidating, RCTWebSocketProxyDelegate>
-
-@property (nonatomic, strong) Class executorClass;
+@interface RCTDevMenu () <RCTBridgeModule, RCTInvalidating>
 
 @end
 
 @implementation RCTDevMenu
 {
   UIAlertController *_actionSheet;
-  NSUserDefaults *_defaults;
-  NSMutableDictionary *_settings;
-  NSURLSessionDataTask *_updateTask;
-  NSURL *_liveReloadURL;
-  BOOL _jsLoaded;
   NSArray<RCTDevMenuItem *> *_presentedItems;
   NSMutableArray<RCTDevMenuItem *> *_extraMenuItems;
   NSString *_webSocketExecutorName;
-  NSString *_executorOverride;
 }
 
 @synthesize bridge = _bridge;
@@ -155,53 +138,21 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 - (instancetype)init
 {
   if ((self = [super init])) {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(showOnShake)
+                                                 name:RCTShowDevMenuNotification
+                                               object:nil];
 
-    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-
-    [notificationCenter addObserver:self
-                           selector:@selector(showOnShake)
-                               name:RCTShowDevMenuNotification
-                             object:nil];
-
-    [notificationCenter addObserver:self
-                           selector:@selector(settingsDidChange)
-                               name:NSUserDefaultsDidChangeNotification
-                             object:nil];
-
-    [notificationCenter addObserver:self
-                           selector:@selector(jsLoaded:)
-                               name:RCTJavaScriptDidLoadNotification
-                             object:nil];
-
-    _defaults = [NSUserDefaults standardUserDefaults];
-    _settings = [[NSMutableDictionary alloc] initWithDictionary:[_defaults objectForKey:RCTDevMenuSettingsKey]];
     _extraMenuItems = [NSMutableArray new];
 
     __weak RCTDevMenu *weakSelf = self;
 
-    [_extraMenuItems addObject:[RCTDevMenuItem toggleItemWithKey:@"showInspector"
+    [_extraMenuItems addObject:[RCTDevMenuItem toggleItemWithKey:kRCTDevSettingIsInspectorShown
                                                  title:@"Show Inspector"
                                          selectedTitle:@"Hide Inspector"
-                                               handler:^(__unused BOOL enabled)
-    {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-      [weakSelf.bridge.eventDispatcher sendDeviceEventWithName:@"toggleElementInspector" body:nil];
-#pragma clang diagnostic pop
-    }]];
+                                               handler:nil]];
 
-    _webSocketExecutorName = [_defaults objectForKey:@"websocket-executor-name"] ?: @"JS Remotely";
-
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-      self->_executorOverride = [self->_defaults objectForKey:@"executor-override"];
-    });
-
-    // Delay setup until after Bridge init
-    dispatch_async(dispatch_get_main_queue(), ^{
-      [weakSelf updateSettings:self->_settings];
-      [weakSelf connectPackager];
-    });
+    _webSocketExecutorName = [_bridge.devSettings settingForKey:@"websocket-executor-name"] ?: @"JS Remotely";
 
 #if TARGET_IPHONE_SIMULATOR
 
@@ -218,19 +169,14 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
     [commands registerKeyCommandWithInput:@"i"
                             modifierFlags:UIKeyModifierCommand
                                    action:^(__unused UIKeyCommand *command) {
-                                     [weakSelf.bridge.eventDispatcher
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-                                      sendDeviceEventWithName:@"toggleElementInspector"
-                                      body:nil];
-#pragma clang diagnostic pop
+                                     [weakSelf.bridge.devSettings toggleElementInspector];
                                    }];
 
     // Reload in normal mode
     [commands registerKeyCommandWithInput:@"n"
                             modifierFlags:UIKeyModifierCommand
                                    action:^(__unused UIKeyCommand *command) {
-                                     weakSelf.executorClass = Nil;
+                                     [weakSelf.bridge.devSettings updateSettingWithValue:@(NO) forKey:kRCTDevSettingIsDebuggingRemotely];
                                    }];
 #endif
 
@@ -238,184 +184,30 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   return self;
 }
 
-- (NSURL *)packagerURL
-{
-  NSString *host = [_bridge.bundleURL host];
-  NSString *scheme = [_bridge.bundleURL scheme];
-  if (!host) {
-    host = @"localhost";
-    scheme = @"http";
-  }
-
-  NSNumber *port = [_bridge.bundleURL port];
-  if (!port) {
-    port = @8081; // Packager default port
-  }
-  return [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@:%@/message?role=shell", scheme, host, port]];
-}
-
-// TODO: Move non-UI logic into separate RCTDevSettings module
-- (void)connectPackager
-{
-  Class webSocketManagerClass = objc_lookUpClass("RCTWebSocketManager");
-  id<RCTWebSocketProxy> webSocketManager = (id <RCTWebSocketProxy>)[webSocketManagerClass sharedInstance];
-  NSURL *url = [self packagerURL];
-  if (url) {
-    [webSocketManager setDelegate:self forURL:url];
-  }
-}
-
-- (BOOL)isSupportedVersion:(NSNumber *)version
-{
-  NSArray<NSNumber *> *const kSupportedVersions = @[ @1 ];
-  return [kSupportedVersions containsObject:version];
-}
-
-- (void)socketProxy:(__unused id<RCTWebSocketProxy>)sender didReceiveMessage:(NSDictionary<NSString *, id> *)message
-{
-  if ([self isSupportedVersion:message[@"version"]]) {
-    [self processTarget:message[@"target"] action:message[@"action"] options:message[@"options"]];
-  }
-}
-
-- (void)processTarget:(NSString *)target action:(NSString *)action options:(NSDictionary<NSString *, id> *)options
-{
-  if ([target isEqualToString:@"bridge"]) {
-    if ([action isEqualToString:@"reload"]) {
-      if ([options[@"debug"] boolValue]) {
-        _bridge.executorClass = objc_lookUpClass("RCTWebSocketExecutor");
-      }
-      [_bridge reload];
-    }
-  }
-}
-
 - (dispatch_queue_t)methodQueue
 {
   return dispatch_get_main_queue();
 }
 
-- (void)settingsDidChange
+- (void)setBridge:(RCTBridge *)bridge
 {
-  // Needed to prevent a race condition when reloading
-  __weak RCTDevMenu *weakSelf = self;
-  NSDictionary *settings = [_defaults objectForKey:RCTDevMenuSettingsKey];
-  dispatch_async(dispatch_get_main_queue(), ^{
-    [weakSelf updateSettings:settings];
-  });
-}
-
-/**
- * This method loads the settings from NSUserDefaults and overrides any local
- * settings with them. It should only be called on app launch, or after the app
- * has returned from the background, when the settings might have been edited
- * outside of the app.
- */
-- (void)updateSettings:(NSDictionary *)settings
-{
-  [_settings setDictionary:settings];
-
-  // Fire handlers for items whose values have changed
-  for (RCTDevMenuItem *item in _extraMenuItems) {
-    if (item.key) {
-      id value = settings[item.key];
-      if (value != item.value && ![value isEqual:item.value]) {
-        item.value = value;
-        [item callHandler];
-      }
-    }
-  }
-
-  self.shakeToShow = [_settings[@"shakeToShow"] ?: @YES boolValue];
-  self.profilingEnabled = [_settings[@"profilingEnabled"] ?: @NO boolValue];
-  self.liveReloadEnabled = [_settings[@"liveReloadEnabled"] ?: @YES boolValue];
-  self.hotLoadingEnabled = [_settings[@"hotLoadingEnabled"] ?: @NO boolValue];
-  self.showFPS = [_settings[@"showFPS"] ?: @NO boolValue];
-  self.executorClass = NSClassFromString(_executorOverride ?: _settings[@"executorClass"]);
-}
-
-/**
- * This updates a particular setting, and then saves the settings. Because all
- * settings are overwritten by this, it's important that this is not called
- * before settings have been loaded initially, otherwise the other settings
- * will be reset.
- */
-- (void)updateSetting:(NSString *)name value:(id)value
-{
-  // Fire handler for item whose values has changed
-  for (RCTDevMenuItem *item in _extraMenuItems) {
-    if ([item.key isEqualToString:name]) {
-      if (value != item.value && ![value isEqual:item.value]) {
-        item.value = value;
-        [item callHandler];
-      }
-      break;
-    }
-  }
-
-  // Save the setting
-  id currentValue = _settings[name];
-  if (currentValue == value || [currentValue isEqual:value]) {
-    return;
-  }
-  if (value) {
-    _settings[name] = value;
-  } else {
-    [_settings removeObjectForKey:name];
-  }
-  [_defaults setObject:_settings forKey:RCTDevMenuSettingsKey];
-  [_defaults synchronize];
-}
-
-- (void)jsLoaded:(NSNotification *)notification
-{
-  if (notification.userInfo[@"bridge"] != _bridge) {
-    return;
-  }
-
-  _jsLoaded = YES;
-
-  // Check if live reloading is available
-  _liveReloadURL = nil;
-  RCTSourceCode *sourceCodeModule = [_bridge moduleForClass:[RCTSourceCode class]];
-  if (!sourceCodeModule.scriptURL) {
-    if (!sourceCodeModule) {
-      RCTLogWarn(@"RCTSourceCode module not found");
-    } else if (!RCTRunningInTestEnvironment()) {
-      RCTLogWarn(@"RCTSourceCode module scriptURL has not been set");
-    }
-  } else if (!sourceCodeModule.scriptURL.fileURL) {
-    // Live reloading is disabled when running from bundled JS file
-    _liveReloadURL = [[NSURL alloc] initWithString:@"/onchange" relativeToURL:sourceCodeModule.scriptURL];
-  }
-
-  dispatch_async(dispatch_get_main_queue(), ^{
-    // Hit these setters again after bridge has finished loading
-    self.profilingEnabled = self->_profilingEnabled;
-    self.liveReloadEnabled = self->_liveReloadEnabled;
-    self.executorClass = self->_executorClass;
-
-    // Inspector can only be shown after JS has loaded
-    if ([self->_settings[@"showInspector"] boolValue]) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-      [self.bridge.eventDispatcher sendDeviceEventWithName:@"toggleElementInspector" body:nil];
-#pragma clang diagnostic pop
-    }
-  });
+  _bridge = bridge;
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(_settingsDidChange)
+                                               name:kRCTDevSettingsDidUpdateNotification
+                                             object:_bridge.devSettings.dataSource];
 }
 
 - (void)invalidate
 {
   _presentedItems = nil;
-  [_updateTask cancel];
   [_actionSheet dismissViewControllerAnimated:YES completion:^(void){}];
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)showOnShake
 {
-  if (_shakeToShow) {
+  if ([[_bridge.devSettings settingForKey:kRCTDevSettingShakeToShowDevMenu] boolValue]) {
     [self show];
   }
 }
@@ -440,10 +232,10 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   [_extraMenuItems addObject:item];
 
   // Fire handler for items whose saved value doesn't match the default
-  [self settingsDidChange];
+  [self _settingsDidChange];
 }
 
-- (NSArray<RCTDevMenuItem *> *)menuItems
+- (NSArray<RCTDevMenuItem *> *)_menuItemsToPresent
 {
   NSMutableArray<RCTDevMenuItem *> *items = [NSMutableArray new];
 
@@ -452,11 +244,10 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   __weak RCTDevMenu *weakSelf = self;
 
   [items addObject:[RCTDevMenuItem buttonItemWithTitle:@"Reload" handler:^{
-    [weakSelf reload];
+    [weakSelf.bridge.devSettings reload];
   }]];
 
-  Class jsDebuggingExecutorClass = objc_lookUpClass("RCTWebSocketExecutor");
-  if (!jsDebuggingExecutorClass) {
+  if (!_bridge.devSettings.isRemoteDebugAvailable) {
     [items addObject:[RCTDevMenuItem buttonItemWithTitle:[NSString stringWithFormat:@"%@ Debugger Unavailable", _webSocketExecutorName] handler:^{
       UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"%@ Debugger Unavailable", self->_webSocketExecutorName]
                                                                                message:[NSString stringWithFormat:@"You need to include the RCTWebSocket library to enable %@ debugging", self->_webSocketExecutorName]
@@ -465,45 +256,52 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
       [RCTPresentedViewController() presentViewController:alertController animated:YES completion:NULL];
     }]];
   } else {
-    BOOL isDebuggingJS = _executorClass && _executorClass == jsDebuggingExecutorClass;
-    NSString *debuggingDescription = [_defaults objectForKey:@"websocket-executor-name"] ?: @"Remote JS";
+    BOOL isDebuggingJS = [[_bridge.devSettings settingForKey:kRCTDevSettingIsDebuggingRemotely] boolValue];
+    NSString *debuggingDescription = [_bridge.devSettings settingForKey:@"websocket-executor-name"] ?: @"Remote JS";
     NSString *debugTitleJS = isDebuggingJS ? [NSString stringWithFormat:@"Stop %@ Debugging", debuggingDescription] : [NSString stringWithFormat:@"Debug %@", _webSocketExecutorName];
     [items addObject:[RCTDevMenuItem buttonItemWithTitle:debugTitleJS handler:^{
-      weakSelf.executorClass = isDebuggingJS ? Nil : jsDebuggingExecutorClass;
+      [weakSelf.bridge.devSettings updateSettingWithValue:@(!isDebuggingJS) forKey:kRCTDevSettingIsDebuggingRemotely];
     }]];
   }
 
-  if (_liveReloadURL) {
-    NSString *liveReloadTitle = _liveReloadEnabled ? @"Disable Live Reload" : @"Enable Live Reload";
-    [items addObject:[RCTDevMenuItem buttonItemWithTitle:liveReloadTitle handler:^{
-      __typeof(self) strongSelf = weakSelf;
-      if (strongSelf) {
-        strongSelf.liveReloadEnabled = !strongSelf->_liveReloadEnabled;
-      }
-    }]];
-
-    NSString *profilingTitle  = RCTProfileIsProfiling() ? @"Stop Systrace" : @"Start Systrace";
-    [items addObject:[RCTDevMenuItem buttonItemWithTitle:profilingTitle handler:^{
-      __typeof(self) strongSelf = weakSelf;
-      if (strongSelf) {
-        strongSelf.profilingEnabled = !strongSelf->_profilingEnabled;
-      }
-    }]];
+  if (_bridge.devSettings.isLiveReloadAvailable) {
+    [items addObject:[RCTDevMenuItem toggleItemWithKey:kRCTDevSettingLiveReloadEnabled
+                                                 title:@"Enable Live Reload"
+                                         selectedTitle:@"Disable Live Reload"
+                                               handler:nil]];
+    [items addObject:[RCTDevMenuItem toggleItemWithKey:kRCTDevSettingProfilingEnabled
+                                                 title:@"Start Systrace"
+                                         selectedTitle:@"Stop Systrace"
+                                               handler:nil]];
   }
 
-  if ([self hotLoadingAvailable]) {
-    NSString *hotLoadingTitle = _hotLoadingEnabled ? @"Disable Hot Reloading" : @"Enable Hot Reloading";
-    [items addObject:[RCTDevMenuItem buttonItemWithTitle:hotLoadingTitle handler:^{
-      __typeof(self) strongSelf = weakSelf;
-      if (strongSelf) {
-        strongSelf.hotLoadingEnabled = !strongSelf->_hotLoadingEnabled;
-      }
-    }]];
+  if (_bridge.devSettings.isHotLoadingAvailable) {
+    [items addObject:[RCTDevMenuItem toggleItemWithKey:kRCTDevSettingHotLoadingEnabled
+                                                 title:@"Enable Hot Reloading"
+                                         selectedTitle:@"Disable Hot Reloading"
+                                               handler:nil]];
   }
 
   [items addObjectsFromArray:_extraMenuItems];
 
   return items;
+}
+
+- (void)_settingsDidChange
+{
+  // Fire handlers for items whose values have changed.
+  // _presentedItems already includes _extraMenuItems if it exists.
+  NSArray<RCTDevMenuItem *> *allItems = (_presentedItems) ?: _extraMenuItems;
+  
+  for (RCTDevMenuItem *item in allItems) {
+    if (item.key && item.type != RCTDevMenuTypeButton) {
+      id value = [_bridge.devSettings settingForKey:item.key];
+      if (value != item.value && ![value isEqual:item.value]) {
+        item.value = value;
+        [item callHandler];
+      }
+    }
+  }
 }
 
 RCT_EXPORT_METHOD(show)
@@ -519,7 +317,7 @@ RCT_EXPORT_METHOD(show)
                                                      message:@""
                                               preferredStyle:style];
 
-  NSArray<RCTDevMenuItem *> *items = [self menuItems];
+  NSArray<RCTDevMenuItem *> *items = [self _menuItemsToPresent];
   for (RCTDevMenuItem *item in items) {
     switch (item.type) {
       case RCTDevMenuTypeButton: {
@@ -527,21 +325,20 @@ RCT_EXPORT_METHOD(show)
                                                          style:UIAlertActionStyleDefault
                                                        handler:^(UIAlertAction *action) {
                                                          _actionSheet = nil;
-                                                         // Cancel button tappped.
                                                          [item callHandler];
                                                        }]];
         break;
       }
       case RCTDevMenuTypeToggle: {
-        BOOL selected = [item.value boolValue];
-        [_actionSheet addAction:[UIAlertAction actionWithTitle:(selected? item.selectedTitle : item.title)
+        BOOL selected = [[_bridge.devSettings settingForKey:item.key] boolValue];
+        [_actionSheet addAction:[UIAlertAction actionWithTitle:(selected ? item.selectedTitle : item.title)
                                                          style:UIAlertActionStyleDefault
                                                        handler:^(UIAlertAction *action) {
+                                                         // after the setting updates, item.handler will be called in _settingsDidChange.
                                                          _actionSheet = nil;
-                                                         BOOL value = [self->_settings[item.key] boolValue];
-                                                         [self updateSetting:item.key value:@(!value)]; // will call handler
+                                                         BOOL value = [[self->_bridge.devSettings settingForKey:item.key] boolValue];
+                                                         [self->_bridge.devSettings updateSettingWithValue:@(!value) forKey:item.key];
                                                        }]];
-
         break;
       }
     }
@@ -557,134 +354,63 @@ RCT_EXPORT_METHOD(show)
   [RCTPresentedViewController() presentViewController:_actionSheet animated:YES completion:^(void){}];
 }
 
+#pragma mark - deprecated methods and properties
 
+#define WARN_DEPRECATED_DEV_MENU_EXPORT() RCTLogWarn(@"Using deprecated method %s, use RCTDevSettings instead", __func__)
+
+- (void)setShakeToShow:(BOOL)shakeToShow
+{
+  [_bridge.devSettings updateSettingWithValue:@(shakeToShow) forKey:kRCTDevSettingShakeToShowDevMenu];
+}
+
+- (BOOL)shakeToShow
+{
+  return [[_bridge.devSettings settingForKey:kRCTDevSettingShakeToShowDevMenu] boolValue];
+}
 
 RCT_EXPORT_METHOD(reload)
 {
-  [_bridge requestReload];
+  WARN_DEPRECATED_DEV_MENU_EXPORT();
+  [_bridge.devSettings reload];
 }
 
 RCT_EXPORT_METHOD(debugRemotely:(BOOL)enableDebug)
 {
-  Class jsDebuggingExecutorClass = NSClassFromString(@"RCTWebSocketExecutor");
-  self.executorClass = enableDebug ? jsDebuggingExecutorClass : nil;
-}
-
-- (void)setShakeToShow:(BOOL)shakeToShow
-{
-  _shakeToShow = shakeToShow;
-  [self updateSetting:@"shakeToShow" value:@(_shakeToShow)];
+  WARN_DEPRECATED_DEV_MENU_EXPORT();
+  [_bridge.devSettings updateSettingWithValue:@(enableDebug) forKey:kRCTDevSettingIsDebuggingRemotely];
 }
 
 RCT_EXPORT_METHOD(setProfilingEnabled:(BOOL)enabled)
 {
-  _profilingEnabled = enabled;
-  [self updateSetting:@"profilingEnabled" value:@(_profilingEnabled)];
+  WARN_DEPRECATED_DEV_MENU_EXPORT();
+  [_bridge.devSettings updateSettingWithValue:@(enabled) forKey:kRCTDevSettingProfilingEnabled];
+}
 
-  if (_liveReloadURL && enabled != RCTProfileIsProfiling()) {
-    if (enabled) {
-      [_bridge startProfiling];
-    } else {
-      [_bridge stopProfiling:^(NSData *logData) {
-        RCTProfileSendResult(self->_bridge, @"systrace", logData);
-      }];
-    }
-  }
+- (BOOL)profilingEnabled
+{
+  return [_bridge.devSettings settingForKey:kRCTDevSettingProfilingEnabled];
 }
 
 RCT_EXPORT_METHOD(setLiveReloadEnabled:(BOOL)enabled)
 {
-  _liveReloadEnabled = enabled;
-  [self updateSetting:@"liveReloadEnabled" value:@(_liveReloadEnabled)];
-
-  if (_liveReloadEnabled) {
-    [self checkForUpdates];
-  } else {
-    [_updateTask cancel];
-    _updateTask = nil;
-  }
+  WARN_DEPRECATED_DEV_MENU_EXPORT();
+  [_bridge.devSettings updateSettingWithValue:@(enabled) forKey:kRCTDevSettingLiveReloadEnabled];
 }
 
-- (BOOL)hotLoadingAvailable
+- (BOOL)liveReloadEnabled
 {
-  return _bridge.bundleURL && !_bridge.bundleURL.fileURL; // Only works when running from server
+  return [_bridge.devSettings settingForKey:kRCTDevSettingLiveReloadEnabled];
 }
 
 RCT_EXPORT_METHOD(setHotLoadingEnabled:(BOOL)enabled)
 {
-  _hotLoadingEnabled = enabled;
-  [self updateSetting:@"hotLoadingEnabled" value:@(_hotLoadingEnabled)];
-
-  BOOL actuallyEnabled = [self hotLoadingAvailable] && _hotLoadingEnabled;
-  if (RCTGetURLQueryParam(_bridge.bundleURL, @"hot").boolValue != actuallyEnabled) {
-    _bridge.bundleURL = RCTURLByReplacingQueryParam(_bridge.bundleURL, @"hot",
-                                                    actuallyEnabled ? @"true" : nil);
-    [_bridge reload];
-  }
+  WARN_DEPRECATED_DEV_MENU_EXPORT();
+  [_bridge.devSettings updateSettingWithValue:@(enabled) forKey:kRCTDevSettingHotLoadingEnabled];
 }
 
-- (void)setExecutorClass:(Class)executorClass
+- (BOOL)hotLoadingEnabled
 {
-  if (_executorClass != executorClass) {
-    _executorClass = executorClass;
-    _executorOverride = nil;
-    [self updateSetting:@"executorClass" value:NSStringFromClass(executorClass)];
-  }
-
-  if (_bridge.executorClass != executorClass) {
-
-    // TODO (6929129): we can remove this special case test once we have better
-    // support for custom executors in the dev menu. But right now this is
-    // needed to prevent overriding a custom executor with the default if a
-    // custom executor has been set directly on the bridge
-    if (executorClass == Nil &&
-        _bridge.executorClass != objc_lookUpClass("RCTWebSocketExecutor")) {
-      return;
-    }
-
-    _bridge.executorClass = executorClass;
-    [_bridge reload];
-  }
-}
-
-- (void)setShowFPS:(BOOL)showFPS
-{
-  _showFPS = showFPS;
-  [self updateSetting:@"showFPS" value:@(showFPS)];
-}
-
-- (void)checkForUpdates
-{
-  if (!_jsLoaded || !_liveReloadEnabled || !_liveReloadURL) {
-    return;
-  }
-
-  if (_updateTask) {
-    return;
-  }
-
-  __weak RCTDevMenu *weakSelf = self;
-  _updateTask = [[NSURLSession sharedSession] dataTaskWithURL:_liveReloadURL completionHandler:
-                 ^(__unused NSData *data, NSURLResponse *response, NSError *error) {
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-      RCTDevMenu *strongSelf = weakSelf;
-      if (strongSelf && strongSelf->_liveReloadEnabled) {
-        NSHTTPURLResponse *HTTPResponse = (NSHTTPURLResponse *)response;
-        if (!error && HTTPResponse.statusCode == 205) {
-          [strongSelf reload];
-        } else {
-          if (error.code != NSURLErrorCancelled) {
-            strongSelf->_updateTask = nil;
-            [strongSelf checkForUpdates];
-          }
-        }
-      }
-    });
-
-  }];
-
-  [_updateTask resume];
+  return [_bridge.devSettings settingForKey:kRCTDevSettingHotLoadingEnabled];
 }
 
 @end

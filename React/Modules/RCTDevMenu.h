@@ -12,6 +12,12 @@
 #import "RCTBridge.h"
 #import "RCTBridgeModule.h"
 
+/*
+ * Is shaking to show the menu enabled. The menu is enabled by default if RCT_DEV=1, but
+ * you may wish to disable it so that you can provide your own shake handler.
+ */
+FOUNDATION_EXPORT NSString * const kRCTDevSettingShakeToShowDevMenu;
+
 @class RCTDevMenuItem;
 
 /**
@@ -20,31 +26,24 @@
 @interface RCTDevMenu : NSObject
 
 /**
- * Is the menu enabled. The menu is enabled by default if RCT_DEV=1, but
- * you may wish to disable it so that you can provide your own shake handler.
+ * Deprecated, use RCTDevSettings instead.
  */
-@property (nonatomic, assign) BOOL shakeToShow;
+@property (nonatomic, assign) BOOL shakeToShow DEPRECATED_ATTRIBUTE;
 
 /**
- * Enables performance profiling.
+ * Deprecated, use RCTDevSettings instead.
  */
-@property (nonatomic, assign) BOOL profilingEnabled;
+@property (nonatomic, assign) BOOL profilingEnabled DEPRECATED_ATTRIBUTE;
 
 /**
- * Enables automatic polling for JS code changes. Only applicable when
- * running the app from a server.
+ * Deprecated, use RCTDevSettings instead.
  */
-@property (nonatomic, assign) BOOL liveReloadEnabled;
+@property (nonatomic, assign) BOOL liveReloadEnabled DEPRECATED_ATTRIBUTE;
 
 /**
- * Enables hot loading. Currently not supported in open source.
+ * Deprecated, use RCTDevSettings instead.
  */
-@property (nonatomic, assign) BOOL hotLoadingEnabled;
-
-/**
- * Shows the FPS monitor for the JS and Main threads.
- */
-@property (nonatomic, assign) BOOL showFPS;
+@property (nonatomic, assign) BOOL hotLoadingEnabled DEPRECATED_ATTRIBUTE;
 
 /**
  * Manually show the dev menu (can be called from JS).
@@ -52,10 +51,9 @@
 - (void)show;
 
 /**
- * Manually reload the application. Equivalent to calling [bridge reload]
- * directly, but can be called from JS.
+ * Deprecated, use RCTDevSettings instead.
  */
-- (void)reload;
+- (void)reload DEPRECATED_ATTRIBUTE;
 
 /**
  * Deprecated. Use the `-addItem:` method instead.
