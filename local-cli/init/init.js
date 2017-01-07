@@ -14,7 +14,7 @@ const fs = require('fs');
 const minimist = require('minimist');
 const path = require('path');
 const printRunInstructions = require('../generator/printRunInstructions');
-const process = require('process');
+// const process = require('process'); NOTE(ide): Electron defines process in the module wrapper
 const yarn = require('../util/yarn');
 
 /**
