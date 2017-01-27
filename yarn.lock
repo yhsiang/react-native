@@ -902,9 +902,15 @@ browser-resolve@^1.11.2:
   dependencies:
     resolve "1.1.7"
 
-bser@1.0.2, bser@^1.0.2:
+bser@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/bser/-/bser-1.0.2.tgz#381116970b2a6deea5646dd15dd7278444b56169"
+  dependencies:
+    node-int64 "^0.4.0"
+
+bser@^1.0.2:
+  version "1.0.3"
+  resolved bser-1.0.3.tgz#d63da19ee17330a0e260d2a34422b21a89520317
   dependencies:
     node-int64 "^0.4.0"
 
@@ -1640,11 +1646,11 @@ fast-levenshtein@~2.0.4:
   version "2.0.6"
   resolved fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917
 
-fb-watchman@1.9.0, fb-watchman@^1.8.0, fb-watchman@^1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/fb-watchman/-/fb-watchman-1.9.0.tgz#6f268f1f347a6b3c875d1e89da7e1ed79adfc0ec"
+fb-watchman@^1.8.0, fb-watchman@^1.9.0:
+  version "1.9.2"
+  resolved fb-watchman-1.9.2.tgz#a24cf47827f82d38fb59a69ad70b76e3b6ae7383
   dependencies:
-    bser "^1.0.2"
+    bser "1.0.2"
 
 fbjs-scripts@^0.7.0:
   version "0.7.1"
@@ -2178,7 +2184,7 @@ is-path-inside@^1.0.0:
 
 is-posix-bracket@^0.1.0:
   version "0.1.1"
-  resolved "http://registry.npmjs.org/is-posix-bracket/-/is-posix-bracket-0.1.1.tgz#3334dc79774368e92f016e6fbc0a88f5cd6e6bc4"
+  resolved "https://registry.yarnpkg.com/is-posix-bracket/-/is-posix-bracket-0.1.1.tgz#3334dc79774368e92f016e6fbc0a88f5cd6e6bc4"
 
 is-primitive@^2.0.0:
   version "2.0.0"
@@ -3358,7 +3364,7 @@ react-deep-force-update@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/react-deep-force-update/-/react-deep-force-update-1.0.1.tgz#f911b5be1d2a6fe387507dd6e9a767aa2924b4c7"
 
-react-dom@~15.4.0-rc.4:
+react-dom@~15.4.1:
   version "15.4.2"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-15.4.2.tgz#015363f05b0a1fd52ae9efdd3a0060d90695208f"
   dependencies:
@@ -3373,7 +3379,7 @@ react-proxy@^1.1.7:
     lodash "^4.6.1"
     react-deep-force-update "^1.0.0"
 
-react-test-renderer@~15.4.0-rc.4:
+react-test-renderer@~15.4.1:
   version "15.4.2"
   resolved react-test-renderer-15.4.2.tgz#27e1dff5d26d0e830f99614c487622bc831416f3
   dependencies:
@@ -3391,7 +3397,7 @@ react-transform-hmr@^1.0.4:
     global "^4.3.0"
     react-proxy "^1.1.7"
 
-react@~15.4.0-rc.4:
+react@~15.4.1:
   version "15.4.2"
   resolved "https://registry.yarnpkg.com/react/-/react-15.4.2.tgz#41f7991b26185392ba9bae96c8889e7e018397ef"
   dependencies:
