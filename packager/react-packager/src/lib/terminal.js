@@ -76,7 +76,7 @@ class Terminal {
    */
   _setStatus(str: string): string {
     const {_statusStr, _stream} = this;
-    if (_statusStr !== str && _stream instanceof tty.WriteStream) {
+    if (_statusStr !== str) {
       clearStringBackwards(_stream, _statusStr);
       _stream.write(str);
     }
