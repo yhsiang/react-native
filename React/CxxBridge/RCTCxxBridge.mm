@@ -23,7 +23,7 @@
 #import <React/RCTCxxModule.h>
 #import <React/RCTCxxUtils.h>
 #import <React/RCTDevLoadingView.h>
-#import <React/RCTDevMenu.h>
+#import <React/RCTDevSettings.h>
 #import <React/RCTDisplayLink.h>
 #ifdef WITH_FBSYSTRACE
 #import <React/RCTFBSystrace.h>
@@ -435,7 +435,7 @@ static NSError *tryAndReturnError(dispatch_block_t block) {
     executorFactory.reset(new JSCExecutorFactory("", folly::dynamic::object
       ("UseCustomJSC", (bool)useCustomJSC)
 #if RCT_PROFILE
-      ("StartSamplingProfilerOnInit", (bool)self.devMenu.startSamplingProfilerOnLaunch)
+      ("StartSamplingProfilerOnInit", (bool)self.devSettings.startSamplingProfilerOnLaunch)
 #endif
     ));
   } else {
