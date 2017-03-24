@@ -77,6 +77,7 @@ class Terminal {
   _setStatus(str: string): string {
     const {_statusStr, _stream} = this;
     if (_statusStr !== str) {
+      // $FlowFixMe(>=0.41.0)
       clearStringBackwards(_stream, _statusStr);
       _stream.write(str);
     }

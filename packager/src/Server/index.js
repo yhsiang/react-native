@@ -242,6 +242,7 @@ class Server {
     bundlerOpts.globalTransformCache = options.globalTransformCache;
     bundlerOpts.watch = this._opts.watch;
     bundlerOpts.reporter = options.reporter;
+    // $FlowFixMe(>=0.41.0)
     this._bundler = new Bundler(bundlerOpts);
 
     // changes to the haste map can affect resolution of files in the bundle

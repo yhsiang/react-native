@@ -60,6 +60,7 @@ const requireNativeComponent = require('requireNativeComponent');
  * complicated API, which is worth it unless you are rendering a small fixed
  * set of items.
  */
+// $FlowFixMe(>=0.41.0)
 const ScrollView = React.createClass({
   propTypes: {
     ...View.propTypes,

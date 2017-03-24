@@ -71,6 +71,7 @@ class NavigatorIOSExamplePage extends React.Component {
           {this._renderRow('Push View Example', () => {
             this.props.navigator.push({
               title: 'Very Long Custom View Example Title',
+              // $FlowFixMe(>=0.41.0)
               component: createExamplePage(null, ViewExample),
             });
           })}
@@ -78,6 +79,7 @@ class NavigatorIOSExamplePage extends React.Component {
             this.props.navigator.push({
               title: 'Custom title image Example',
               titleImage: require('./relay.png'),
+              // $FlowFixMe(>=0.41.0)
               component: createExamplePage(null, ViewExample),
             });
           })}
