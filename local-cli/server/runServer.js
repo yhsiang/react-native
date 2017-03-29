@@ -31,15 +31,19 @@ const systraceProfileMiddleware = require('./middleware/systraceProfileMiddlewar
 const unless = require('./middleware/unless');
 const webSocketProxy = require('./util/webSocketProxy.js');
 
-function runServer(args, config, readyCallback) {
+function runServer(args, config, startedCallback, readyCallback) {
   var wsProxy = null;
   var ms = null;
   const packagerServer = getPackagerServer(args, config);
+  startedCallback(packagerServer._reporter);
+
   const inspectorProxy = new InspectorProxy();
   const app = connect()
     .use(loadRawBodyMiddleware)
     .use(connect.compress())
-    .use(getDevToolsMiddleware(args, () => wsProxy && wsProxy.isChromeConnected()))
+    .use(
+      getDevToolsMiddleware(args, () => wsProxy && wsProxy.isChromeConnected())
+    )
     .use(getDevToolsMiddleware(args, () => ms && ms.isChromeConnected()))
     .use(openStackFrameInEditorMiddleware(args))
     .use(copyToClipBoardMiddleware)
@@ -48,31 +52,33 @@ function runServer(args, config, readyCallback) {
     .use(heapCaptureMiddleware)
     .use(cpuProfilerMiddleware)
     .use(indexPageMiddleware)
-    .use(unless('/inspector', inspectorProxy.processRequest.bind(inspectorProxy)))
+    .use(
+      unless('/inspector', inspectorProxy.processRequest.bind(inspectorProxy))
+    )
     .use(packagerServer.processRequest.bind(packagerServer));
 
   args.projectRoots.forEach(root => app.use(connect.static(root)));
 
-  app.use(connect.logger())
-    .use(connect.errorHandler());
+  app.use(connect.logger()).use(connect.errorHandler());
 
-  const serverInstance = http.createServer(app).listen(
-    args.port,
-    args.host,
-    function() {
+  const serverInstance = http
+    .createServer(app)
+    .listen(args.port, args.host, function() {
       attachHMRServer({
         httpServer: serverInstance,
         path: '/hot',
         packagerServer,
       });
 
-      wsProxy = webSocketProxy.attachToServer(serverInstance, '/debugger-proxy');
+      wsProxy = webSocketProxy.attachToServer(
+        serverInstance,
+        '/debugger-proxy'
+      );
       ms = messageSocket.attachToServer(serverInstance, '/message');
       webSocketProxy.attachToServer(serverInstance, '/devtools');
       inspectorProxy.attachToServer(serverInstance, '/inspector');
-      readyCallback();
-    }
-  );
+      readyCallback(packagerServer._reporter);
+    });
   // Disable any kind of automatic timeout behavior for incoming
   // requests in case it takes the packager more than the default
   // timeout of 120 seconds to respond to a request.
@@ -80,13 +86,14 @@ function runServer(args, config, readyCallback) {
 }
 
 function getPackagerServer(args, config) {
-  const transformModulePath =
-    args.transformer ? path.resolve(args.transformer) :
-    typeof config.getTransformModulePath === 'function' ? config.getTransformModulePath() :
-    undefined;
+  const transformModulePath = args.transformer
+    ? path.resolve(args.transformer)
+    : typeof config.getTransformModulePath === 'function'
+        ? config.getTransformModulePath()
+        : undefined;
 
-  const providesModuleNodeModules =
-    args.providesModuleNodeModules || defaultProvidesModuleNodeModules;
+  const providesModuleNodeModules = args.providesModuleNodeModules ||
+    defaultProvidesModuleNodeModules;
 
   let LogReporter;
   if (args.customLogReporterPath) {
@@ -94,7 +101,7 @@ function getPackagerServer(args, config) {
       // First we let require resolve it, so we can require packages in node_modules
       // as expected. eg: require('my-package/reporter');
       LogReporter = require(args.customLogReporterPath);
-    } catch(e) {
+    } catch (e) {
       // If that doesn't work, then we next try relative to the cwd, eg:
       // require('./reporter');
       LogReporter = require(path.resolve(args.customLogReporterPath));

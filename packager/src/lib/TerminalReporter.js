@@ -11,17 +11,18 @@
 
 'use strict';
 
+const chalk = require('chalk');
 const path = require('path');
 const reporting = require('./reporting');
 const terminal = require('./terminal');
 const throttle = require('lodash/throttle');
 const util = require('util');
+const formatBanner = require('../../../local-cli/server/formatBanner');
 
-import type {ReportableEvent, GlobalCacheDisabledReason} from './reporting';
+import type { ReportableEvent, GlobalCacheDisabledReason } from './reporting';
 
 const DEP_GRAPH_MESSAGE = 'Loading dependency graph';
-const GLOBAL_CACHE_DISABLED_MESSAGE_FORMAT =
-  'The global cache is now disabled because %s';
+const GLOBAL_CACHE_DISABLED_MESSAGE_FORMAT = 'The global cache is now disabled because %s';
 
 type BundleProgress = {
   transformedFileCount: number,
@@ -35,25 +36,24 @@ const LIGHT_BLOCK_CHAR = '\u2591';
 
 function getProgressBar(ratio: number, length: number) {
   const blockCount = Math.floor(ratio * length);
-  return (
-    DARK_BLOCK_CHAR.repeat(blockCount) +
-    LIGHT_BLOCK_CHAR.repeat(length - blockCount)
-  );
+  return DARK_BLOCK_CHAR.repeat(blockCount) +
+    LIGHT_BLOCK_CHAR.repeat(length - blockCount);
 }
 
-export type TerminalReportableEvent = ReportableEvent | {
-  type: 'bundle_transform_progressed_throttled',
-  entryFilePath: string,
-  transformedFileCount: number,
-  totalFileCount: number,
-};
+export type TerminalReportableEvent =
+  | ReportableEvent
+  | {
+      type: 'bundle_transform_progressed_throttled',
+      entryFilePath: string,
+      transformedFileCount: number,
+      totalFileCount: number,
+    };
 
 /**
  * We try to print useful information to the terminal for interactive builds.
  * This implements the `Reporter` interface from the './reporting' module.
  */
 class TerminalReporter {
-
   /**
    * The bundle builds for which we are actively maintaining the status on the
    * terminal, ie. showing a progress bar. There can be several bundles being
@@ -62,18 +62,23 @@ class TerminalReporter {
   _activeBundles: Map<string, BundleProgress>;
 
   _dependencyGraphHasLoaded: boolean;
-  _scheduleUpdateBundleProgress: (data: {
-    entryFilePath: string,
-    transformedFileCount: number,
-    totalFileCount: number,
-  }) => void;
+  _scheduleUpdateBundleProgress: (
+    data: {
+      entryFilePath: string,
+      transformedFileCount: number,
+      totalFileCount: number,
+    }
+  ) => void;
 
   constructor() {
     this._dependencyGraphHasLoaded = false;
     this._activeBundles = new Map();
-    this._scheduleUpdateBundleProgress = throttle((data) => {
-      this.update({...data, type: 'bundle_transform_progressed_throttled'});
-    }, 200);
+    this._scheduleUpdateBundleProgress = throttle(
+      data => {
+        this.update({ ...data, type: 'bundle_transform_progressed_throttled' });
+      },
+      200
+    );
   }
 
   /**
@@ -83,8 +88,13 @@ class TerminalReporter {
    *
    */
   _getFileTransformMessage(
-    {totalFileCount, transformedFileCount, ratio, outdatedModuleCount}: BundleProgress,
-    build: 'in_progress' | 'done',
+    {
+      totalFileCount,
+      transformedFileCount,
+      ratio,
+      outdatedModuleCount,
+    }: BundleProgress,
+    build: 'in_progress' | 'done'
   ): string {
     if (outdatedModuleCount > 0) {
       const plural = outdatedModuleCount > 1;
@@ -93,9 +103,7 @@ class TerminalReporter {
         (build === 'done' ? ', done' : '...');
     }
     if (totalFileCount === 0) {
-      return build === 'done'
-        ? 'No module changed.'
-        : 'Analysing...';
+      return build === 'done' ? 'No module changed.' : 'Analysing...';
     }
     return util.format(
       'Transforming modules  %s%s% (%s/%s)%s',
@@ -103,7 +111,7 @@ class TerminalReporter {
       (100 * ratio).toFixed(1),
       transformedFileCount,
       totalFileCount,
-      build === 'done' ? ', done.' : '...',
+      build === 'done' ? ', done.' : '...'
     );
   }
 
@@ -113,7 +121,7 @@ class TerminalReporter {
   _getBundleStatusMessage(
     entryFilePath: string,
     progress: BundleProgress,
-    build: 'in_progress' | 'done',
+    build: 'in_progress' | 'done'
   ): string {
     const localPath = path.relative('.', entryFilePath);
     return [
@@ -126,11 +134,66 @@ class TerminalReporter {
     const format = GLOBAL_CACHE_DISABLED_MESSAGE_FORMAT;
     switch (reason) {
       case 'too_many_errors':
-        reporting.logWarning(terminal, format, 'it has been failing too many times.');
+        reporting.logWarning(
+          terminal,
+          format,
+          'it has been failing too many times.'
+        );
         break;
       case 'too_many_misses':
-        reporting.logWarning(terminal, format, 'it has been missing too many consecutive keys.');
+        reporting.logWarning(
+          terminal,
+          format,
+          'it has been missing too many consecutive keys.'
+        );
         break;
+    }
+  }
+
+  _logPackagerInitializing(port: number, projectRoots: Array<string>) {
+    terminal.log(
+      formatBanner(
+        'Running packager on port ' +
+          port +
+          '.\n\n' +
+          'Keep this packager running while developing on any JS projects. ' +
+          'Feel free to close this tab and run your own packager instance if you ' +
+          'prefer.\n\n' +
+          'https://github.com/facebook/react-native',
+        {
+          marginLeft: 1,
+          marginRight: 1,
+          paddingBottom: 1,
+        }
+      )
+    );
+
+    terminal.log(
+      'Looking for JS files in\n  ',
+      chalk.dim(projectRoots.join('\n   ')),
+      '\n'
+    );
+  }
+
+  _logPackagerInitializingFailed(port: number, error: Error) {
+    if (error.code === 'EADDRINUSE') {
+      terminal.log(
+        chalk.bgRed.bold(' ERROR '),
+        chalk.red("Packager can't listen on port", chalk.bold(port))
+      );
+      terminal.log('Most likely another process is already using this port');
+      terminal.log('Run the following command to find out which process:');
+      terminal.log('\n  ', chalk.bold('lsof -i :' + port), '\n');
+      terminal.log('Then, you can either shut down the other process:');
+      terminal.log('\n  ', chalk.bold('kill -9 <PID>'), '\n');
+      terminal.log('or run packager on different port.');
+    } else {
+      terminal.log(chalk.bgRed.bold(' ERROR '), chalk.red(error.message));
+      const errorAttributes = JSON.stringify(error);
+      if (errorAttributes !== '{}') {
+        terminal.log(chalk.red(errorAttributes));
+      }
+      terminal.log(chalk.red(error.stack));
     }
   }
 
@@ -140,11 +203,20 @@ class TerminalReporter {
    */
   _log(event: TerminalReportableEvent): void {
     switch (event.type) {
+      case 'initialize_packager_started':
+        this._logPackagerInitializing(event.port, event.projectRoots);
+        break;
+      case 'initialize_packager_done':
+        terminal.log('\nReact packager ready.\n');
+        break;
+      case 'initialize_packager_failed':
+        this._logPackagerInitializingFailed(event.port, event.error);
+        break;
       case 'bundle_built':
         const progress = this._activeBundles.get(event.entryFilePath);
         if (progress != null) {
           terminal.log(
-            this._getBundleStatusMessage(event.entryFilePath, progress, 'done'),
+            this._getBundleStatusMessage(event.entryFilePath, progress, 'done')
           );
         }
         break;
@@ -170,11 +242,15 @@ class TerminalReporter {
    * also prevent the ratio from going backwards.
    */
   _updateBundleProgress(
-    {entryFilePath, transformedFileCount, totalFileCount}: {
+    {
+      entryFilePath,
+      transformedFileCount,
+      totalFileCount,
+    }: {
       entryFilePath: string,
       transformedFileCount: number,
       totalFileCount: number,
-    },
+    }
   ) {
     const currentProgress = this._activeBundles.get(entryFilePath);
     if (currentProgress == null) {
@@ -192,10 +268,13 @@ class TerminalReporter {
   }
 
   _updateBundleOutdatedModuleCount(
-    {entryFilePath, outdatedModuleCount}: {
+    {
+      entryFilePath,
+      outdatedModuleCount,
+    }: {
       entryFilePath: string,
       outdatedModuleCount: number,
-    },
+    }
   ) {
     const currentProgress = this._activeBundles.get(entryFilePath);
     if (currentProgress == null) {
@@ -257,12 +336,16 @@ class TerminalReporter {
    * different callsites overriding each other status messages.
    */
   _getStatusMessage(): string {
-    return [
-      this._getDepGraphStatusMessage(),
-    ].concat(Array.from(this._activeBundles.entries()).map(
-      ([entryFilePath, progress]) =>
-        this._getBundleStatusMessage(entryFilePath, progress, 'in_progress'),
-    )).filter(str => str != null).join('\n');
+    return [this._getDepGraphStatusMessage()]
+      .concat(
+        Array.from(this._activeBundles.entries()).map(([
+          entryFilePath,
+          progress,
+        ]) =>
+          this._getBundleStatusMessage(entryFilePath, progress, 'in_progress'))
+      )
+      .filter(str => str != null)
+      .join('\n');
   }
 
   /**
@@ -274,7 +357,6 @@ class TerminalReporter {
     this._updateState(event);
     terminal.status(this._getStatusMessage());
   }
-
 }
 
 module.exports = TerminalReporter;
