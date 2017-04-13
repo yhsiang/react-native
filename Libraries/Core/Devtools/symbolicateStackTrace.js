@@ -47,6 +47,7 @@ async function symbolicateStackTrace(stack: Array<StackFrame>): Promise<Array<St
 
   let stackCopy = stack;
 
+  console.log('ben: symbolicate stack trace: using script url', SourceCode.scriptURL);
   if (SourceCode.scriptURL) {
     let foundInternalSource: boolean = false;
     stackCopy = stack.map((frame: StackFrame) => {
@@ -64,11 +65,13 @@ async function symbolicateStackTrace(stack: Array<StackFrame>): Promise<Array<St
     });
   }
 
+  console.log('ben: symbolicate: fetch', devServer.url, 'symbolicate');
   const response = await fetch(devServer.url + 'symbolicate', {
     method: 'POST',
     body: JSON.stringify({stack: stackCopy}),
   });
   const json = await response.json();
+  // console.log('ben: symbolicate: response is', json);
   return json.stack;
 }
 

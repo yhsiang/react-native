@@ -37,6 +37,7 @@ function symbolicate(connection, data) {
 
 function symbolicateStack(data) {
   const consumers = new Map(data.maps.map(mapToConsumer));
+  console.log('ben: symbolicating stack with consumers:', consumers);
   return {
     result: data.stack.map(frame => mapFrame(frame, consumers)),
   };

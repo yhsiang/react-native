@@ -24,7 +24,8 @@ const symbolicate = require('./symbolicate');
 const terminal = require('../lib/terminal');
 const url = require('url');
 
-const debug = require('debug')('RNP:Server');
+// let debug = require('debug')('RNP:Server');
+const debug = console.log;
 
 import type Module, {HasteImpl} from '../node-haste/Module';
 import type {Stats} from 'fs';
@@ -827,8 +828,13 @@ class Server {
         Array.from(urls.values()).map(this._sourceMapForURL, this);
 
       debug('Getting source maps for symbolication');
+      debug('ben: bundle keys are...');
+      Object.keys(this._bundles).map(key => {
+        debug(`   ${key}`);
+      });
       return Promise.all(mapPromises).then(maps => {
         debug('Sending stacks and maps to symbolication worker');
+        debug('maps are:', maps);
         const urlsToMaps = zip(urls.values(), maps);
         return this._symbolicateInWorker(stack, urlsToMaps);
       });
@@ -851,6 +857,7 @@ class Server {
   _sourceMapForURL(reqUrl: string): Promise<SourceMap> {
     const options = this._getOptionsFromUrl(reqUrl);
     const building = this._useCachedOrUpdateOrCreateBundle(options);
+    console.log('  _sourceMapForUrl:', reqUrl);
     return building.then(p => p.getSourceMap({
       minify: options.minify,
       dev: options.dev,

@@ -16,7 +16,8 @@ const ModuleTransport = require('../lib/ModuleTransport');
 
 const _ = require('lodash');
 const crypto = require('crypto');
-const debug = require('debug')('RNP:Bundle');
+// const debug = require('debug')('RNP:Bundle');
+const debug = console.log;
 const invariant = require('fbjs/lib/invariant');
 
 const {fromRawMappings} = require('./source-map');
@@ -240,6 +241,8 @@ class Bundle extends BundleBase {
 
   getSourceMap(options: {excludeSource?: boolean}): MixedSourceMap {
     this.assertFinalized();
+
+    debug('ben: source map format is:', this._sourceMapFormat);
 
     return this._sourceMapFormat === 'indexed'
       ? this._getCombinedSourceMaps(options)
