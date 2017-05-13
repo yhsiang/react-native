@@ -255,7 +255,15 @@ RCT_VIEW_BORDER_RADIUS_PROPERTY(TopRight)
 RCT_VIEW_BORDER_RADIUS_PROPERTY(BottomLeft)
 RCT_VIEW_BORDER_RADIUS_PROPERTY(BottomRight)
 
-RCT_REMAP_VIEW_PROPERTY(zIndex, reactZIndex, NSInteger)
+RCT_CUSTOM_VIEW_PROPERTY(zIndex, NSInteger, RCTView)
+{
+  if (json) {
+    NSInteger index = [RCTConvert NSInteger:json];
+    view.layer.zPosition = index;
+  } else {
+    view.layer.zPosition = 0;
+  }
+}
 
 #pragma mark - ShadowView properties
 
