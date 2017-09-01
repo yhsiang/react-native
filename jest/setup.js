@@ -295,11 +295,22 @@ const mockNativeModules = {
   },
 };
 
-Object.keys(mockNativeModules).forEach(module => {
+const mockNativeModuleJS = {
+  '../Libraries/AppState/AppState': mockNativeModules.AppState,
+  '../Libraries/Components/Clipboard/Clipboard': mockNativeModules.Clipboard,
+  '../Libraries/Utilities/DeviceInfo': mockNativeModules.DeviceInfo,
+  '../Libraries/Linking/Linking': mockNativeModules.Linking,
+  '../Libraries/Network/NetInfo': mockNativeModules.NetInfo,
+  '../Libraries/ReactNative/UIManager': mockNativeModules.UIManager,
+};
+
+const allRNMocks = {...mockNativeModules, ...mockNativeModuleJS};
+
+Object.keys(allRNMocks).forEach(module => {
   try {
-    jest.doMock(module, () => mockNativeModules[module]); // needed by FacebookSDK-test
+    jest.doMock(module, () => allRNMocks[module]); // needed by FacebookSDK-test
   } catch (e) {
-    jest.doMock(module, () => mockNativeModules[module], {virtual: true});
+    jest.doMock(module, () => allRNMocks[module], {virtual: true});
   }
 });
 
