@@ -266,7 +266,7 @@ const mockNativeModuleJS = {
   '../Libraries/ReactNative/UIManager': mockNativeModules.UIManager,
 };
 
-const allRNMocks = {...mockNativeModules, mockNativeModuleJS};
+const allRNMocks = {...mockNativeModules, ...mockNativeModuleJS};
 
 Object.keys(allRNMocks).forEach(module => {
   try {
