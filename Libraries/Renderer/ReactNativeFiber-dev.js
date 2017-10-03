@@ -12,9 +12,9 @@
 "use strict";
 
 __DEV__ && function() {
-    var invariant = require("fbjs/lib/invariant"), require$$0 = require("fbjs/lib/warning"), ExceptionsManager = require("ExceptionsManager"), emptyObject = require("fbjs/lib/emptyObject"), react = require("react"), checkPropTypes = require("prop-types/checkPropTypes"), shallowEqual = require("fbjs/lib/shallowEqual"), deepDiffer = require("deepDiffer"), flattenStyle = require("flattenStyle"), TextInputState = require("TextInputState"), UIManager = require("UIManager"), deepFreezeAndThrowOnMutationInDev = require("deepFreezeAndThrowOnMutationInDev");
-    require("InitializeCore");
-    var RCTEventEmitter = require("RCTEventEmitter"), emptyFunction = require("fbjs/lib/emptyFunction"), ExecutionEnvironment = require("fbjs/lib/ExecutionEnvironment"), performanceNow = require("fbjs/lib/performanceNow"), defaultShowDialog = function(capturedError) {
+    var invariant = require("fbjs/lib/invariant"), require$$0 = require("fbjs/lib/warning"), ExceptionsManager = require('../Core/ExceptionsManager'), emptyObject = require("fbjs/lib/emptyObject"), react = require("react"), checkPropTypes = require("prop-types/checkPropTypes"), shallowEqual = require("fbjs/lib/shallowEqual"), deepDiffer = require('../Utilities/differ/deepDiffer'), flattenStyle = require('../StyleSheet/flattenStyle'), TextInputState = require('../Components/TextInput/TextInputState'), UIManager = require('../ReactNative/UIManager'), deepFreezeAndThrowOnMutationInDev = require('../Utilities/deepFreezeAndThrowOnMutationInDev');
+    require('../Core/InitializeCore');
+    var RCTEventEmitter = require('../EventEmitter/RCTEventEmitter'), emptyFunction = require("fbjs/lib/emptyFunction"), ExecutionEnvironment = require("fbjs/lib/ExecutionEnvironment"), performanceNow = require("fbjs/lib/performanceNow"), defaultShowDialog = function(capturedError) {
         return !0;
     }, showDialog = defaultShowDialog;
     function logCapturedError(capturedError) {
@@ -3232,7 +3232,7 @@ __DEV__ && function() {
     };
     var ReactNativeFiberInspector = {
         getInspectorDataForViewTag: getInspectorDataForViewTag
-    }, ReactVersion = "16.0.0-beta.5", ReactNativeFeatureFlags = require("ReactNativeFeatureFlags"), ReactCurrentOwner$3 = ReactGlobalSharedState_1.ReactCurrentOwner, injectedFindNode = ReactNativeFeatureFlags.useFiber ? function(fiber) {
+    }, ReactVersion = "16.0.0-beta.5", ReactNativeFeatureFlags = require('../ReactNative/ReactNativeFeatureFlags'), ReactCurrentOwner$3 = ReactGlobalSharedState_1.ReactCurrentOwner, injectedFindNode = ReactNativeFeatureFlags.useFiber ? function(fiber) {
         return ReactNativeFiberRenderer.findHostInstance(fiber);
     } : function(instance) {
         return instance;
@@ -3909,7 +3909,7 @@ __DEV__ && function() {
             }
         }), superClass && (Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass);
     }
-    var ReactNativeFeatureFlags$1 = require("ReactNativeFeatureFlags"), mountSafeCallback$2 = NativeMethodsMixinUtils.mountSafeCallback, findNumericNodeHandle = ReactNativeFeatureFlags$1.useFiber ? findNumericNodeHandleFiber : DevOnlyStubShim, ReactNativeComponent = function(_React$Component) {
+    var ReactNativeFeatureFlags$1 = require('../ReactNative/ReactNativeFeatureFlags'), mountSafeCallback$2 = NativeMethodsMixinUtils.mountSafeCallback, findNumericNodeHandle = ReactNativeFeatureFlags$1.useFiber ? findNumericNodeHandleFiber : DevOnlyStubShim, ReactNativeComponent = function(_React$Component) {
         _inherits(ReactNativeComponent, _React$Component);
         function ReactNativeComponent() {
             return _classCallCheck$2(this, ReactNativeComponent), _possibleConstructorReturn(this, _React$Component.apply(this, arguments));
@@ -3952,7 +3952,7 @@ __DEV__ && function() {
     }
     var injectedSetNativeProps = void 0;
     injectedSetNativeProps = ReactNativeFeatureFlags$1.useFiber ? setNativePropsFiber : setNativePropsStack;
-    var ReactNativeComponent_1 = ReactNativeComponent, ReactNativeFeatureFlags$2 = require("ReactNativeFeatureFlags"), mountSafeCallback$3 = NativeMethodsMixinUtils.mountSafeCallback, throwOnStylesProp$1 = NativeMethodsMixinUtils.throwOnStylesProp, warnForStyleProps$2 = NativeMethodsMixinUtils.warnForStyleProps, findNumericNodeHandle$1 = ReactNativeFeatureFlags$2.useFiber ? findNumericNodeHandleFiber : DevOnlyStubShim, NativeMethodsMixin = {
+    var ReactNativeComponent_1 = ReactNativeComponent, ReactNativeFeatureFlags$2 = require('../ReactNative/ReactNativeFeatureFlags'), mountSafeCallback$3 = NativeMethodsMixinUtils.mountSafeCallback, throwOnStylesProp$1 = NativeMethodsMixinUtils.throwOnStylesProp, warnForStyleProps$2 = NativeMethodsMixinUtils.warnForStyleProps, findNumericNodeHandle$1 = ReactNativeFeatureFlags$2.useFiber ? findNumericNodeHandleFiber : DevOnlyStubShim, NativeMethodsMixin = {
         measure: function(callback) {
             UIManager.measure(findNumericNodeHandle$1(this), mountSafeCallback$3(this, callback));
         },
@@ -4042,7 +4042,7 @@ __DEV__ && function() {
         noCentroid: -1
     }, TouchHistoryMath_1 = TouchHistoryMath, createReactNativeComponentClassFiber = function(viewConfig) {
         return ReactNativeViewConfigRegistry_1.register(viewConfig);
-    }, createReactNativeComponentClassFiber_1 = createReactNativeComponentClassFiber, ReactNativeFeatureFlags$3 = require("ReactNativeFeatureFlags"), createReactNativeComponentClass = ReactNativeFeatureFlags$3.useFiber ? createReactNativeComponentClassFiber_1 : DevOnlyStubShim, ReactNativeFeatureFlags$4 = require("ReactNativeFeatureFlags"), findNumericNodeHandle$2 = ReactNativeFeatureFlags$4.useFiber ? findNumericNodeHandleFiber : DevOnlyStubShim;
+    }, createReactNativeComponentClassFiber_1 = createReactNativeComponentClassFiber, ReactNativeFeatureFlags$3 = require('../ReactNative/ReactNativeFeatureFlags'), createReactNativeComponentClass = ReactNativeFeatureFlags$3.useFiber ? createReactNativeComponentClassFiber_1 : DevOnlyStubShim, ReactNativeFeatureFlags$4 = require('../ReactNative/ReactNativeFeatureFlags'), findNumericNodeHandle$2 = ReactNativeFeatureFlags$4.useFiber ? findNumericNodeHandleFiber : DevOnlyStubShim;
     function takeSnapshot(view, options) {
         return "number" != typeof view && "window" !== view && (view = findNumericNodeHandle$2(view) || "window"), 
         UIManager.__takeSnapshot(view, options);

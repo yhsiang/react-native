@@ -26,9 +26,9 @@ let register = function () {
 };
 
 if (__DEV__) {
-  const AppState = require('AppState');
-  const WebSocket = require('WebSocket');
-  const {PlatformConstants} = require('NativeModules');
+  const AppState = require('../../AppState/AppState');
+  const WebSocket = require('../../WebSocket/WebSocket');
+  const {PlatformConstants} = require('../../BatchedBridge/NativeModules');
   const reactDevTools = require('react-devtools-core');
 
   register = function (plugin: DevToolsPlugin) {
@@ -51,7 +51,7 @@ if (__DEV__) {
         // Read the optional global variable for backward compatibility.
         // It was added in https://github.com/facebook/react-native/commit/bf2b435322e89d0aeee8792b1c6e04656c2719a0.
         port: window.__REACT_DEVTOOLS_PORT__,
-        resolveRNStyle: require('flattenStyle'),
+        resolveRNStyle: require('../../StyleSheet/flattenStyle'),
       });
     }
   };

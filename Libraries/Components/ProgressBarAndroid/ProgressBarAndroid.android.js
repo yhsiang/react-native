@@ -10,12 +10,12 @@
  */
 'use strict';
 
-const ActivityIndicator = require('ActivityIndicator');
-const ColorPropType = require('ColorPropType');
+const ActivityIndicator = require('../ActivityIndicator/ActivityIndicator');
+const ColorPropType = require('../../StyleSheet/ColorPropType');
 const PropTypes = require('prop-types');
-const React = require('React');
-const ReactNative = require('ReactNative');
-const ViewPropTypes = require('ViewPropTypes');
+const React = require('../../react-native/React');
+const ReactNative = require('../../Renderer/shims/ReactNative');
+const ViewPropTypes = require('../View/ViewPropTypes');
 
 const STYLE_ATTRIBUTES = [
   'Horizontal',
