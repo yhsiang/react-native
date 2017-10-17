@@ -14,8 +14,9 @@
 const ColorPropType = require('../../StyleSheet/ColorPropType');
 const NativeMethodsMixin = require('../../Renderer/shims/NativeMethodsMixin');
 const Platform = require('../../Utilities/Platform');
-const React = require('../../react-native/React');
+const ProgressBarAndroid = require('../ProgressBarAndroid/ProgressBarAndroid');
 const PropTypes = require('prop-types');
+const React = require('../../react-native/React');
 const StyleSheet = require('../../StyleSheet/StyleSheet');
 const View = require('../View/View');
 const ViewPropTypes = require('../View/ViewPropTypes');
@@ -95,16 +96,20 @@ const ActivityIndicator = createReactClass({
         break;
     }
 
+    const nativeProps = {
+      ...props,
+      style: sizeStyle,
+      styleAttr: 'Normal',
+      indeterminate: true,
+    };
+
     return (
-      <View
-        onLayout={onLayout}
-        style={[styles.container, style]}>
-        <RCTActivityIndicator
-          {...props}
-          style={sizeStyle}
-          styleAttr="Normal"
-          indeterminate
-        />
+      <View onLayout={onLayout} style={[styles.container, style]}>
+        {Platform.OS === 'ios' ? (
+          <RCTActivityIndicator {...nativeProps} />
+        ) : (
+          <ProgressBarAndroid {...nativeProps} />
+        )}
       </View>
     );
   }
@@ -129,18 +134,7 @@ if (Platform.OS === 'ios') {
   var RCTActivityIndicator = requireNativeComponent(
     'RCTActivityIndicatorView',
     ActivityIndicator,
-    {nativeOnly: {activityIndicatorViewStyle: true}},
-  );
-} else if (Platform.OS === 'android') {
-  var RCTActivityIndicator = requireNativeComponent(
-    'AndroidProgressBar',
-    ActivityIndicator,
-    // Ignore props that are specific to non inderterminate ProgressBar.
-    {nativeOnly: {
-      indeterminate: true,
-      progress: true,
-      styleAttr: true,
-    }},
+    { nativeOnly: { activityIndicatorViewStyle: true } }
   );
 }
 
