@@ -36,6 +36,10 @@ flow-github/
 emoji=true
 
 module.system=haste
+module.file_ext=.js
+module.file_ext=.jsx
+module.file_ext=.json
+module.file_ext=.ios.js
 
 munge_underscores=true
 
