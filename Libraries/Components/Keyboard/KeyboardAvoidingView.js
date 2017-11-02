@@ -12,17 +12,17 @@
 'use strict';
 
 const createReactClass = require('create-react-class');
-const Keyboard = require('Keyboard');
-const LayoutAnimation = require('LayoutAnimation');
-const Platform = require('Platform');
+const Keyboard = require('./Keyboard');
+const LayoutAnimation = require('../../LayoutAnimation/LayoutAnimation');
+const Platform = require('../../Utilities/Platform');
 const PropTypes = require('prop-types');
-const React = require('React');
+const React = require('react');
 const TimerMixin = require('react-timer-mixin');
-const View = require('View');
-const ViewPropTypes = require('ViewPropTypes');
+const View = require('../View/View');
+const ViewPropTypes = require('../View/ViewPropTypes');
 
-import type EmitterSubscription from 'EmitterSubscription';
-import type {ViewLayout, ViewLayoutEvent} from 'ViewPropTypes';
+import type EmitterSubscription from '../../vendor/emitter/EmitterSubscription';
+import type {ViewLayout, ViewLayoutEvent} from '../View/ViewPropTypes';
 
 type ScreenRect = {
   screenX: number,

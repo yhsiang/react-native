@@ -11,18 +11,18 @@
  */
 'use strict';
 
-const ReactNativeStyleAttributes = require('ReactNativeStyleAttributes');
-const UIManager = require('UIManager');
-const UnimplementedView = require('UnimplementedView');
+const ReactNativeStyleAttributes = require('../Components/View/ReactNativeStyleAttributes');
+const UIManager = require('./UIManager');
+const UnimplementedView = require('../Components/UnimplementedViews/UnimplementedView');
 
-const createReactNativeComponentClass = require('createReactNativeComponentClass');
-const insetsDiffer = require('insetsDiffer');
-const matricesDiffer = require('matricesDiffer');
-const pointsDiffer = require('pointsDiffer');
-const processColor = require('processColor');
-const resolveAssetSource = require('resolveAssetSource');
-const sizesDiffer = require('sizesDiffer');
-const verifyPropTypes = require('verifyPropTypes');
+const createReactNativeComponentClass = require('../Renderer/shims/createReactNativeComponentClass');
+const insetsDiffer = require('../Utilities/differ/insetsDiffer');
+const matricesDiffer = require('../Utilities/differ/matricesDiffer');
+const pointsDiffer = require('../Utilities/differ/pointsDiffer');
+const processColor = require('../StyleSheet/processColor');
+const resolveAssetSource = require('../Image/resolveAssetSource');
+const sizesDiffer = require('../Utilities/differ/sizesDiffer');
+const verifyPropTypes = require('./verifyPropTypes');
 const warning = require('fbjs/lib/warning');
 
 /**
@@ -40,7 +40,7 @@ const warning = require('fbjs/lib/warning');
  * Common types are lined up with the appropriate prop differs with
  * `TypeToDifferMap`.  Non-scalar types not in the map default to `deepDiffer`.
  */
-import type { ComponentInterface } from 'verifyPropTypes';
+import type { ComponentInterface } from './verifyPropTypes';
 
 function requireNativeComponent(
   viewName: string,

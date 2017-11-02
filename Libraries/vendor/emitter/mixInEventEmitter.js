@@ -11,14 +11,14 @@
  */
 'use strict';
 
-const EventEmitter = require('EventEmitter');
-const EventEmitterWithHolding = require('EventEmitterWithHolding');
-const EventHolder = require('EventHolder');
+const EventEmitter = require('./EventEmitter');
+const EventEmitterWithHolding = require('./EventEmitterWithHolding');
+const EventHolder = require('./EventHolder');
 
 const invariant = require('fbjs/lib/invariant');
 const keyOf = require('fbjs/lib/keyOf');
 
-import type EmitterSubscription from 'EmitterSubscription';
+import type EmitterSubscription from './EmitterSubscription';
 
 const TYPES_KEY = keyOf({__types: true});
 
@@ -121,7 +121,7 @@ const EventEmitterMixin = {
     if (!this.__eventEmitter) {
       let emitter = new EventEmitter();
       if (__DEV__) {
-        const EventValidator = require('EventValidator');
+        const EventValidator = require('./EventValidator');
         emitter = EventValidator.addValidation(emitter, this.__types);
       }
 

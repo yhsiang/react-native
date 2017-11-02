@@ -21,7 +21,7 @@ var {
   View,
 } = ReactNative;
 
-import type {ViewLayout, ViewLayoutEvent} from 'ViewPropTypes';
+import type {ViewLayout, ViewLayoutEvent} from '../../Libraries/Components/View/ViewPropTypes';
 
 type State = {
   containerStyle?: { width: number },
