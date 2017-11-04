@@ -44,8 +44,8 @@ function _defineCheckVersionTests() {
     _mockJsVersion(0, 0, 0);
     _mockNativeVersion(0, 0, 0);
 
-    const ReactNativeVersion = require('ReactNativeVersion');
-    const ReactNativeVersionCheck = require('ReactNativeVersionCheck');
+    const ReactNativeVersion = require('../ReactNativeVersion');
+    const ReactNativeVersionCheck = require('../ReactNativeVersionCheck');
     expect(ReactNativeVersion).toMatchObject({
       version: {major: 0, minor: 0, patch: 0, prerelease: null},
     });
@@ -56,7 +56,7 @@ function _defineCheckVersionTests() {
     _mockJsVersion(0, 1, 0);
     _mockNativeVersion(0, 1, 0);
 
-    const ReactNativeVersionCheck = require('ReactNativeVersionCheck');
+    const ReactNativeVersionCheck = require('../ReactNativeVersionCheck');
     expect(() => ReactNativeVersionCheck.checkVersions()).not.toThrow();
   });
 
@@ -64,7 +64,7 @@ function _defineCheckVersionTests() {
     _mockJsVersion(0, 1, 0);
     _mockNativeVersion(0, 2, 0);
 
-    const ReactNativeVersionCheck = require('ReactNativeVersionCheck');
+    const ReactNativeVersionCheck = require('../ReactNativeVersionCheck');
     expect(() => ReactNativeVersionCheck.checkVersions()).toThrowError(
       /React Native version mismatch/,
     );
@@ -74,7 +74,7 @@ function _defineCheckVersionTests() {
     _mockJsVersion(1, 0, 0);
     _mockNativeVersion(2, 0, 0);
 
-    const ReactNativeVersionCheck = require('ReactNativeVersionCheck');
+    const ReactNativeVersionCheck = require('../ReactNativeVersionCheck');
     expect(() => ReactNativeVersionCheck.checkVersions()).toThrowError(
       /React Native version mismatch/,
     );
@@ -84,7 +84,7 @@ function _defineCheckVersionTests() {
     _mockJsVersion(0, 1, 0);
     _mockNativeVersion(0, 1, 2);
 
-    const ReactNativeVersionCheck = require('ReactNativeVersionCheck');
+    const ReactNativeVersionCheck = require('../ReactNativeVersionCheck');
     expect(() => ReactNativeVersionCheck.checkVersions()).not.toThrow();
   });
 
@@ -92,13 +92,13 @@ function _defineCheckVersionTests() {
     _mockJsVersion(0, 1, 0, 'beta.0');
     _mockNativeVersion(0, 1, 0, 'alpha.1');
 
-    const ReactNativeVersionCheck = require('ReactNativeVersionCheck');
+    const ReactNativeVersionCheck = require('../ReactNativeVersionCheck');
     expect(() => ReactNativeVersionCheck.checkVersions()).not.toThrow();
   });
 }
 
 function _mockJsVersion(major = 0, minor = 0, patch = 0, prerelease = null) {
-  jest.doMock('ReactNativeVersion', () => ({
+  jest.doMock('../ReactNativeVersion', () => ({
     version: {major, minor, patch, prerelease},
   }));
 }
@@ -109,7 +109,7 @@ function _mockNativeVersion(
   patch = 0,
   prerelease = null,
 ) {
-  jest.doMock('NativeModules', () => ({
+  jest.doMock('../../BatchedBridge/NativeModules', () => ({
     PlatformConstants: {
       reactNativeVersion: {major, minor, patch, prerelease},
     },
