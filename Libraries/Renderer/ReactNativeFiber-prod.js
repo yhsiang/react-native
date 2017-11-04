@@ -9,11 +9,11 @@
  */
 "use strict";
 
-var invariant = require("fbjs/lib/invariant"), ExceptionsManager = require("ExceptionsManager"), emptyObject = require("fbjs/lib/emptyObject"), react = require("react"), shallowEqual = require("fbjs/lib/shallowEqual"), deepDiffer = require("deepDiffer"), flattenStyle = require("flattenStyle"), TextInputState = require("TextInputState"), UIManager = require("UIManager");
+var invariant = require("fbjs/lib/invariant"), ExceptionsManager = require('../Core/ExceptionsManager'), emptyObject = require("fbjs/lib/emptyObject"), react = require("react"), shallowEqual = require("fbjs/lib/shallowEqual"), deepDiffer = require('../Utilities/differ/deepDiffer'), flattenStyle = require('../StyleSheet/flattenStyle'), TextInputState = require('../Components/TextInput/TextInputState'), UIManager = require('../ReactNative/UIManager');
 
-require("deepFreezeAndThrowOnMutationInDev"), require("InitializeCore");
+require('../Utilities/deepFreezeAndThrowOnMutationInDev'), require('../Core/InitializeCore');
 
-var RCTEventEmitter = require("RCTEventEmitter"), emptyFunction = require("fbjs/lib/emptyFunction"), defaultShowDialog = function(capturedError) {
+var RCTEventEmitter = require('../EventEmitter/RCTEventEmitter'), emptyFunction = require("fbjs/lib/emptyFunction"), defaultShowDialog = function(capturedError) {
     return !0;
 }, showDialog = defaultShowDialog;
 

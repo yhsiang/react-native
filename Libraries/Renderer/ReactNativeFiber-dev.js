@@ -10,9 +10,9 @@
 "use strict";
 
 __DEV__ && function() {
-    var invariant = require("fbjs/lib/invariant"), require$$0 = require("fbjs/lib/warning"), ExceptionsManager = require("ExceptionsManager"), emptyObject = require("fbjs/lib/emptyObject"), react = require("react"), checkPropTypes = require("prop-types/checkPropTypes"), shallowEqual = require("fbjs/lib/shallowEqual"), deepDiffer = require("deepDiffer"), flattenStyle = require("flattenStyle"), TextInputState = require("TextInputState"), UIManager = require("UIManager"), deepFreezeAndThrowOnMutationInDev = require("deepFreezeAndThrowOnMutationInDev");
-    require("InitializeCore");
-    var RCTEventEmitter = require("RCTEventEmitter"), emptyFunction = require("fbjs/lib/emptyFunction"), defaultShowDialog = function(capturedError) {
+    var invariant = require("fbjs/lib/invariant"), require$$0 = require("fbjs/lib/warning"), ExceptionsManager = require('../Core/ExceptionsManager'), emptyObject = require("fbjs/lib/emptyObject"), react = require("react"), checkPropTypes = require("prop-types/checkPropTypes"), shallowEqual = require("fbjs/lib/shallowEqual"), deepDiffer = require('../Utilities/differ/deepDiffer'), flattenStyle = require('../StyleSheet/flattenStyle'), TextInputState = require('../Components/TextInput/TextInputState'), UIManager = require('../ReactNative/UIManager'), deepFreezeAndThrowOnMutationInDev = require('../Utilities/deepFreezeAndThrowOnMutationInDev');
+    require('../Core/InitializeCore');
+    var RCTEventEmitter = require('../EventEmitter/RCTEventEmitter'), emptyFunction = require("fbjs/lib/emptyFunction"), defaultShowDialog = function(capturedError) {
         return !0;
     }, showDialog = defaultShowDialog;
     function logCapturedError(capturedError) {

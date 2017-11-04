@@ -25,7 +25,7 @@ var ReactNativeFeatureFlags = {
     if (useFiber == null) {
       useFiber = true;
       if (__DEV__) {
-        require('Systrace').installReactHook(useFiber);
+        require('../Performance/Systrace').installReactHook(useFiber);
       }
     }
     return useFiber;
@@ -39,7 +39,7 @@ var ReactNativeFeatureFlags = {
     }
     useFiber = enabled;
     if (__DEV__) {
-      require('Systrace').installReactHook(useFiber);
+      require('../Performance/Systrace').installReactHook(useFiber);
     }
   },
 };
