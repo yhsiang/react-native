@@ -559,8 +559,13 @@ static YGSize RCTMeasure(YGNodeRef node, float width, YGMeasureMode widthMode, f
                                                        atIndex:range.location
                                                 effectiveRange:&range];
        UIFont *newFont = [font fontWithSize:originalFont.pointSize * scale];
-       [textStorage removeAttribute:NSFontAttributeName range:range];
-       [textStorage addAttribute:NSFontAttributeName value:newFont range:range];
+       if (newFont) {
+         [textStorage removeAttribute:NSFontAttributeName range:range];
+         [textStorage addAttribute:NSFontAttributeName value:newFont range:range];
+       } else {
+         RCTLogError(@"Font '%@' doesn't support automatic scaling.", originalFont.familyName);
+         *stop = YES;
+       }
      }
    }];
 
