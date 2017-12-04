@@ -11,34 +11,34 @@
  */
 'use strict';
 
-const Animated = require('Animated');
-const ColorPropType = require('ColorPropType');
-const EdgeInsetsPropType = require('EdgeInsetsPropType');
-const Platform = require('Platform');
-const PointPropType = require('PointPropType');
+const Animated = require('../../Animated/src/Animated');
+const ColorPropType = require('../../StyleSheet/ColorPropType');
+const EdgeInsetsPropType = require('../../StyleSheet/EdgeInsetsPropType');
+const Platform = require('../../Utilities/Platform');
+const PointPropType = require('../../StyleSheet/PointPropType');
 const PropTypes = require('prop-types');
-const React = require('React');
-const ReactNative = require('ReactNative');
-const ScrollResponder = require('ScrollResponder');
-const ScrollViewStickyHeader = require('ScrollViewStickyHeader');
-const StyleSheet = require('StyleSheet');
-const StyleSheetPropType = require('StyleSheetPropType');
-const View = require('View');
-const ViewPropTypes = require('ViewPropTypes');
-const ViewStylePropTypes = require('ViewStylePropTypes');
+const React = require('react');
+const ReactNative = require('../../Renderer/shims/ReactNative');
+const ScrollResponder = require('../ScrollResponder');
+const ScrollViewStickyHeader = require('./ScrollViewStickyHeader');
+const StyleSheet = require('../../StyleSheet/StyleSheet');
+const StyleSheetPropType = require('../../StyleSheet/StyleSheetPropType');
+const View = require('../View/View');
+const ViewPropTypes = require('../View/ViewPropTypes');
+const ViewStylePropTypes = require('../View/ViewStylePropTypes');
 
 const createReactClass = require('create-react-class');
-const dismissKeyboard = require('dismissKeyboard');
-const flattenStyle = require('flattenStyle');
+const dismissKeyboard = require('../../Utilities/dismissKeyboard');
+const flattenStyle = require('../../StyleSheet/flattenStyle');
 const invariant = require('fbjs/lib/invariant');
-const processDecelerationRate = require('processDecelerationRate');
-const requireNativeComponent = require('requireNativeComponent');
+const processDecelerationRate = require('./processDecelerationRate');
+const requireNativeComponent = require('../../ReactNative/requireNativeComponent');
 /* $FlowFixMe(>=0.54.0 site=react_native_oss) This comment suppresses an error
  * found when Flow v0.54 was deployed. To see the error delete this comment and
  * run Flow. */
 const warning = require('fbjs/lib/warning');
 
-import type {NativeMethodsMixinType} from 'ReactNativeTypes';
+import type {NativeMethodsMixinType} from '../../Renderer/shims/ReactNativeTypes';
 
 /**
  * Component that wraps platform ScrollView while providing

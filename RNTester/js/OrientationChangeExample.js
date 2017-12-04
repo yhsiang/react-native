@@ -19,7 +19,7 @@ const {
   View,
 } = ReactNative;
 
-import type EmitterSubscription from 'EmitterSubscription';
+import type EmitterSubscription from '../../Libraries/vendor/emitter/EmitterSubscription';
 
 class OrientationChangeExample extends React.Component<{}, $FlowFixMeState> {
   _orientationSubscription: EmitterSubscription;

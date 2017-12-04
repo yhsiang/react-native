@@ -12,20 +12,20 @@
  */
 'use strict';
 
-const MetroListView = require('MetroListView'); // Used as a fallback legacy option
-const React = require('React');
-const View = require('View');
-const VirtualizedList = require('VirtualizedList');
+const MetroListView = require('./MetroListView'); // Used as a fallback legacy option
+const React = require('react');
+const View = require('../Components/View/View');
+const VirtualizedList = require('./VirtualizedList');
 
 const invariant = require('fbjs/lib/invariant');
 
-import type {StyleObj} from 'StyleSheetTypes';
+import type {StyleObj} from '../StyleSheet/StyleSheetTypes';
 import type {
   ViewabilityConfig,
   ViewToken,
   ViewabilityConfigCallbackPair,
-} from 'ViewabilityHelper';
-import type {Props as VirtualizedListProps} from 'VirtualizedList';
+} from './ViewabilityHelper';
+import type {Props as VirtualizedListProps} from './VirtualizedList';
 
 type RequiredProps<ItemT> = {
   /**

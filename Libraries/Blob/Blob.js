@@ -18,9 +18,9 @@ const invariant = require('fbjs/lib/invariant');
  * run Flow. */
 const uuid = require('uuid');
 
-const { BlobModule } = require('NativeModules');
+const { BlobModule } = require('../BatchedBridge/NativeModules');
 
-import type { BlobProps } from 'BlobTypes';
+import type { BlobProps } from './BlobTypes';
 
 /**
  * Opaque JS representation of some binary data in native.
