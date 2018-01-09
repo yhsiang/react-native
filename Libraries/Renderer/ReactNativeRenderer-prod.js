@@ -10,16 +10,16 @@
  */
 
 "use strict";
-require("InitializeCore");
+require('../Core/InitializeCore');
 var invariant = require("fbjs/lib/invariant"),
   emptyFunction = require("fbjs/lib/emptyFunction"),
-  RCTEventEmitter = require("RCTEventEmitter"),
-  UIManager = require("UIManager"),
+  RCTEventEmitter = require('../EventEmitter/RCTEventEmitter'),
+  UIManager = require('../ReactNative/UIManager'),
   React = require("react"),
-  ExceptionsManager = require("ExceptionsManager"),
-  TextInputState = require("TextInputState"),
-  deepDiffer = require("deepDiffer"),
-  flattenStyle = require("flattenStyle"),
+  ExceptionsManager = require('../Core/ExceptionsManager'),
+  TextInputState = require('../Components/TextInput/TextInputState'),
+  deepDiffer = require('../Utilities/differ/deepDiffer'),
+  flattenStyle = require('../StyleSheet/flattenStyle'),
   emptyObject = require("fbjs/lib/emptyObject"),
   shallowEqual = require("fbjs/lib/shallowEqual"),
   ReactErrorUtils = {
@@ -1599,7 +1599,7 @@ function getComponentName(fiber) {
     ? fiber
     : "function" === typeof fiber ? fiber.displayName || fiber.name : null;
 }
-var debugRenderPhaseSideEffects = require("ReactFeatureFlags")
+var debugRenderPhaseSideEffects = require('./shims/ReactFeatureFlags')
   .debugRenderPhaseSideEffects;
 function isFiberMountedImpl(fiber) {
   var node = fiber;
