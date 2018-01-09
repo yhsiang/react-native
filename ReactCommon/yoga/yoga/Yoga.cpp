@@ -469,7 +469,7 @@ YGNodeRef YGNodeGetParent(const YGNodeRef node) {
 }
 
 uint32_t YGNodeGetChildCount(const YGNodeRef node) {
-  return node->children.size();
+  return (uint32_t) node->children.size();
 }
 
 void YGNodeMarkDirty(const YGNodeRef node) {
@@ -1853,7 +1853,7 @@ static void YGNodelayoutImpl(const YGNodeRef node,
     return;
   }
 
-  const uint32_t childCount = node->children.size();
+  const uint32_t childCount = (uint32_t) node->children.size();
   if (childCount == 0) {
     YGNodeEmptyContainerSetMeasuredDimensions(node,
                                               availableWidth,
@@ -3378,7 +3378,7 @@ static void YGRoundToPixelGrid(const YGNodeRef node,
                               (textRounding && !hasFractionalHeight)) -
       YGRoundValueToPixelGrid(absoluteNodeTop, pointScaleFactor, false, textRounding);
 
-  const uint32_t childCount = node->children.size();
+  const uint32_t childCount = (uint32_t) node->children.size();
   for (uint32_t i = 0; i < childCount; i++) {
     YGRoundToPixelGrid(YGNodeGetChild(node, i), pointScaleFactor, absoluteNodeLeft, absoluteNodeTop);
   }
