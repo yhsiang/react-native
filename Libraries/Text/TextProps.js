@@ -15,8 +15,8 @@
 
 import type {Node} from 'react';
 
-import type {LayoutEvent} from 'CoreEventTypes';
-import type {TextStyleProp} from 'StyleSheetTypes';
+import type {LayoutEvent} from '../Types/CoreEventTypes';
+import type {TextStyleProp} from '../StyleSheet/StyleSheetTypes';
 
 type PressRetentionOffset = {
   top: number,

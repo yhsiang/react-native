@@ -11,7 +11,7 @@
  */
 'use strict';
 
-const MessageQueue = require('MessageQueue');
+const MessageQueue = require('./MessageQueue');
 
 // MessageQueue can install a global handler to catch all exceptions where JS users can register their own behavior
 // This handler makes all exceptions to be handled inside MessageQueue rather than by the VM at its origin
