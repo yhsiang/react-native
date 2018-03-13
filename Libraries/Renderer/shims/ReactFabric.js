@@ -10,14 +10,14 @@
 'use strict';
 
 // TODO @sema: Adjust types
-import type {ReactNativeType} from 'ReactNativeTypes';
+import type {ReactNativeType} from './ReactNativeTypes';
 
 let ReactFabric;
 
 if (__DEV__) {
-  ReactFabric = require('ReactFabric-dev');
+  ReactFabric = require('../ReactFabric-dev');
 } else {
-  ReactFabric = require('ReactFabric-prod');
+  ReactFabric = require('../ReactFabric-prod');
 }
 
 module.exports = (ReactFabric: ReactNativeType);

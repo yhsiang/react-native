@@ -10,18 +10,18 @@
  */
 
 "use strict";
-require("InitializeCore");
+require('../Core/InitializeCore');
 var invariant = require("fbjs/lib/invariant"),
   emptyFunction = require("fbjs/lib/emptyFunction"),
-  RCTEventEmitter = require("RCTEventEmitter"),
-  UIManager = require("UIManager"),
+  RCTEventEmitter = require('../EventEmitter/RCTEventEmitter'),
+  UIManager = require('../ReactNative/UIManager'),
   React = require("react"),
-  TextInputState = require("TextInputState"),
-  deepDiffer = require("deepDiffer"),
-  flattenStyle = require("flattenStyle"),
+  TextInputState = require('../Components/TextInput/TextInputState'),
+  deepDiffer = require('../Utilities/differ/deepDiffer'),
+  flattenStyle = require('../StyleSheet/flattenStyle'),
   emptyObject = require("fbjs/lib/emptyObject"),
   shallowEqual = require("fbjs/lib/shallowEqual"),
-  ExceptionsManager = require("ExceptionsManager");
+  ExceptionsManager = require('../Core/ExceptionsManager');
 function invokeGuardedCallback(name, func, context, a, b, c, d, e, f) {
   this._hasCaughtError = !1;
   this._caughtError = null;
@@ -1833,7 +1833,7 @@ function push(cursor, value) {
   valueStack[index] = cursor.current;
   cursor.current = value;
 }
-var _require = require("ReactFeatureFlags"),
+var _require = require('./shims/ReactFeatureFlags'),
   debugRenderPhaseSideEffects = _require.debugRenderPhaseSideEffects,
   debugRenderPhaseSideEffectsForStrictMode =
     _require.debugRenderPhaseSideEffectsForStrictMode;

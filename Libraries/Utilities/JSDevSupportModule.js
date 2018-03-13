@@ -21,7 +21,7 @@ var JSDevSupportModule = {
     var result = renderer.getInspectorDataForViewTag(tag);
     var path = result.hierarchy.map( (item) => item.name).join(' -> ');
     console.error('StackOverflowException rendering JSComponent: ' + path);
-    require('NativeModules').JSDevSupport.setResult(path, null);
+    require('../BatchedBridge/NativeModules').JSDevSupport.setResult(path, null);
   },
 };
 

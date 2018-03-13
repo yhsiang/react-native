@@ -12,11 +12,11 @@
  */
 'use strict';
 
-const Animated = require('Animated');
-const React = require('React');
-const StyleSheet = require('StyleSheet');
+const Animated = require('../../Animated/src/Animated');
+const React = require('react');
+const StyleSheet = require('../../StyleSheet/StyleSheet');
 
-import type {LayoutEvent} from 'CoreEventTypes';
+import type {LayoutEvent} from '../../Types/CoreEventTypes';
 
 type Props = {
   children?: React.Element<any>,

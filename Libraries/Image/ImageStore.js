@@ -12,7 +12,7 @@
  */
 'use strict';
 
-const RCTImageStoreManager = require('NativeModules').ImageStoreManager;
+const RCTImageStoreManager = require('../BatchedBridge/NativeModules').ImageStoreManager;
 
 class ImageStore {
   /**

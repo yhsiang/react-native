@@ -15,21 +15,21 @@ if (__DEV__) {
   (function() {
 "use strict";
 
-require("InitializeCore");
+require('../Core/InitializeCore');
 var invariant = require("fbjs/lib/invariant");
 var warning = require("fbjs/lib/warning");
 var emptyFunction = require("fbjs/lib/emptyFunction");
-var RCTEventEmitter = require("RCTEventEmitter");
-var UIManager = require("UIManager");
+var RCTEventEmitter = require('../EventEmitter/RCTEventEmitter');
+var UIManager = require('../ReactNative/UIManager');
 var React = require("react");
-var TextInputState = require("TextInputState");
-var deepDiffer = require("deepDiffer");
-var flattenStyle = require("flattenStyle");
+var TextInputState = require('../Components/TextInput/TextInputState');
+var deepDiffer = require('../Utilities/differ/deepDiffer');
+var flattenStyle = require('../StyleSheet/flattenStyle');
 var emptyObject = require("fbjs/lib/emptyObject");
 var checkPropTypes = require("prop-types/checkPropTypes");
 var shallowEqual = require("fbjs/lib/shallowEqual");
-var deepFreezeAndThrowOnMutationInDev = require("deepFreezeAndThrowOnMutationInDev");
-var FabricUIManager = require("FabricUIManager");
+var deepFreezeAndThrowOnMutationInDev = require('../Utilities/deepFreezeAndThrowOnMutationInDev');
+var FabricUIManager = require('../ReactNative/FabricUIManager');
 
 var invokeGuardedCallback = function(name, func, context, a, b, c, d, e, f) {
   this._hasCaughtError = false;

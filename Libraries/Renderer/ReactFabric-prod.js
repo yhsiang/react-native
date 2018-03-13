@@ -10,18 +10,18 @@
  */
 
 "use strict";
-require("InitializeCore");
+require('../Core/InitializeCore');
 var invariant = require("fbjs/lib/invariant"),
   emptyFunction = require("fbjs/lib/emptyFunction"),
-  RCTEventEmitter = require("RCTEventEmitter"),
-  UIManager = require("UIManager"),
+  RCTEventEmitter = require('../EventEmitter/RCTEventEmitter'),
+  UIManager = require('../ReactNative/UIManager'),
   React = require("react"),
-  TextInputState = require("TextInputState"),
-  deepDiffer = require("deepDiffer"),
-  flattenStyle = require("flattenStyle"),
+  TextInputState = require('../Components/TextInput/TextInputState'),
+  deepDiffer = require('../Utilities/differ/deepDiffer'),
+  flattenStyle = require('../StyleSheet/flattenStyle'),
   emptyObject = require("fbjs/lib/emptyObject"),
   shallowEqual = require("fbjs/lib/shallowEqual"),
-  FabricUIManager = require("FabricUIManager");
+  FabricUIManager = require('../ReactNative/FabricUIManager');
 function invokeGuardedCallback(name, func, context, a, b, c, d, e, f) {
   this._hasCaughtError = !1;
   this._caughtError = null;

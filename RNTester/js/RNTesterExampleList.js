@@ -11,16 +11,16 @@
  */
 'use strict';
 
-const Platform = require('Platform');
+const Platform = require('../../Libraries/Utilities/Platform');
 const React = require('react');
-const SectionList = require('SectionList');
-const StyleSheet = require('StyleSheet');
-const Text = require('Text');
-const TextInput = require('TextInput');
-const TouchableHighlight = require('TouchableHighlight');
+const SectionList = require('../../Libraries/Lists/SectionList');
+const StyleSheet = require('../../Libraries/StyleSheet/StyleSheet');
+const Text = require('../../Libraries/Text/Text');
+const TextInput = require('../../Libraries/Components/TextInput/TextInput');
+const TouchableHighlight = require('../../Libraries/Components/Touchable/TouchableHighlight');
 const RNTesterActions = require('./RNTesterActions');
 const RNTesterStatePersister = require('./RNTesterStatePersister');
-const View = require('View');
+const View = require('../../Libraries/Components/View/View');
 
 import type {
   RNTesterExample,
@@ -30,7 +30,7 @@ import type {
 } from './RNTesterStatePersister';
 import type {
   StyleObj,
-} from 'StyleSheetTypes';
+} from '../../Libraries/StyleSheet/StyleSheetTypes';
 
 type Props = {
   onNavigate: Function,

@@ -33,7 +33,7 @@ type Spec = {|
   +completeRoot: (rootTag: number, childSet: NodeSet) => void,
 |};
 
-const NativeFabricUIManager: Spec = require('NativeModules').FabricUIManager;
+const NativeFabricUIManager: Spec = require('../BatchedBridge/NativeModules').FabricUIManager;
 
 const FabricUIManager: Spec = {
   createNode(

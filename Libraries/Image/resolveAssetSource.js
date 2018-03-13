@@ -13,10 +13,10 @@
  */
 'use strict';
 
-const AssetRegistry = require('AssetRegistry');
-const AssetSourceResolver = require('AssetSourceResolver');
+const AssetRegistry = require('./AssetRegistry');
+const AssetSourceResolver = require('./AssetSourceResolver');
 
-import type { ResolvedAssetSource } from 'AssetSourceResolver';
+import type { ResolvedAssetSource } from './AssetSourceResolver';
 
 let _customSourceTransformer, _serverURL, _scriptURL;
 let _sourceCodeScriptURL: ?string;
@@ -91,7 +91,7 @@ function resolveAssetSource(source: any): ?ResolvedAssetSource {
 
 let sourceCode = global.nativeExtensions && global.nativeExtensions.SourceCode;
 if (!sourceCode) {
-  const NativeModules = require('NativeModules');
+  const NativeModules = require('../BatchedBridge/NativeModules');
   sourceCode = NativeModules && NativeModules.SourceCode;
 }
 _sourceCodeScriptURL = sourceCode.scriptURL;

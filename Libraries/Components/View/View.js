@@ -12,20 +12,20 @@
  */
 'use strict';
 
-const NativeMethodsMixin = require('NativeMethodsMixin');
-const Platform = require('Platform');
-const React = require('React');
-const ReactNativeStyleAttributes = require('ReactNativeStyleAttributes');
-const ReactNativeViewAttributes = require('ReactNativeViewAttributes');
-const ViewPropTypes = require('ViewPropTypes');
-const {ViewContextTypes} = require('ViewContext');
+const NativeMethodsMixin = require('../../Renderer/shims/NativeMethodsMixin');
+const Platform = require('../../Utilities/Platform');
+const React = require('react');
+const ReactNativeStyleAttributes = require('./ReactNativeStyleAttributes');
+const ReactNativeViewAttributes = require('./ReactNativeViewAttributes');
+const ViewPropTypes = require('./ViewPropTypes');
+const {ViewContextTypes} = require('./ViewContext');
 
 const createReactClass = require('create-react-class');
 const invariant = require('fbjs/lib/invariant');
-const requireNativeComponent = require('requireNativeComponent');
+const requireNativeComponent = require('../../ReactNative/requireNativeComponent');
 
-import type {ViewProps} from 'ViewPropTypes';
-import type {ViewChildContext} from 'ViewContext';
+import type {ViewProps} from './ViewPropTypes';
+import type {ViewChildContext} from './ViewContext';
 
 export type Props = ViewProps;
 
@@ -87,7 +87,7 @@ const RCTView = requireNativeComponent('RCTView', View, {
 });
 
 if (__DEV__) {
-  const UIManager = require('UIManager');
+  const UIManager = require('../../ReactNative/UIManager');
   const viewConfig =
     (UIManager.viewConfigs && UIManager.viewConfigs.RCTView) || {};
   for (const prop in viewConfig.nativeProps) {

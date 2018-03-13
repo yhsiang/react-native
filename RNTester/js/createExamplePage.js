@@ -15,7 +15,7 @@ const React = require('react');
 
 const RNTesterExampleContainer = require('./RNTesterExampleContainer');
 
-import type { ExampleModule } from 'ExampleTypes';
+import type { ExampleModule } from './ExampleTypes';
 
 var createExamplePage = function(title: ?string, exampleModule: ExampleModule)
   : React.ComponentType<any> {

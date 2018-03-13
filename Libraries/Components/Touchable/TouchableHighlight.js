@@ -12,21 +12,21 @@
  */
 'use strict';
 
-const ColorPropType = require('ColorPropType');
-const NativeMethodsMixin = require('NativeMethodsMixin');
+const ColorPropType = require('../../StyleSheet/ColorPropType');
+const NativeMethodsMixin = require('../../Renderer/shims/NativeMethodsMixin');
 const PropTypes = require('prop-types');
-const React = require('React');
-const ReactNativeViewAttributes = require('ReactNativeViewAttributes');
-const StyleSheet = require('StyleSheet');
-const Touchable = require('Touchable');
-const TouchableWithoutFeedback = require('TouchableWithoutFeedback');
-const View = require('View');
-const ViewPropTypes = require('ViewPropTypes');
+const React = require('react');
+const ReactNativeViewAttributes = require('../View/ReactNativeViewAttributes');
+const StyleSheet = require('../../StyleSheet/StyleSheet');
+const Touchable = require('./Touchable');
+const TouchableWithoutFeedback = require('./TouchableWithoutFeedback');
+const View = require('../View/View');
+const ViewPropTypes = require('../View/ViewPropTypes');
 
 const createReactClass = require('create-react-class');
-const ensurePositiveDelayProps = require('ensurePositiveDelayProps');
+const ensurePositiveDelayProps = require('./ensurePositiveDelayProps');
 
-import type {PressEvent} from 'CoreEventTypes';
+import type {PressEvent} from '../../Types/CoreEventTypes';
 
 const DEFAULT_PROPS = {
   activeOpacity: 0.85,

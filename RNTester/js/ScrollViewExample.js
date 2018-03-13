@@ -12,10 +12,10 @@
  */
 'use strict';
 
-import type {StyleObj} from 'StyleSheetTypes';
+import type {StyleObj} from '../../Libraries/StyleSheet/StyleSheetTypes';
 
-const ActivityIndicator = require('ActivityIndicator');
-const Platform = require('Platform');
+const ActivityIndicator = require('../../Libraries/Components/ActivityIndicator/ActivityIndicator');
+const Platform = require('../../Libraries/Utilities/Platform');
 const React = require('react');
 const ReactNative = require('react-native');
 const {

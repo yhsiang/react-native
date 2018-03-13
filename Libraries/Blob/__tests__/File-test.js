@@ -11,11 +11,11 @@
  */
 'use strict';
 
-jest.setMock('NativeModules', {
+jest.setMock('../../BatchedBridge/NativeModules', {
   BlobModule: require('../__mocks__/BlobModule'),
 });
 
-const File = require('File');
+const File = require('../File');
 
 describe('File', function() {
   it('should create empty file', () => {
