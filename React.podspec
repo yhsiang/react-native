@@ -44,11 +44,13 @@ Pod::Spec.new do |s|
 
   s.subspec "Core" do |ss|
     ss.dependency             "yoga", "#{package["version"]}.React"
+    ss.dependency             "React/fabric"
     ss.source_files         = "React/**/*.{c,h,m,mm,S,cpp}"
     ss.exclude_files        = "**/__tests__/*",
                               "IntegrationTests/*",
                               "React/DevSupport/*",
                               "React/Inspector/*",
+                              "ReactCommon/fabric/*",
                               "ReactCommon/yoga/*",
                               "React/Cxx*/*",
     ss.ios.exclude_files    = "React/**/RCTTV*.*"
@@ -62,6 +64,7 @@ Pod::Spec.new do |s|
     ss.header_dir           = "React"
     ss.framework            = "JavaScriptCore"
     ss.libraries            = "stdc++"
+    ss.compiler_flags       = folly_compiler_flags
     ss.pod_target_xcconfig  = { "HEADER_SEARCH_PATHS" => "\"$(PODS_TARGET_SRCROOT)/ReactCommon\"" }
   end
 
@@ -84,6 +87,14 @@ Pod::Spec.new do |s|
   s.subspec "tvOS" do |ss|
     ss.dependency             "React/Core"
     ss.source_files         = "React/**/RCTTV*.{h, m}"
+  end
+
+  s.subspec "fabric" do |ss|
+    ss.dependency             "Folly", "2016.09.26.00"
+    ss.compiler_flags       = folly_compiler_flags
+    ss.source_files         = "ReactCommon/fabric/**/*.{cpp,h}"
+    ss.private_header_files = "ReactCommon/fabric/**/*.h"
+    ss.pod_target_xcconfig  = { "HEADER_SEARCH_PATHS" => "\"$(PODS_TARGET_SRCROOT)/ReactCommon\"" }
   end
 
   s.subspec "jschelpers" do |ss|
