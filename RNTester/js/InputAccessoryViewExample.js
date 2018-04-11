@@ -11,16 +11,19 @@
 
 'use strict';
 
-const Alert = require('../../Libraries/Alert/Alert');
-const Button = require('../../Libraries/Components/Button');
-const Dimensions = require('../../Libraries/Utilities/Dimensions');
-const InputAccessoryView = require('../../Libraries/Components/TextInput/InputAccessoryView');
 const React = require('react');
-const ScrollView = require('../../Libraries/Components/ScrollView/ScrollView');
-const StyleSheet = require('../../Libraries/StyleSheet/StyleSheet');
-const Text = require('../../Libraries/Text/Text');
-const TextInput = require('../../Libraries/Components/TextInput/TextInput');
-const View = require('../../Libraries/Components/View/View');
+const ReactNative = require('react-native');
+const {
+  Alert,
+  Button,
+  Dimensions,
+  InputAccessoryView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} = ReactNative;
 
 class Message extends React.PureComponent<*> {
   render() {

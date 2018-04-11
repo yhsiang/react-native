@@ -26,6 +26,7 @@ const ReactNative = {
   get ImageBackground() { return require('../Image/ImageBackground'); },
   get ImageEditor() { return require('../Image/ImageEditor'); },
   get ImageStore() { return require('../Image/ImageStore'); },
+  get InputAccessoryView() { return require('../Components/TextInput/InputAccessoryView'); },
   get KeyboardAvoidingView() { return require('../Components/Keyboard/KeyboardAvoidingView'); },
   get ListView() { return require('../Lists/ListView/ListView'); },
   get MaskedViewIOS() { return require('../Components/MaskedView/MaskedViewIOS'); },
