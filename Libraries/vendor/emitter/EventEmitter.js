@@ -10,8 +10,8 @@
  */
 'use strict';
 
-const EmitterSubscription = require('EmitterSubscription');
-const EventSubscriptionVendor = require('EventSubscriptionVendor');
+const EmitterSubscription = require('./EmitterSubscription');
+const EventSubscriptionVendor = require('./EventSubscriptionVendor');
 
 const emptyFunction = require('fbjs/lib/emptyFunction');
 const invariant = require('fbjs/lib/invariant');

@@ -9,4 +9,4 @@
  */
 'use strict';
 
-module.exports = require('View');
+module.exports = require('../View/View');

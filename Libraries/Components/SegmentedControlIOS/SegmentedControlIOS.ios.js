@@ -9,14 +9,14 @@
  */
 'use strict';
 
-const NativeMethodsMixin = require('NativeMethodsMixin');
-const React = require('React');
+const NativeMethodsMixin = require('../../Renderer/shims/NativeMethodsMixin');
+const React = require('react');
 const PropTypes = require('prop-types');
-const StyleSheet = require('StyleSheet');
-const ViewPropTypes = require('ViewPropTypes');
+const StyleSheet = require('../../StyleSheet/StyleSheet');
+const ViewPropTypes = require('../View/ViewPropTypes');
 
 const createReactClass = require('create-react-class');
-const requireNativeComponent = require('requireNativeComponent');
+const requireNativeComponent = require('../../ReactNative/requireNativeComponent');
 
 type DefaultProps = {
   values: Array<string>,

@@ -9,18 +9,18 @@
  */
 'use strict';
 
-const Image = require('Image');
-const ColorPropType = require('ColorPropType');
-const NativeMethodsMixin = require('NativeMethodsMixin');
-const ReactNativeViewAttributes = require('ReactNativeViewAttributes');
-const Platform = require('Platform');
-const React = require('React');
+const Image = require('../../Image/Image');
+const ColorPropType = require('../../StyleSheet/ColorPropType');
+const NativeMethodsMixin = require('../../Renderer/shims/NativeMethodsMixin');
+const ReactNativeViewAttributes = require('../View/ReactNativeViewAttributes');
+const Platform = require('../../Utilities/Platform');
+const React = require('react');
 const PropTypes = require('prop-types');
-const StyleSheet = require('StyleSheet');
-const ViewPropTypes = require('ViewPropTypes');
+const StyleSheet = require('../../StyleSheet/StyleSheet');
+const ViewPropTypes = require('../View/ViewPropTypes');
 
 const createReactClass = require('create-react-class');
-const requireNativeComponent = require('requireNativeComponent');
+const requireNativeComponent = require('../../ReactNative/requireNativeComponent');
 
 type Event = Object;
 

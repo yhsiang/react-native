@@ -10,18 +10,18 @@
  */
 
 "use strict";
-require("InitializeCore");
+require('../Core/InitializeCore');
 var invariant = require("fbjs/lib/invariant"),
   emptyFunction = require("fbjs/lib/emptyFunction"),
-  UIManager = require("UIManager"),
-  RCTEventEmitter = require("RCTEventEmitter"),
-  TextInputState = require("TextInputState"),
-  deepDiffer = require("deepDiffer"),
-  flattenStyle = require("flattenStyle"),
+  UIManager = require('../ReactNative/UIManager'),
+  RCTEventEmitter = require('../EventEmitter/RCTEventEmitter'),
+  TextInputState = require('../Components/TextInput/TextInputState'),
+  deepDiffer = require('../Utilities/differ/deepDiffer'),
+  flattenStyle = require('../StyleSheet/flattenStyle'),
   React = require("react"),
   emptyObject = require("fbjs/lib/emptyObject"),
   shallowEqual = require("fbjs/lib/shallowEqual"),
-  ExceptionsManager = require("ExceptionsManager");
+  ExceptionsManager = require('../Core/ExceptionsManager');
 function invokeGuardedCallback(name, func, context, a, b, c, d, e, f) {
   this._hasCaughtError = !1;
   this._caughtError = null;
@@ -2021,7 +2021,7 @@ function getStackAddendumByWorkInProgressFiber(workInProgress) {
   } while (workInProgress);
   return info;
 }
-var _require = require("ReactFeatureFlags"),
+var _require = require('./shims/ReactFeatureFlags'),
   enableGetDerivedStateFromCatch = _require.enableGetDerivedStateFromCatch,
   debugRenderPhaseSideEffects = _require.debugRenderPhaseSideEffects,
   debugRenderPhaseSideEffectsForStrictMode =

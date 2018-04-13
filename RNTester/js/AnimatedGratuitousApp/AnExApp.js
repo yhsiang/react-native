@@ -19,7 +19,7 @@ var {
   View,
 } = ReactNative;
 
-var AnExSet = require('AnExSet');
+var AnExSet = require('./AnExSet');
 
 var CIRCLE_SIZE = 80;
 var CIRCLE_MARGIN = 18;

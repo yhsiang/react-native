@@ -9,12 +9,12 @@
  */
 'use strict';
 
-jest.setMock('NativeModules', {
+jest.setMock('../../BatchedBridge/NativeModules', {
   BlobModule: require('../__mocks__/BlobModule'),
 });
 
-var Blob = require('Blob');
-var BlobManager = require('BlobManager');
+var Blob = require('../Blob');
+var BlobManager = require('../BlobManager');
 
 describe('BlobManager', function() {
   it('should create blob from parts', () => {

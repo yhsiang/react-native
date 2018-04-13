@@ -9,19 +9,19 @@
  */
 'use strict';
 
-const ColorPropType = require('ColorPropType');
-const NativeMethodsMixin = require('NativeMethodsMixin');
-const Platform = require('Platform');
-const React = require('React');
+const ColorPropType = require('../../StyleSheet/ColorPropType');
+const NativeMethodsMixin = require('../../Renderer/shims/NativeMethodsMixin');
+const Platform = require('../../Utilities/Platform');
+const React = require('react');
 const PropTypes = require('prop-types');
-const ViewPropTypes = require('ViewPropTypes');
+const ViewPropTypes = require('../View/ViewPropTypes');
 
 const createReactClass = require('create-react-class');
-const requireNativeComponent = require('requireNativeComponent');
+const requireNativeComponent = require('../../ReactNative/requireNativeComponent');
 
 if (Platform.OS === 'android') {
   const AndroidSwipeRefreshLayout =
-    require('UIManager').AndroidSwipeRefreshLayout;
+    require('../../ReactNative/UIManager').AndroidSwipeRefreshLayout;
   var RefreshLayoutConsts = AndroidSwipeRefreshLayout
     ? AndroidSwipeRefreshLayout.Constants
     : {SIZE: {}};

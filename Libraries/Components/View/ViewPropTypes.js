@@ -9,25 +9,25 @@
  */
 'use strict';
 
-const React = require('React');
-const EdgeInsetsPropType = require('EdgeInsetsPropType');
-const PlatformViewPropTypes = require('PlatformViewPropTypes');
+const React = require('react');
+const EdgeInsetsPropType = require('../../StyleSheet/EdgeInsetsPropType');
+const PlatformViewPropTypes = require('./PlatformViewPropTypes');
 const PropTypes = require('prop-types');
-const StyleSheetPropType = require('StyleSheetPropType');
-const ViewStylePropTypes = require('ViewStylePropTypes');
+const StyleSheetPropType = require('../../StyleSheet/StyleSheetPropType');
+const ViewStylePropTypes = require('./ViewStylePropTypes');
 
 const {
   AccessibilityComponentTypes,
   AccessibilityTraits,
-} = require('ViewAccessibility');
+} = require('./ViewAccessibility');
 
 import type {
   AccessibilityComponentType,
   AccessibilityTrait,
-} from 'ViewAccessibility';
-import type {EdgeInsetsProp} from 'EdgeInsetsPropType';
-import type {TVViewProps} from 'TVViewPropTypes';
-import type {Layout, LayoutEvent} from 'CoreEventTypes';
+} from './ViewAccessibility';
+import type {EdgeInsetsProp} from '../../StyleSheet/EdgeInsetsPropType';
+import type {TVViewProps} from '../AppleTV/TVViewPropTypes';
+import type {Layout, LayoutEvent} from '../../Types/CoreEventTypes';
 
 const stylePropType = StyleSheetPropType(ViewStylePropTypes);
 

@@ -10,24 +10,24 @@
  */
 'use strict';
 
-var ImageResizeMode = require('ImageResizeMode');
-var ImageStylePropTypes = require('ImageStylePropTypes');
-var NativeMethodsMixin = require('NativeMethodsMixin');
-var NativeModules = require('NativeModules');
-var React = require('React');
+var ImageResizeMode = require('./ImageResizeMode');
+var ImageStylePropTypes = require('./ImageStylePropTypes');
+var NativeMethodsMixin = require('../Renderer/shims/NativeMethodsMixin');
+var NativeModules = require('../BatchedBridge/NativeModules');
+var React = require('react');
 var PropTypes = require('prop-types');
-var ReactNativeViewAttributes = require('ReactNativeViewAttributes');
-var StyleSheet = require('StyleSheet');
-var StyleSheetPropType = require('StyleSheetPropType');
-var ViewPropTypes = require('ViewPropTypes');
+var ReactNativeViewAttributes = require('../Components/View/ReactNativeViewAttributes');
+var StyleSheet = require('../StyleSheet/StyleSheet');
+var StyleSheetPropType = require('../StyleSheet/StyleSheetPropType');
+var ViewPropTypes = require('../Components/View/ViewPropTypes');
 
 var createReactClass = require('create-react-class');
-var flattenStyle = require('flattenStyle');
-var merge = require('merge');
-var requireNativeComponent = require('requireNativeComponent');
-var resolveAssetSource = require('resolveAssetSource');
+var flattenStyle = require('../StyleSheet/flattenStyle');
+var merge = require('../vendor/core/merge');
+var requireNativeComponent = require('../ReactNative/requireNativeComponent');
+var resolveAssetSource = require('./resolveAssetSource');
 
-const {ViewContextTypes} = require('ViewContext');
+const {ViewContextTypes} = require('../Components/View/ViewContext');
 
 var {ImageLoader} = NativeModules;
 

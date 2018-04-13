@@ -11,7 +11,7 @@
 
 'use strict';
 
-const Platform = require('Platform');
+const Platform = require('../Utilities/Platform');
 
 // TODO: Change `nativeImageSource` to return this type.
 export type NativeImageSource = {|

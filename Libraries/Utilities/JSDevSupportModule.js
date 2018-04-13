@@ -18,7 +18,7 @@ var JSDevSupportModule = {
 
     var result = renderer.getInspectorDataForViewTag(tag);
     var path = result.hierarchy.map( (item) => item.name).join(' -> ');
-    require('NativeModules').JSDevSupport.setResult(path, null);
+    require('../BatchedBridge/NativeModules').JSDevSupport.setResult(path, null);
   },
 };
 

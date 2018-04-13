@@ -10,12 +10,12 @@
  */
 'use strict';
 
-const ColorPropType = require('ColorPropType');
-const React = require('React');
-const StyleSheet = require('StyleSheet');
-const ViewPropTypes = require('ViewPropTypes');
+const ColorPropType = require('../../StyleSheet/ColorPropType');
+const React = require('react');
+const StyleSheet = require('../../StyleSheet/StyleSheet');
+const ViewPropTypes = require('../View/ViewPropTypes');
 
-const requireNativeComponent = require('requireNativeComponent');
+const requireNativeComponent = require('../../ReactNative/requireNativeComponent');
 
 const RCTInputAccessoryView = requireNativeComponent('RCTInputAccessoryView');
 

@@ -11,7 +11,7 @@
 
 'use strict';
 
-import AnimatedNode from 'AnimatedNode';
+import AnimatedNode from '../Animated/src/nodes/AnimatedNode';
 
 export opaque type ____StyleSheetInternalStyleIdentifier_Internal: number = number;
 

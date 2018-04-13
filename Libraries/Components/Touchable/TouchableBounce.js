@@ -10,13 +10,13 @@
  */
 'use strict';
 
-const Animated = require('Animated');
-const EdgeInsetsPropType = require('EdgeInsetsPropType');
-const NativeMethodsMixin = require('NativeMethodsMixin');
-const React = require('React');
+const Animated = require('../../Animated/src/Animated');
+const EdgeInsetsPropType = require('../../StyleSheet/EdgeInsetsPropType');
+const NativeMethodsMixin = require('../../Renderer/shims/NativeMethodsMixin');
+const React = require('react');
 const createReactClass = require('create-react-class');
 const PropTypes = require('prop-types');
-const Touchable = require('Touchable');
+const Touchable = require('./Touchable');
 
 type Event = Object;
 

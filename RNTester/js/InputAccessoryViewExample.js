@@ -11,16 +11,16 @@
 
 'use strict';
 
-const Alert = require('Alert');
-const Button = require('Button');
-const Dimensions = require('Dimensions');
-const InputAccessoryView = require('InputAccessoryView');
-const React = require('React');
-const ScrollView = require('ScrollView');
-const StyleSheet = require('StyleSheet');
-const Text = require('Text');
-const TextInput = require('TextInput');
-const View = require('View');
+const Alert = require('../../Libraries/Alert/Alert');
+const Button = require('../../Libraries/Components/Button');
+const Dimensions = require('../../Libraries/Utilities/Dimensions');
+const InputAccessoryView = require('../../Libraries/Components/TextInput/InputAccessoryView');
+const React = require('react');
+const ScrollView = require('../../Libraries/Components/ScrollView/ScrollView');
+const StyleSheet = require('../../Libraries/StyleSheet/StyleSheet');
+const Text = require('../../Libraries/Text/Text');
+const TextInput = require('../../Libraries/Components/TextInput/TextInput');
+const View = require('../../Libraries/Components/View/View');
 
 class Message extends React.PureComponent<*> {
   render() {

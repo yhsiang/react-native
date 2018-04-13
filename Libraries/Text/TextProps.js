@@ -13,8 +13,8 @@
 
 import type {Node} from 'react';
 
-import type {LayoutEvent, PressEvent} from 'CoreEventTypes';
-import type {DangerouslyImpreciseStyleProp} from 'StyleSheet';
+import type {LayoutEvent, PressEvent} from '../Types/CoreEventTypes';
+import type {DangerouslyImpreciseStyleProp} from '../StyleSheet/StyleSheet';
 
 type PressRetentionOffset = {
   top: number,

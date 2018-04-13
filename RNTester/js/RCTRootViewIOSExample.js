@@ -18,7 +18,7 @@ const {
   View,
 } = ReactNative;
 
-const requireNativeComponent = require('requireNativeComponent');
+const requireNativeComponent = require('../../Libraries/ReactNative/requireNativeComponent');
 
 class AppPropertiesUpdateExample extends React.Component<{}> {
   render() {

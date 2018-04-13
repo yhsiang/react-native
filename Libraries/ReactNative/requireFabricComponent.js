@@ -10,21 +10,21 @@
  */
 'use strict';
 
-const Platform = require('Platform');
+const Platform = require('../Utilities/Platform');
 const {
   ReactNativeBridgeEventPlugin,
   createReactNativeComponentClass,
-} = require('ReactFabricInternals');
-const ReactNativeStyleAttributes = require('ReactNativeStyleAttributes');
-const UIManager = require('UIManager');
+} = require('../Renderer/shims/ReactFabricInternals');
+const ReactNativeStyleAttributes = require('../Components/View/ReactNativeStyleAttributes');
+const UIManager = require('./UIManager');
 
-const insetsDiffer = require('insetsDiffer');
-const matricesDiffer = require('matricesDiffer');
-const pointsDiffer = require('pointsDiffer');
-const processColor = require('processColor');
-const resolveAssetSource = require('resolveAssetSource');
-const sizesDiffer = require('sizesDiffer');
-const verifyPropTypes = require('verifyPropTypes');
+const insetsDiffer = require('../Utilities/differ/insetsDiffer');
+const matricesDiffer = require('../Utilities/differ/matricesDiffer');
+const pointsDiffer = require('../Utilities/differ/pointsDiffer');
+const processColor = require('../StyleSheet/processColor');
+const resolveAssetSource = require('../Image/resolveAssetSource');
+const sizesDiffer = require('../Utilities/differ/sizesDiffer');
+const verifyPropTypes = require('./verifyPropTypes');
 const invariant = require('fbjs/lib/invariant');
 const warning = require('fbjs/lib/warning');
 
@@ -43,7 +43,7 @@ const warning = require('fbjs/lib/warning');
  * Common types are lined up with the appropriate prop differs with
  * `TypeToDifferMap`.  Non-scalar types not in the map default to `deepDiffer`.
  */
-import type {ComponentInterface} from 'verifyPropTypes';
+import type {ComponentInterface} from './verifyPropTypes';
 
 let hasAttachedDefaultEventTypes: boolean = false;
 

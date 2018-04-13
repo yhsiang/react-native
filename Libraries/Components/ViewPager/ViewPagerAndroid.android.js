@@ -9,14 +9,14 @@
  */
 'use strict';
 
-const React = require('React');
+const React = require('react');
 const PropTypes = require('prop-types');
-const ReactNative = require('ReactNative');
-const UIManager = require('UIManager');
-const ViewPropTypes = require('ViewPropTypes');
+const ReactNative = require('../../Renderer/shims/ReactNative');
+const UIManager = require('../../ReactNative/UIManager');
+const ViewPropTypes = require('../View/ViewPropTypes');
 
-const dismissKeyboard = require('dismissKeyboard');
-const requireNativeComponent = require('requireNativeComponent');
+const dismissKeyboard = require('../../Utilities/dismissKeyboard');
+const requireNativeComponent = require('../../ReactNative/requireNativeComponent');
 
 const VIEWPAGER_REF = 'viewPager';
 

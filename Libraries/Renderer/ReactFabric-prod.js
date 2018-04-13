@@ -10,17 +10,17 @@
  */
 
 "use strict";
-require("InitializeCore");
+require('../Core/InitializeCore');
 var invariant = require("fbjs/lib/invariant"),
   emptyFunction = require("fbjs/lib/emptyFunction"),
-  UIManager = require("UIManager"),
-  TextInputState = require("TextInputState"),
-  deepDiffer = require("deepDiffer"),
-  flattenStyle = require("flattenStyle"),
+  UIManager = require('../ReactNative/UIManager'),
+  TextInputState = require('../Components/TextInput/TextInputState'),
+  deepDiffer = require('../Utilities/differ/deepDiffer'),
+  flattenStyle = require('../StyleSheet/flattenStyle'),
   React = require("react"),
   emptyObject = require("fbjs/lib/emptyObject"),
   shallowEqual = require("fbjs/lib/shallowEqual"),
-  FabricUIManager = require("FabricUIManager"),
+  FabricUIManager = require('../ReactNative/FabricUIManager'),
   eventPluginOrder = null,
   namesToPlugins = {};
 function recomputePluginOrdering() {
