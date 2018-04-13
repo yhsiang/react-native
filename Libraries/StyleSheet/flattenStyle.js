@@ -12,12 +12,12 @@
 
 var ReactNativePropRegistry;
 
-import type {DangerouslyImpreciseStyleProp} from 'StyleSheet';
-import type {DangerouslyImpreciseStyle} from 'StyleSheetTypes';
+import type {DangerouslyImpreciseStyleProp} from './StyleSheet';
+import type {DangerouslyImpreciseStyle} from './StyleSheetTypes';
 
 function getStyle(style) {
   if (ReactNativePropRegistry === undefined) {
-    ReactNativePropRegistry = require('ReactNativePropRegistry');
+    ReactNativePropRegistry = require('../Renderer/shims/ReactNativePropRegistry');
   }
   if (typeof style === 'number') {
     return ReactNativePropRegistry.getByID(style);

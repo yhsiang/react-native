@@ -10,18 +10,18 @@
  */
 'use strict';
 
-const NativeMethodsMixin = require('NativeMethodsMixin');
-const React = require('React');
-const ReactNativeViewAttributes = require('ReactNativeViewAttributes');
-const TextPropTypes = require('TextPropTypes');
-const Touchable = require('Touchable');
-const UIManager = require('UIManager');
+const NativeMethodsMixin = require('../Renderer/shims/NativeMethodsMixin');
+const React = require('react');
+const ReactNativeViewAttributes = require('../Components/View/ReactNativeViewAttributes');
+const TextPropTypes = require('./TextPropTypes');
+const Touchable = require('../Components/Touchable/Touchable');
+const UIManager = require('../ReactNative/UIManager');
 
 const createReactClass = require('create-react-class');
-const createReactNativeComponentClass = require('createReactNativeComponentClass');
-const mergeFast = require('mergeFast');
-const processColor = require('processColor');
-const {ViewContextTypes} = require('ViewContext');
+const createReactNativeComponentClass = require('../Renderer/shims/createReactNativeComponentClass');
+const mergeFast = require('../Utilities/mergeFast');
+const processColor = require('../StyleSheet/processColor');
+const {ViewContextTypes} = require('../Components/View/ViewContext');
 
 const viewConfig = {
   validAttributes: mergeFast(ReactNativeViewAttributes.UIView, {
@@ -39,7 +39,7 @@ const viewConfig = {
   uiViewClassName: 'RCTText',
 };
 
-import type {ViewChildContext} from 'ViewContext';
+import type {ViewChildContext} from '../Components/View/ViewContext';
 
 /**
  * A React component for displaying text.

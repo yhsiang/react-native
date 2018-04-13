@@ -10,19 +10,19 @@
  */
 'use strict';
 
-const NativeMethodsMixin = require('NativeMethodsMixin');
-const React = require('React');
+const NativeMethodsMixin = require('../../Renderer/shims/NativeMethodsMixin');
+const React = require('react');
 const PropTypes = require('prop-types');
-const StyleSheet = require('StyleSheet');
-const StyleSheetPropType = require('StyleSheetPropType');
-const TextStylePropTypes = require('TextStylePropTypes');
-const View = require('View');
-const ViewPropTypes = require('ViewPropTypes');
-const processColor = require('processColor');
+const StyleSheet = require('../../StyleSheet/StyleSheet');
+const StyleSheetPropType = require('../../StyleSheet/StyleSheetPropType');
+const TextStylePropTypes = require('../../Text/TextStylePropTypes');
+const View = require('../View/View');
+const ViewPropTypes = require('../View/ViewPropTypes');
+const processColor = require('../../StyleSheet/processColor');
 
 const createReactClass = require('create-react-class');
 const itemStylePropType = StyleSheetPropType(TextStylePropTypes);
-const requireNativeComponent = require('requireNativeComponent');
+const requireNativeComponent = require('../../ReactNative/requireNativeComponent');
 
 const PickerIOS = createReactClass({
   displayName: 'PickerIOS',

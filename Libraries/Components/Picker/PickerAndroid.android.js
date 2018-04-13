@@ -10,16 +10,16 @@
 
 'use strict';
 
-const ColorPropType = require('ColorPropType');
-const React = require('React');
+const ColorPropType = require('../../StyleSheet/ColorPropType');
+const React = require('react');
 const ReactPropTypes = require('prop-types');
-const StyleSheet = require('StyleSheet');
-const StyleSheetPropType = require('StyleSheetPropType');
-const ViewPropTypes = require('ViewPropTypes');
-const ViewStylePropTypes = require('ViewStylePropTypes');
+const StyleSheet = require('../../StyleSheet/StyleSheet');
+const StyleSheetPropType = require('../../StyleSheet/StyleSheetPropType');
+const ViewPropTypes = require('../View/ViewPropTypes');
+const ViewStylePropTypes = require('../View/ViewStylePropTypes');
 
-const processColor = require('processColor');
-const requireNativeComponent = require('requireNativeComponent');
+const processColor = require('../../StyleSheet/processColor');
+const requireNativeComponent = require('../../ReactNative/requireNativeComponent');
 
 const REF_PICKER = 'picker';
 const MODE_DROPDOWN = 'dropdown';

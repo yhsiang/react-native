@@ -9,7 +9,7 @@
  */
 'use strict';
 
-var RCTVibration = require('NativeModules').Vibration;
+var RCTVibration = require('../BatchedBridge/NativeModules').Vibration;
 
 var invariant = require('fbjs/lib/invariant');
 

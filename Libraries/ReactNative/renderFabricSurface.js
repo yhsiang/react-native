@@ -11,14 +11,14 @@
 
 'use strict';
 
-const AppContainer = require('AppContainer');
-const React = require('React');
-const ReactFabric = require('ReactFabric');
+const AppContainer = require('./AppContainer');
+const React = require('react');
+const ReactFabric = require('../Renderer/shims/ReactFabric');
 
 const invariant = require('fbjs/lib/invariant');
 
 // require BackHandler so it sets the default handler that exits the app if no listeners respond
-require('BackHandler');
+require('../Utilities/BackHandler');
 
 // Note: this is a fork of renderApplication.js to simply invoke ReactFabric.
 function renderFabricSurface<Props: Object>(

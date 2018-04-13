@@ -8,20 +8,20 @@
  */
 'use strict';
 
-const EdgeInsetsPropType = require('EdgeInsetsPropType');
-const ActivityIndicator = require('ActivityIndicator');
-const React = require('React');
+const EdgeInsetsPropType = require('../../StyleSheet/EdgeInsetsPropType');
+const ActivityIndicator = require('../ActivityIndicator/ActivityIndicator');
+const React = require('react');
 const PropTypes = require('prop-types');
-const ReactNative = require('ReactNative');
-const StyleSheet = require('StyleSheet');
-const UIManager = require('UIManager');
-const View = require('View');
-const ViewPropTypes = require('ViewPropTypes');
+const ReactNative = require('../../Renderer/shims/ReactNative');
+const StyleSheet = require('../../StyleSheet/StyleSheet');
+const UIManager = require('../../ReactNative/UIManager');
+const View = require('../View/View');
+const ViewPropTypes = require('../View/ViewPropTypes');
 
-const deprecatedPropType = require('deprecatedPropType');
+const deprecatedPropType = require('../../Utilities/deprecatedPropType');
 const keyMirror = require('fbjs/lib/keyMirror');
-const requireNativeComponent = require('requireNativeComponent');
-const resolveAssetSource = require('resolveAssetSource');
+const requireNativeComponent = require('../../ReactNative/requireNativeComponent');
+const resolveAssetSource = require('../../Image/resolveAssetSource');
 
 const RCT_WEBVIEW_REF = 'webview';
 

@@ -9,9 +9,9 @@
 
 'use strict';
 
-const React = require('React');
-const View = require('View');
-const StyleSheet = require('StyleSheet');
+const React = require('react');
+const View = require('../View/View');
+const StyleSheet = require('../../StyleSheet/StyleSheet');
 
 class DummyTab extends React.Component {
   render() {

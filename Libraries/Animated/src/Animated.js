@@ -11,11 +11,11 @@
 
 'use strict';
 
-const AnimatedImplementation = require('AnimatedImplementation');
-const Image = require('Image');
-const ScrollView = require('ScrollView');
-const Text = require('Text');
-const View = require('View');
+const AnimatedImplementation = require('./AnimatedImplementation');
+const Image = require('../../Image/Image');
+const ScrollView = require('../../Components/ScrollView/ScrollView');
+const Text = require('../../Text/Text');
+const View = require('../../Components/View/View');
 
 const Animated = {
   View: AnimatedImplementation.createAnimatedComponent(View),

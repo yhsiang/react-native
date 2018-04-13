@@ -9,9 +9,9 @@
  */
 'use strict';
 
-var EventEmitter = require('EventEmitter');
-var Platform = require('Platform');
-var RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
+var EventEmitter = require('../vendor/emitter/EventEmitter');
+var Platform = require('./Platform');
+var RCTDeviceEventEmitter = require('../EventEmitter/RCTDeviceEventEmitter');
 
 var invariant = require('fbjs/lib/invariant');
 
@@ -128,7 +128,7 @@ class Dimensions {
 let dims: ?{[key: string]: any} = global.nativeExtensions && global.nativeExtensions.DeviceInfo && global.nativeExtensions.DeviceInfo.Dimensions;
 let nativeExtensionsEnabled = true;
 if (!dims) {
-  const DeviceInfo = require('DeviceInfo');
+  const DeviceInfo = require('./DeviceInfo');
   dims = DeviceInfo.Dimensions;
   nativeExtensionsEnabled = false;
 }

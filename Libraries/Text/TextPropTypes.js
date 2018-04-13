@@ -11,11 +11,11 @@
 
 'use strict';
 
-const ColorPropType = require('ColorPropType');
-const EdgeInsetsPropType = require('EdgeInsetsPropType');
+const ColorPropType = require('../StyleSheet/ColorPropType');
+const EdgeInsetsPropType = require('../StyleSheet/EdgeInsetsPropType');
 const PropTypes = require('prop-types');
-const StyleSheetPropType = require('StyleSheetPropType');
-const TextStylePropTypes = require('TextStylePropTypes');
+const StyleSheetPropType = require('../StyleSheet/StyleSheetPropType');
+const TextStylePropTypes = require('./TextStylePropTypes');
 
 const stylePropType = StyleSheetPropType(TextStylePropTypes);
 

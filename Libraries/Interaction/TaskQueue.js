@@ -9,7 +9,7 @@
  */
 'use strict';
 
-const infoLog = require('infoLog');
+const infoLog = require('../Utilities/infoLog');
 const invariant = require('fbjs/lib/invariant');
 
 type SimpleTask = {

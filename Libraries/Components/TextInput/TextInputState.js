@@ -13,8 +13,8 @@
  */
 'use strict';
 
-const Platform = require('Platform');
-const UIManager = require('UIManager');
+const Platform = require('../../Utilities/Platform');
+const UIManager = require('../../ReactNative/UIManager');
 
 const TextInputState = {
    /**

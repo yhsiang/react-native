@@ -10,7 +10,7 @@
 'use strict';
 
 var invariant = require('fbjs/lib/invariant');
-var merge = require('merge');
+var merge = require('../vendor/core/merge');
 
 function createStrictShapeTypeChecker(
   shapeTypes: {[key: string]: ReactPropsCheckType}

@@ -11,7 +11,7 @@
 
 'use strict';
 
-const deepFreezeAndThrowOnMutationInDev = require('deepFreezeAndThrowOnMutationInDev');
+const deepFreezeAndThrowOnMutationInDev = require('./Utilities/deepFreezeAndThrowOnMutationInDev');
 
 /**
  * A collection of Unicode sequences for various characters and emoji.

@@ -10,7 +10,7 @@
  */
 'use strict';
 
-var UIManager = require('UIManager');
+var UIManager = require('./UIManager');
 
 type OnSuccessCallback = (
   left: number,

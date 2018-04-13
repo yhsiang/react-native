@@ -9,7 +9,7 @@
  */
 'use strict';
 
-const Alert = require('Alert');
+const Alert = require('../../Libraries/Alert/Alert');
 const React = require('react');
 const ReactNative = require('react-native');
 const {
@@ -21,7 +21,7 @@ const {
 
 const RNTesterPage = require('./RNTesterPage');
 
-const infoLog = require('infoLog');
+const infoLog = require('../../Libraries/Utilities/infoLog');
 
 const {
   FooterComponent,

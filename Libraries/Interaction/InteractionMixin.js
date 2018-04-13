@@ -9,7 +9,7 @@
  */
 'use strict';
 
-var InteractionManager = require('InteractionManager');
+var InteractionManager = require('./InteractionManager');
 
 /**
  * This mixin provides safe versions of InteractionManager start/end methods

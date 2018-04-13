@@ -15,20 +15,20 @@
  * Do not use outside of Fabric tree.
  */
 
-const Platform = require('Platform');
-const React = require('React');
-const ReactNativeStyleAttributes = require('ReactNativeStyleAttributes');
-const ReactNativeViewAttributes = require('ReactNativeViewAttributes');
-const ViewPropTypes = require('ViewPropTypes');
-const {NativeMethodsMixin} = require('ReactFabricInternals');
-const {ViewContextTypes} = require('ViewContext');
+const Platform = require('../../Utilities/Platform');
+const React = require('react');
+const ReactNativeStyleAttributes = require('./ReactNativeStyleAttributes');
+const ReactNativeViewAttributes = require('./ReactNativeViewAttributes');
+const ViewPropTypes = require('./ViewPropTypes');
+const {NativeMethodsMixin} = require('../../Renderer/shims/ReactFabricInternals');
+const {ViewContextTypes} = require('./ViewContext');
 
 const createReactClass = require('create-react-class');
 const invariant = require('fbjs/lib/invariant');
-const requireFabricComponent = require('requireFabricComponent');
+const requireFabricComponent = require('../../ReactNative/requireFabricComponent');
 
-import type {ViewProps} from 'ViewPropTypes';
-import type {ViewChildContext} from 'ViewContext';
+import type {ViewProps} from './ViewPropTypes';
+import type {ViewChildContext} from './ViewContext';
 
 export type Props = ViewProps;
 
@@ -91,7 +91,7 @@ const RCTView = requireFabricComponent('RCTView', View, {
 });
 
 if (__DEV__) {
-  const UIManager = require('UIManager');
+  const UIManager = require('../../ReactNative/UIManager');
   const viewConfig =
     (UIManager.viewConfigs && UIManager.viewConfigs.RCTView) || {};
   for (const prop in viewConfig.nativeProps) {

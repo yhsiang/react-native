@@ -11,7 +11,7 @@
 
 const PropTypes = require('prop-types');
 
-const createStrictShapeTypeChecker = require('createStrictShapeTypeChecker');
+const createStrictShapeTypeChecker = require('../Utilities/createStrictShapeTypeChecker');
 
 const EdgeInsetsPropType = (createStrictShapeTypeChecker({
   top: PropTypes.number,
