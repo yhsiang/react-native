@@ -83,6 +83,7 @@ if (__DEV__) {
 }
 
 let ViewToExport = RCTView;
+ViewToExport = View; // Patch for compatibility with prior versions
 if (__DEV__) {
   ViewToExport = View;
 }
