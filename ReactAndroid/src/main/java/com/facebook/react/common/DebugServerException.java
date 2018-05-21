@@ -15,6 +15,7 @@ import android.text.TextUtils;
 
 import com.facebook.common.logging.FLog;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -63,6 +64,13 @@ public class DebugServerException extends RuntimeException {
     try {
       JSONObject jsonObject = new JSONObject(str);
       String fullFileName = jsonObject.getString("filename");
+
+      // NOTE(expo): Metro sends back "{ errors: [{ description }] }" for syntax errors
+      if (jsonObject.has("errors")) {
+        JSONArray jsonErrors = jsonObject.getJSONArray("errors");
+        jsonObject = jsonErrors.getJSONObject(0);
+      }
+
       return new DebugServerException(
           jsonObject.getString("description"),
           shortenFileName(fullFileName),
