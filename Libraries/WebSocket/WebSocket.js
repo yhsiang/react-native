@@ -12,6 +12,7 @@
 const Blob = require('../Blob/Blob');
 const EventTarget = require('event-target-shim');
 const NativeEventEmitter = require('../EventEmitter/NativeEventEmitter');
+const Platform = require('../Utilities/Platform');
 const BlobManager = require('../Blob/BlobManager');
 const NativeModules = require('../BatchedBridge/NativeModules');
 const WebSocketEvent = require('./WebSocketEvent');
@@ -202,7 +203,7 @@ class WebSocket extends EventTarget(...WEBSOCKET_EVENTS) {
   }
 
   _close(code?: number, reason?: string): void {
-    if (WebSocketModule.close.length === 3) {
+    if (Platform.OS === 'android') {
       // See https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent
       const statusCode = typeof code === 'number' ? code : CLOSE_NORMAL;
       const closeReason = typeof reason === 'string' ? reason : '';
