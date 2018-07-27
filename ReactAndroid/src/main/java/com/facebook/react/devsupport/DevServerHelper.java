@@ -541,6 +541,7 @@ public class DevServerHelper {
     mOnChangePollingClient = new OkHttpClient.Builder()
         .connectionPool(new ConnectionPool(1, LONG_POLL_KEEP_ALIVE_DURATION_MS, TimeUnit.MILLISECONDS))
         .connectTimeout(HTTP_CONNECT_TIMEOUT_MS, TimeUnit.MILLISECONDS)
+        .readTimeout(0, TimeUnit.MILLISECONDS)
         .build();
     enqueueOnChangeEndpointLongPolling();
   }
